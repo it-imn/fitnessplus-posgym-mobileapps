@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">POSGYM</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">m3MZ_UH6CU5wKHal1ZUojaw7X4X-XaEL3gKfw</string>
+</resources>
