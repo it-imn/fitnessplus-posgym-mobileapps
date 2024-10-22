@@ -402,7 +402,6 @@ function CheckCardSection({
                   }}>
                   <TouchableOpacity
                     onPress={() => {
-                      navigation.navigate("SelectGym");
                       closeModal();
                     }}
                     style={{
