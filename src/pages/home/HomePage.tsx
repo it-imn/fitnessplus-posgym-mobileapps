@@ -391,7 +391,7 @@ function CheckCardSection({
                     fontSize: 16,
                     color: isDarkMode ? colors._white : colors._black,
                   }}>
-                  You need to allow camera permission to go to selfie
+                  You need to allow camera permission to go to checkin
                 </Text>
                 <Gap height={16} />
                 <View
