@@ -1,0 +1,108 @@
+import { CancelToken } from "axios";
+import { api } from "../../lib/axios";
+import {
+  IMembershipPackage,
+  IMembershipPackageDetail,
+  IVoucher,
+} from "../../lib/definition";
+
+const fetchContractAgreement = async () => {
+  return api
+    .get("/membership/contract")
+    .then(({ data }) => {
+      return {
+        data: data.data,
+      };
+    })
+    .catch((err: any) => {
+      console.error("error fetch contract agreement");
+      throw new Error(err.response?.data.message);
+    });
+};
+
+const fetchMembershipPackages = async (token: CancelToken, query?: string) => {
+  return api
+    .get(`/membership/package?search=${query}`, {
+      cancelToken: token,
+    })
+    .then(({ data }) => {
+      console.log(query, "query");
+      return {
+        data: data.result as IMembershipPackage[],
+      };
+    })
+    .catch((err: any) => {
+      console.error("error fetch membership packages");
+      throw new Error(err.response?.data.message);
+    });
+};
+
+const fetchMembershipPackageDetail = async (id: number) => {
+  return api
+    .get(`/membership/package/${id}`)
+    .then(({ data }) => {
+      console.log(data);
+      return {
+        data: data.result as IMembershipPackageDetail,
+      };
+    })
+    .catch((err: any) => {
+      console.error("error fetch membership package detail");
+      throw new Error(err.response?.data.message);
+    });
+};
+
+const checkVoucher = async (voucher_code: string, package_id: number) => {
+  console.log(voucher_code, "voucher_code");
+  return api
+    .post("/voucher", {
+      voucher_code: voucher_code,
+      package_id: package_id,
+    })
+    .then(({ data }) => {
+      console.log(data);
+      return {
+        data: data.result as IVoucher,
+      };
+    })
+    .catch((err: any) => {
+      console.error("error check voucher", err.response?.data);
+      throw new Error(err.response?.data.message);
+    });
+};
+
+const buyMembership = async (
+  sales_id: number,
+  membership_id: number,
+  payment_method: string,
+  signature: string,
+  voucher_code: string | null,
+  down_payment_membership: 0 | 1,
+) => {
+  return api
+    .post("/membership/buy", {
+      sales_id: sales_id,
+      membership_id: membership_id,
+      payment_method: payment_method,
+      signature: signature,
+      voucher_code: voucher_code === "" ? null : voucher_code,
+      down_payment_membership: down_payment_membership,
+    })
+    .then(({ data }) => {
+      return {
+        data: data,
+      };
+    })
+    .catch((err: any) => {
+      console.error("error buy membership", err.response?.data);
+      throw new Error(err.response?.data.message);
+    });
+};
+
+export {
+  fetchContractAgreement,
+  fetchMembershipPackages,
+  fetchMembershipPackageDetail,
+  checkVoucher,
+  buyMembership,
+};

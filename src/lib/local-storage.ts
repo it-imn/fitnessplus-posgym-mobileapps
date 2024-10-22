@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { User } from "./definition";
 
 export const storeData = async (key: string, value: any) => {
   try {
@@ -35,36 +36,36 @@ export const removeAllData = async () => {
 };
 
 // User
-// export const storeUser = async (value: User) => {
-//   try {
-//     const jsonValue = JSON.stringify(value);
-//     await AsyncStorage.setItem("user", jsonValue);
-//   } catch (err) {
-//     // saving error
-//     console.error(err, "error store user");
-//   }
-// };
+export const storeUser = async (value: User) => {
+  try {
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem("user", jsonValue);
+  } catch (err) {
+    // saving error
+    console.error(err, "error store user");
+  }
+};
 
-// export const getUser = async (): Promise<User | null> => {
-//   try {
-//     const jsonValue = await AsyncStorage.getItem("user");
-//     const user = jsonValue != null ? JSON.parse(jsonValue) : null;
+export const getUser = async (): Promise<User | null> => {
+  try {
+    const jsonValue = await AsyncStorage.getItem("user");
+    const user = jsonValue != null ? JSON.parse(jsonValue) : null;
 
-//     return user;
-//   } catch (err) {
-//     // error reading value
-//     console.error(err, "error get user");
-//     return null;
-//   }
-// };
+    return user;
+  } catch (err) {
+    // error reading value
+    console.error(err, "error get user");
+    return null;
+  }
+};
 
-// export const removeUser = async () => {
-//   try {
-//     await AsyncStorage.removeItem("user");
-//   } catch (err) {
-//     console.error(err, "error remove user");
-//   }
-// };
+export const removeUser = async () => {
+  try {
+    await AsyncStorage.removeItem("user");
+  } catch (err) {
+    console.error(err, "error remove user");
+  }
+};
 
 // Token
 export const storeToken = async (value: string) => {

@@ -1,0 +1,74 @@
+import { api } from "../../lib/axios";
+import { SignUpReq } from "../../stores/useSignUpStore";
+
+const checkIn = async (code: string) => {
+  return api
+    .post(`/member/ci_co/${code}`)
+    .then(({ data }) => {
+      return {
+        status: data.status,
+        message: data.message,
+      };
+    })
+    .catch(err => {
+      console.error("error check in");
+      throw new Error(err.response?.data.message);
+    });
+};
+
+const scanQR = async (code: string) => {
+  return api
+    .post(`/member/scan_qr/${code}`)
+    .then(({ data }) => {
+      return {
+        status: data.status as "checkin" | "checkout",
+      };
+    })
+    .catch(err => {
+      console.error("error scan QR");
+      throw new Error(err.response?.data.message);
+    });
+};
+
+const register = async (req: SignUpReq) => {
+  const formData = new FormData();
+  if (req.image !== "") {
+    formData.append("image", {
+      uri: `file://${req.image}`,
+      name: req.image,
+      type: "image/jpeg",
+    });
+  }
+  formData.append("name", req.name);
+  formData.append("gender", req.gender);
+  formData.append("email", req.email);
+  if (req.phone !== "") {
+    formData.append("phone", req.phone);
+  }
+  if (req.identity !== "none") {
+    formData.append("identity", req.identity);
+    formData.append("no_identity", req.no_identity);
+  } else {
+    formData.append("identity", null);
+    formData.append("no_identity", null);
+  }
+  formData.append("username", req.username);
+  formData.append("password", req.password);
+  formData.append("gym_id", req.gym_id);
+  formData.append("branch_id", req.branch_id);
+  formData.append("term", req.term);
+  console.log(formData);
+  return api
+    .post("/member/register", formData)
+    .then(({ data }) => {
+      return {
+        message: data.message,
+      };
+    })
+    .catch(err => {
+      console.error("error register", err.response?.data.message);
+      throw new Error(err.response?.data.message);
+    });
+};
+
+export { checkIn, scanQR, register };
