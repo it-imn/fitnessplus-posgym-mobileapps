@@ -1,8 +1,9 @@
-import {NavigationContainer} from '@react-navigation/native';
-import React from 'react';
-import {View} from 'react-native';
-import ThemeProvider from './contexts/ThemeContext';
-import FlashMessage from 'react-native-flash-message';
+import { NavigationContainer } from "@react-navigation/native";
+import React from "react";
+import { View } from "react-native";
+import ThemeProvider from "./contexts/ThemeContext";
+import FlashMessage from "react-native-flash-message";
+import GlobalModal from "./components/Modal";
 
 export default function App(): React.JSX.Element {
   return (
@@ -15,6 +16,7 @@ export default function App(): React.JSX.Element {
           animated={true}
           duration={3000}
         />
+        <GlobalModal />
       </ThemeProvider>
     </NavigationContainer>
   );
