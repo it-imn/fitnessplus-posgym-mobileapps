@@ -4,12 +4,13 @@ import { View } from "react-native";
 import ThemeProvider from "./contexts/ThemeContext";
 import FlashMessage from "react-native-flash-message";
 import GlobalModal from "./components/Modal";
+import Router from "./lib/routers";
 
 export default function App(): React.JSX.Element {
   return (
     <NavigationContainer>
       <ThemeProvider>
-        <View>asd</View>
+        <Router />
         <FlashMessage
           position="top"
           floating={true}

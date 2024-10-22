@@ -19,7 +19,7 @@ import CreditCard from "./images/CreditCard.png";
 import Danger from "./svgs/Danger.svg";
 import DeleteKey from "./svgs/DeleteKey.svg";
 import DummyCsConsult from "./images/DummyCsConsult.png";
-import DummyFoto from "./svgs/DummyFoto.jpg";
+import DummyFoto from "./images/DummyFoto.jpg";
 import DummyPTConsult from "./images/DummyPTConsult.png";
 import EditPen from "./svgs/EditPen.svg";
 import EditPenWhite from "./svgs/EditPenWhite.svg";
@@ -241,8 +241,6 @@ export {
   IconAnyTransfer,
   IconDocument,
   IconPlay,
-  LogoSplash,
-  LogoSplashWhite,
   DummyFoto,
   BMI,
   Class,
@@ -272,7 +270,6 @@ export {
   IconVoucher,
   IconCash,
   IconDigitalPayment,
-  LoadingGif,
   BCA,
   BRI,
   BNI,
@@ -293,7 +290,6 @@ export {
   IconSendTransfer,
   IconTheme,
   IconSetting,
-  Verification,
   IconMembershipAgreement,
   IconVerify,
   IconUp,

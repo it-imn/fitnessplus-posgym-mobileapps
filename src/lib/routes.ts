@@ -1,3 +1,11 @@
+export type TabParamList = {
+  Home: undefined;
+  Profil: undefined;
+  History: undefined;
+  Report: undefined;
+  AnyTransfer: undefined;
+};
+
 export type RootStackParamList = {
   LoginPage: undefined;
   MainApp: undefined;
