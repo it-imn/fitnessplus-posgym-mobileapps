@@ -8,8 +8,12 @@ import { ThemeContext } from "../../contexts/ThemeContext";
 import { ThemeType } from "../../lib/definition";
 import { colors } from "../../lib/utils";
 import Header from "../../components/ui/Header";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../lib/routes";
 
-const Agreement = ({ navigation }: any) => {
+const Agreement = ({
+  navigation,
+}: NativeStackScreenProps<RootStackParamList, "Agreement">) => {
   const { isDarkMode } = useContext(ThemeContext);
   return (
     <SafeAreaView style={styles.container(isDarkMode)}>
