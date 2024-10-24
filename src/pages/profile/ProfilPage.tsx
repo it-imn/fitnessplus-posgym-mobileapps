@@ -17,7 +17,7 @@ import {
 import { fetchProfile } from "../../services/profile";
 import { logout } from "../../services/auth";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { CompositeScreenProps, Theme } from "@react-navigation/native";
+import { CompositeScreenProps, Theme, useIsFocused } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import {
   Membership,
@@ -34,6 +34,7 @@ import { removeAllData } from "../../lib/local-storage";
 import { TabParamList, RootStackParamList } from "../../lib/routes";
 import { colors, fonts } from "../../lib/utils";
 import { showMessage } from "react-native-flash-message";
+import { fetchContractAgreementView } from "../../services/personal_trainer";
 import { Button, ButtonIconTeks } from "../../components/ui/Button";
 
 const width = Dimensions.get("window").width;
@@ -46,9 +47,12 @@ const Profil = ({
 >) => {
   const { isDarkMode } = useContext(ThemeContext);
 
+  const isFocused = useIsFocused();
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [dataProfile, setDataProfile] = useState<UserDetail>({} as UserDetail);
+  const [havePackagePT, setHavePackagePT] = useState<boolean>(false);
+  const [haveMembership, setHaveMembership] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
 
@@ -60,6 +64,7 @@ const Profil = ({
       if (data) {
         setDataProfile(data);
         setImageUrl(data.image || data.image_error);
+        setHaveMembership(data.membership.status !== "not_buy_package");
       }
 
       setIsLoading(false);
@@ -72,6 +77,29 @@ const Profil = ({
         backgroundColor: colors._red,
         color: colors._white,
       });
+      setIsLoading(false);
+    }
+  };
+
+  const getPackagePT = async () => {
+    try {
+      setIsLoading(true);
+
+      const { data } = await fetchContractAgreementView();
+      if (data) {
+        setHavePackagePT(data.status === "buy_package_personal_trainer");
+      }
+
+      setIsLoading(false);
+    } catch (err: any) {
+      console.error(err);
+      // showMessage({
+      //   message: err.message || "An error occurred",
+      //   type: "warning",
+      //   icon: "warning",
+      //   backgroundColor: colors._red,
+      //   color: colors._white,
+      // });
       setIsLoading(false);
     }
   };
@@ -116,14 +144,6 @@ const Profil = ({
     navigation.navigate("Setting", params);
   };
 
-  const gotoMembershipAgreement = () => {
-    navigation.navigate("MembershipAgreement");
-  };
-
-  const gotoMembershipExisting = () => {
-    navigation.navigate("MembershipAgreementExisting");
-  };
-
   // const myGym = () => {
   //   showMessage({
   //     icon: 'warning',
@@ -135,8 +155,8 @@ const Profil = ({
   // };
 
   useEffect(() => {
-    getProfile();
-  }, []);
+    isFocused && Promise.all([getProfile(), getPackagePT()]);
+  }, [isFocused]);
 
   return (
     <SafeAreaView style={styles.container(isDarkMode)}>
@@ -216,30 +236,31 @@ const Profil = ({
             onPress={goToClassHistory}
           />
           <Gap height={5} />
-          {/* {dataProfile.membership.status !== "not_buy_package" ? (
+          {haveMembership ? (
             <>
               <ButtonIconTeks
                 teksColor={isDarkMode ? colors._white : colors._black}
                 backColor={isDarkMode ? colors._black : colors._grey2}
-                teks={
-                  dataProfile.role.id === 8
-                    ? "Membership Existing"
-                    : "Membership Agreement"
-                }
-                type={
-                  dataProfile.role.id === 8
-                    ? "membershipexisting"
-                    : "membershipagreement"
-                }
-                onPress={
-                  dataProfile.role.id === 8
-                    ? gotoMembershipExisting
-                    : gotoMembershipAgreement
-                }
+                teks={"Membership Agreement"}
+                type={"membershipagreement"}
+                onPress={() => navigation.navigate("MembershipAgreement")}
               />
               <Gap height={5} />
             </>
-          ) : null} */}
+          ) : null}
+          <Gap height={5} />
+          {havePackagePT ? (
+            <>
+              <ButtonIconTeks
+                teksColor={isDarkMode ? colors._white : colors._black}
+                backColor={isDarkMode ? colors._black : colors._grey2}
+                teks={"Package PT Agreement"}
+                type={"membershipagreement"}
+                onPress={() => navigation.navigate("PackagePTAgreement")}
+              />
+              <Gap height={5} />
+            </>
+          ) : null}
 
           <ButtonIconTeks
             teksColor={isDarkMode ? colors._white : colors._black}

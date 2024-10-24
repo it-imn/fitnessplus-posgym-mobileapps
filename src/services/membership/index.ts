@@ -11,11 +11,39 @@ const fetchContractAgreement = async () => {
     .get("/membership/contract")
     .then(({ data }) => {
       return {
-        data: data.data,
+        data: data.result,
       };
     })
     .catch((err: any) => {
       console.error("error fetch contract agreement");
+      throw new Error(err.response?.data.message);
+    });
+};
+
+const fetchContractAgreementView = async () => {
+  return api
+    .get("/membership/contract/pdf")
+    .then(({ data }) => {
+      return {
+        data: data.result,
+      };
+    })
+    .catch((err: any) => {
+      console.error("error fetch contract agreement view");
+      throw new Error(err.response?.data.message);
+    });
+};
+
+const fetchContractAgreementDownload = async () => {
+  return api
+    .get("/membership/contract/download")
+    .then(({ data }) => {
+      return {
+        data: data.data,
+      };
+    })
+    .catch((err: any) => {
+      console.error("error fetch contract agreement download");
       throw new Error(err.response?.data.message);
     });
 };
@@ -101,6 +129,8 @@ const buyMembership = async (
 
 export {
   fetchContractAgreement,
+  fetchContractAgreementView,
+  fetchContractAgreementDownload,
   fetchMembershipPackages,
   fetchMembershipPackageDetail,
   checkVoucher,

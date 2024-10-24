@@ -40,6 +40,8 @@ import Membership from "../pages/home/MembershipPage";
 import Class from "../pages/home/ListClassPage";
 import { BottomNavbar } from "../components/BottomNavbar";
 import Agreement from "../pages/home/AgreementPage";
+import MembershipAgreement from "../pages/profile/MembershipAgreementPage";
+import PackagePTAgreement from "../pages/profile/PackagePTAgreementPage";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -104,6 +106,7 @@ export const Router = () => {
       <Stack.Screen name="ClassHistory" component={ClassHistory} />
       <Stack.Screen name="MembershipDetail" component={MembershipDetail} />
       <Stack.Screen name="Agreement" component={Agreement} />
+      <Stack.Screen name="PackagePTAgreement" component={PackagePTAgreement} />
       {/*
       <Stack.Screen name="UserSpec" component={UserSpec} />
       <Stack.Screen name="BodyMass" component={BodyMass} />
@@ -179,10 +182,10 @@ export const Router = () => {
       component={PreviewClassStatusPermit}
       />
       */}
-      {/* <Stack.Screen
+      <Stack.Screen
         name="MembershipAgreement"
         component={MembershipAgreement}
-      /> */}
+      />
       <Stack.Screen name="Setting" component={Setting} />
       {/* <Stack.Screen
         name="VerificationSuccess"

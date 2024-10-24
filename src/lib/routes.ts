@@ -62,7 +62,7 @@ export type RootStackParamList = {
     username: string;
   };
   MembershipAgreement: undefined;
-  MembershipAgreementExisting: undefined;
+  PackagePTAgreement: undefined;
   Class: undefined;
   DetailClass: {
     id: number;

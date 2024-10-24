@@ -117,11 +117,41 @@ const buyPersonalTrainerPackage = async (
     });
 };
 
+const fetchContractAgreementView = async () => {
+  return api
+    .get("/personal_trainer/package/contract")
+    .then(({ data }) => {
+      return {
+        data: data,
+      };
+    })
+    .catch((err: any) => {
+      console.error("error fetch contract agreement");
+      throw new Error(err.response?.data.message);
+    });
+};
+
+const fetchContractAgreementDownload = async () => {
+  return api
+    .get("/personal_trainer/package/contract/download")
+    .then(({ data }) => {
+      return {
+        data: data,
+      };
+    })
+    .catch((err: any) => {
+      console.error("error fetch contract agreement download");
+      throw new Error(err.response?.data.message);
+    });
+};
+
 export {
   fetchPersonalTrainers,
   fetchPersonalTrainersWithQuery,
   fetchDetailPersonalTrainer,
   fetchPersonalTrainerPackage,
   fetchPersonalTrainerDetailPackage,
+  fetchContractAgreementView,
+  fetchContractAgreementDownload,
   buyPersonalTrainerPackage,
 };
