@@ -39,7 +39,7 @@ const fetchContractAgreementDownload = async () => {
     .get("/membership/contract/download")
     .then(({ data }) => {
       return {
-        data: data.data,
+        data: data.result,
       };
     })
     .catch((err: any) => {
