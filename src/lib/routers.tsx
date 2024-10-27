@@ -42,6 +42,7 @@ import { BottomNavbar } from "../components/BottomNavbar";
 import Agreement from "../pages/home/AgreementPage";
 import MembershipAgreement from "../pages/profile/MembershipAgreementPage";
 import PackagePTAgreement from "../pages/profile/PackagePTAgreementPage";
+import SignConfirmation from "../pages/auth/SignConfirmation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -138,8 +139,8 @@ export const Router = () => {
       /> */}
       {/* <Stack.Screen name="DetailBioUser" component={DetailBioUser} /> */}
       <Stack.Screen name="DeleteAccount" component={DeleteAccount} />
+      <Stack.Screen name="SignConfirmation" component={SignConfirmation} />
       {/* <Stack.Screen name="ForgotPassword" component={ForgotPassword} /> */}
-      {/* <Stack.Screen name="SignConfirmation" component={SignConfirmation} /> */}
       {/* <Stack.Screen name="SignExisting" component={SignExisting} /> */}
       {/* <Stack.Screen name="SignTrial" component={SignTrial} /> */}
       {/* <Stack.Screen name="Verification" component={Verification} /> */}

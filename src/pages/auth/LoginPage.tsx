@@ -22,6 +22,7 @@ import { login } from "../../services/auth";
 import { Input, Inputeye } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
 import Loading from "../../components/ui/Loading";
+import { useSignUpStore } from "../../stores/useSignUpStore";
 
 export const LoginPage = ({
   navigation,
@@ -29,6 +30,7 @@ export const LoginPage = ({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { reset } = useSignUpStore();
 
   const onLogin = async () => {
     setLoading(true);
@@ -82,6 +84,7 @@ export const LoginPage = ({
   // };
 
   const gotoSign = () => {
+    reset();
     navigation.navigate("SignUp");
   };
 
