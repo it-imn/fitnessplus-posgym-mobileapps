@@ -101,9 +101,12 @@ export const MembershipDetail = ({
           sales_email: sales.find(data => data.id === sales_id)?.email || "",
           membership_id: id,
           down_payment_membership: 0,
-          down_payment_label: `${convertToRupiah(
-            membershipPackage.installment_first_pay.total_price.toString(),
-          )} Dp Available`,
+          down_payment_label:
+            membershipPackage.down_payment_membership == 1
+              ? `${convertToRupiah(
+                  membershipPackage.installment_first_pay.total_price.toString(),
+                )} Dp Available`
+              : "",
         },
         type: TransactionType.MEMBERSHIP,
         signature: signature,
