@@ -160,7 +160,7 @@ const PackageCard = ({
                 fontFamily: fonts.primary[600],
                 fontSize: 14,
               }}>
-              {convertToRupiah(packageInstallment.next_bill.toString())}
+              {packageInstallment.due_date}
             </Text>
           </View>
         </View>
