@@ -445,7 +445,7 @@ function CheckCardSection({
           return;
         }
 
-        navigation.navigate("Selfie");
+        navigation.navigate("Checkin");
       } catch (err: any) {
         showMessage({
           icon: "warning",
