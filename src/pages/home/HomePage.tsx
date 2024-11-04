@@ -104,9 +104,11 @@ function ListPTSection({
 function GymServiceSection({
   isDarkMode,
   navigation,
+  canBuyMembership,
 }: {
   isDarkMode: boolean;
   navigation: any;
+  canBuyMembership: boolean;
 }) {
   const gymServices = [
     {
@@ -167,6 +169,7 @@ function GymServiceSection({
             images={service.image}
             names={service.name}
             onPress={service.onPress}
+            disabled={service.name === "Membership" ? !canBuyMembership : false}
           />
         ))}
       </ScrollView>
@@ -725,7 +728,11 @@ export const HomePage = ({ navigation }: any) => {
           <Gap height={20} />
           <CarouselSection />
           <Gap height={20} />
-          <GymServiceSection isDarkMode={isDarkMode} navigation={navigation} />
+          <GymServiceSection
+            isDarkMode={isDarkMode}
+            navigation={navigation}
+            canBuyMembership={membership.status !== "freeze_membership"}
+          />
           <Gap height={20} />
           {personalTrainers.length !== 0 && (
             <ListPTSection
@@ -798,11 +805,12 @@ const AvailablePT = ({
   );
 };
 
-const CardMenu = ({ onPress, images, names }: any) => {
+const CardMenu = ({ onPress, images, names, disabled }: any) => {
   const { isDarkMode } = useContext(ThemeContext);
   return (
     <View style={{ marginRight: 14, alignItems: "center" }}>
       <TouchableOpacity
+        disabled={disabled}
         style={styles.containerCardMenu(isDarkMode)}
         onPress={onPress}>
         {images === "who" && (
@@ -880,7 +888,7 @@ const CardInfo = ({
     <TouchableOpacity
       style={styles.containerCardInfo(isDarkMode)}
       onPress={onPress}
-      disabled={status !== "not_buy_package"}>
+      disabled={status !== "not_buy_package" && status === "freeze_membership"}>
       <View style={styles.cardTopCardInfo}>
         <Text style={styles.teksCardInfo(status)}>{message}</Text>
         {status === "not_buy_package" && (
