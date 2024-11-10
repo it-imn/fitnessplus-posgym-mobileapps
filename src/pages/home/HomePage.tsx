@@ -209,7 +209,7 @@ function CarouselSection() {
 
   const updateCurrentSlideIndex = (e: any) => {
     const contentOffsetX = e.nativeEvent.contentOffset.x;
-    const currentIndex = Math.round(contentOffsetX / width);
+    const currentIndex = Math.ceil(contentOffsetX / width);
     setCurrentSlideIndex(currentIndex);
   };
 
