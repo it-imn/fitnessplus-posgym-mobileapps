@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleProp,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
   ViewStyle,
@@ -77,10 +78,21 @@ const ListPT = ({
       <StatusBarComp />
       <Header teks="Personal Trainer" onPress={() => navigation.goBack()} />
       <View style={{ paddingHorizontal: 24 }}>
-        <Input
-          placeholder="Search Personal Trainer"
-          value={search}
+        <TextInput
           onChangeText={setSearch}
+          value={search}
+          placeholder={"Search personal trainer"}
+          placeholderTextColor={colors._grey4}
+          style={{
+            padding: 12,
+            fontSize: 13,
+            fontFamily: fonts.primary[300],
+            backgroundColor: isDarkMode ? colors._black : colors._grey2,
+            borderRadius: 10,
+            color: isDarkMode ? colors._white : colors._black,
+            borderWidth: 0.5,
+            borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+          }}
         />
       </View>
       <Gap height={16} />

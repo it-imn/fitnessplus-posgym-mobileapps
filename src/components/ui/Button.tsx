@@ -31,7 +31,7 @@ import {
   Approval,
   History,
   RightArrowWhite,
-} from "../../assets/index.js";
+} from "../../assets";
 import Gap from "./Gap";
 
 export const Button = ({

@@ -17,14 +17,13 @@ import {
 import { fetchProfile } from "../../services/profile";
 import { logout } from "../../services/auth";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { CompositeScreenProps, Theme, useIsFocused } from "@react-navigation/native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import {
-  Membership,
-  Power,
-  EditPenWhite,
-  EditPen,
-} from "../../assets/index.js";
+  CompositeScreenProps,
+  Theme,
+  useIsFocused,
+} from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Membership, Power, EditPenWhite, EditPen } from "../../assets";
 import Gap from "../../components/ui/Gap";
 import Loading from "../../components/ui/Loading";
 import StatusBarComp from "../../components/ui/StatusBarComp";
@@ -35,7 +34,11 @@ import { TabParamList, RootStackParamList } from "../../lib/routes";
 import { colors, fonts } from "../../lib/utils";
 import { showMessage } from "react-native-flash-message";
 import { fetchContractAgreementView } from "../../services/personal_trainer";
-import { Button, ButtonIconTeks } from "../../components/ui/Button";
+import {
+  Button,
+  ButtonColor,
+  ButtonIconTeks,
+} from "../../components/ui/Button";
 
 const width = Dimensions.get("window").width;
 
@@ -110,6 +113,8 @@ const Profil = ({
   };
 
   const onLogOut = async () => {
+    setModalVisible(false);
+    setIsLoading(true);
     try {
       await logout();
       await removeAllData();
@@ -122,6 +127,7 @@ const Profil = ({
         color: colors._white,
       });
     } finally {
+      setIsLoading(false);
       navigation.replace("LoginPage");
     }
   };
@@ -329,7 +335,9 @@ const Profil = ({
                                 <Text style={styles.textStyle4}>Close</Text>
                             </TouchableOpacity>
                         </View> */}
-            <Button
+            <ButtonColor
+              backColor={colors._blue2}
+              textColor={colors._white}
               teks="Close"
               onPress={() => setModalEditVisible(!modalEditVisible)}
             />

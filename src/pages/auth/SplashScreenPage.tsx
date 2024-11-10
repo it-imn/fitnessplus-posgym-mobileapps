@@ -11,7 +11,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { Logo2, LogoP, SplashImage } from "../../assets/index.js";
+import { Logo2, LogoP, SplashImage } from "../../assets";
 import { offline } from "../../services/auth";
 import { fetchProfile } from "../../services/profile";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";

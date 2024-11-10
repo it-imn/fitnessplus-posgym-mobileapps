@@ -17,7 +17,8 @@ import { IFacility } from "../../lib/definition";
 import { RootStackParamList, TabParamList } from "../../lib/routes";
 import { colors, fonts } from "../../lib/utils";
 import { showMessage } from "react-native-flash-message";
-import { Button } from "../../components/ui/Button";
+import { Button, ButtonColor } from "../../components/ui/Button";
+import Loading from "../../components/ui/Loading";
 
 type TGuarantee = "None" | "ID Card" | "Driver License" | "Passport" | "Other";
 
@@ -29,6 +30,7 @@ const Loaning = ({
   BottomTabScreenProps<TabParamList, "Home">
 >) => {
   const { isDarkMode } = useContext(ThemeContext);
+  const [isLoading, setIsLoading] = useState(false);
   const { code } = route.params;
   const [smallTowel, setSmallTowel] = useState<IFacility>({} as IFacility);
   const [largeTowel, setlargeTowel] = useState<IFacility>({} as IFacility);
@@ -106,6 +108,7 @@ const Loaning = ({
     //   } catch (error) {}
     // }
 
+    setIsLoading(true);
     try {
       // await loanFacility(facility_id, guarantee)
       await checkIn(code);
@@ -136,10 +139,13 @@ const Loaning = ({
       navigation.replace("MainApp");
     } catch (err: any) {
       errorModal(err.message || "An error occured", isDarkMode);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const getFacilities = async () => {
+    setIsLoading(true);
     try {
       const { data } = await fetchFacilites();
       if (data) {
@@ -161,6 +167,8 @@ const Loaning = ({
         backgroundColor: colors._red,
         color: colors._white,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -193,11 +201,11 @@ const Loaning = ({
                   alignContent: "center",
                 }}>
                 <BouncyCheckbox
-                  fillColor={colors._green2}
                   isChecked={isSelectSmallTowel}
                   onPress={() => setIsSelectSmallTowel(!isSelectSmallTowel)}
-                  unFillColor={isDarkMode ? colors._black : colors._grey2}
-                  iconStyle={{ borderColor: colors._green2 }}
+                  fillColor={colors._blue}
+                  unFillColor={isDarkMode ? colors._black : colors._white}
+                  iconImageStyle={{ tintColor: colors._black }}
                 />
                 <Gap width={4} />
                 <Text style={styles.teks1(isDarkMode)}>Small Towel</Text>
@@ -214,11 +222,11 @@ const Loaning = ({
                   alignContent: "center",
                 }}>
                 <BouncyCheckbox
-                  fillColor={colors._green2}
                   isChecked={isSelectLargeTowel}
                   onPress={() => setIsSelectLargeTowel(!isSelectLargeTowel)}
-                  unFillColor={isDarkMode ? colors._black : colors._grey2}
-                  iconStyle={{ borderColor: colors._green2 }}
+                  fillColor={colors._blue}
+                  unFillColor={isDarkMode ? colors._black : colors._white}
+                  iconImageStyle={{ tintColor: colors._black }}
                 />
                 <Gap width={4} />
                 <Text style={styles.teks1(isDarkMode)}>Large Towel</Text>
@@ -235,11 +243,11 @@ const Loaning = ({
                   alignContent: "center",
                 }}>
                 <BouncyCheckbox
-                  fillColor={colors._green2}
                   isChecked={isSelectLocker}
                   onPress={() => setIsSelectLocker(!isSelectLocker)}
-                  unFillColor={isDarkMode ? colors._black : colors._grey2}
-                  iconStyle={{ borderColor: colors._green2 }}
+                  fillColor={colors._blue}
+                  unFillColor={isDarkMode ? colors._black : colors._white}
+                  iconImageStyle={{ tintColor: colors._black }}
                 />
                 <Gap width={4} />
                 <Text style={styles.teks1(isDarkMode)}>Locker</Text>
@@ -311,8 +319,15 @@ const Loaning = ({
           <Gap height={6} /> */}
           {/* <Text style={styles.teks2}>{expireDate.data}</Text> */}
         </View>
-        <Button teks="Save" onPress={onSubmit} />
+        <ButtonColor
+          backColor={colors._blue2}
+          textColor={colors._white}
+          teks="Save"
+          onPress={onSubmit}
+        />
       </View>
+
+      {isLoading && <Loading />}
     </SafeAreaView>
   );
 };

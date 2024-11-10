@@ -9,7 +9,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { IconCash, IconDown, RightArrow } from "../../assets/index.js";
+import { IconCash, IconDown, RightArrow } from "../../assets";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { fetchMembershipPackageDetail } from "../../services/membership";
 import {

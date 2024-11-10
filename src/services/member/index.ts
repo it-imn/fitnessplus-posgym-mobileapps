@@ -45,13 +45,6 @@ const register = async (req: SignUpReq) => {
   if (req.phone !== "") {
     formData.append("phone", req.phone);
   }
-  if (req.identity !== "none") {
-    formData.append("identity", req.identity);
-    formData.append("no_identity", req.no_identity);
-  } else {
-    formData.append("identity", null);
-    formData.append("no_identity", null);
-  }
   formData.append("username", req.username);
   formData.append("password", req.password);
   formData.append("gym_id", req.gym_id);

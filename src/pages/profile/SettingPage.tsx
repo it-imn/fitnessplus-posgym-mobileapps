@@ -11,7 +11,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { ArrowWhite, ArrowBlack, IconTheme } from "../../assets/index.js";
+import { ArrowWhite, ArrowBlack, IconTheme } from "../../assets";
 import { ButtonIconTeks } from "../../components/ui/Button";
 import Gap from "../../components/ui/Gap";
 import StatusBarComp from "../../components/ui/StatusBarComp";

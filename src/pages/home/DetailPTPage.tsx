@@ -11,7 +11,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { ArrowBlack, WhatsApp } from "../../assets/index.js";
+import { ArrowBlack, WhatsApp } from "../../assets";
 import { Theme } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Gap from "../../components/ui/Gap";
@@ -22,7 +22,7 @@ import { RootStackParamList } from "../../lib/routes";
 import { colors, fonts } from "../../lib/utils";
 import { fetchDetailPersonalTrainer } from "../../services/personal_trainer";
 import { showMessage } from "react-native-flash-message";
-import { Button } from "../../components/ui/Button";
+import { Button, ButtonColor } from "../../components/ui/Button";
 
 const width = Dimensions.get("window").width;
 
@@ -158,7 +158,12 @@ const DetailPT = ({
               <Gap height={16} />
             </ScrollView>
           </View>
-          <Button teks="View Package" onPress={() => gotoPackage()} />
+          <ButtonColor
+            teks="View Package"
+            onPress={() => gotoPackage()}
+            backColor={colors._blue2}
+            textColor={colors._white}
+          />
         </View>
       </ImageBackground>
 

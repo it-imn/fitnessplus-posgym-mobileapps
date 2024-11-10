@@ -13,14 +13,13 @@ import { RootStackParamList } from "../../lib/routes";
 import { fonts, colors } from "../../lib/utils";
 import { fetchDetailClass, postBooking } from "../../services/class";
 import { showMessage } from "react-native-flash-message";
-import { Button } from "../../components/ui/Button";
+import { Button, ButtonColor } from "../../components/ui/Button";
 
 const DetailClass = ({
   navigation,
   route,
 }: NativeStackScreenProps<RootStackParamList, "DetailClass">) => {
   const { isDarkMode } = useContext(ThemeContext);
-
   const { id } = route.params;
   //   const [data, setData] = useState([]);
   //   const [modalVisible, setmodalVisible] = useState(false);
@@ -295,7 +294,13 @@ const DetailClass = ({
           </View>
         </ScrollView>
         <Gap height={10} />
-        <Button teks="Book Now" onPress={goPayStd} disabled={isProcessing} />
+        <ButtonColor
+          backColor={colors._blue2}
+          textColor={colors._white}
+          teks="Book Now"
+          onPress={goPayStd}
+          disabled={isProcessing}
+        />
         <Gap height={16} />
         {/* <View
             style={{

@@ -14,8 +14,8 @@ import {
 } from "react-native";
 import { showMessage } from "react-native-flash-message";
 import { useCameraPermission } from "react-native-vision-camera";
-import { ImageSign, LogoP } from "../../assets/index.js";
-import { Button } from "../../components/ui/Button";
+import { ImageSign, LogoP } from "../../assets";
+import { Button, ButtonColor } from "../../components/ui/Button";
 import Gap from "../../components/ui/Gap";
 import { Input, Inputeye } from "../../components/ui/Input";
 import { ThemeContext } from "../../contexts/ThemeContext";
@@ -23,65 +23,46 @@ import { RootStackParamList } from "../../lib/routes";
 import { colors, fonts } from "../../lib/utils";
 import { useModalStore } from "../../stores/useModalStore";
 import { useSignUpStore } from "../../stores/useSignUpStore";
+import { z } from "zod";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const signUpSchema = z.object({
+  name: z.string().min(1, "Name required").max(50, "Name too long"),
+  gender: z.enum(["male", "female", "rather_not_say"]),
+  email: z.string().email("Enter correct email").min(1, "Email required"),
+  phone: z
+    .string()
+    .max(16, "Phone number up to 16 characters")
+    .min(9, "Phone number at least 9 characters"),
+  username: z.string().min(1, "Username required"),
+  password: z.string().min(8, "Password less than 8 characters"),
+});
 
 export const SignUp = ({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, "SignUp">) => {
   const { isDarkMode } = useContext(ThemeContext);
-  const signUpReq = useSignUpStore(state => state.signUpReq);
-  const updateSignUp = useSignUpStore(state => state.update);
+  const { update } = useSignUpStore();
   const { hasPermission, requestPermission } = useCameraPermission();
   const { openModal, closeModal } = useModalStore();
 
-  const onRegister = async () => {
-    let error = [];
-    if (signUpReq.name === "") {
-      error.push("Name required");
-    }
-    // if (name.length > 50) {
-    //   error.push('Name longer than 50 characters');
-    // }
-    if (signUpReq.username === "") {
-      error.push("Username required");
-    }
-    if (signUpReq.username.length > 50) {
-      error.push("Name longer than 50 characters");
-    }
-    if (signUpReq.email === "") {
-      error.push("Email required");
-    }
-    if (!signUpReq.email.includes("@")) {
-      error.push("Enter correct email");
-    }
-    if (signUpReq.phone !== "") {
-      if (signUpReq.phone.length < 9) {
-        error.push("Phone number at least 9 characters");
-      }
-      if (signUpReq.phone.length > 16) {
-        error.push("Phone number up to 16 characters");
-      }
-    }
-    if (signUpReq.identity !== "none") {
-      if (signUpReq.no_identity === "") {
-        error.push("Identity number required");
-      }
-    }
-    if (signUpReq.password === "") {
-      error.push("Password required");
-    }
-    if (signUpReq.password.length < 8) {
-      error.push("Password less than 8 characters");
-    }
-    if (error.length > 0) {
-      showMessage({
-        icon: "warning",
-        message: error[0],
-        type: "default",
-        backgroundColor: colors._red,
-        color: colors._white,
-      });
-      return;
-    }
+  const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      name: "",
+      gender: "rather_not_say",
+      email: "",
+      phone: "",
+      username: "",
+      password: "",
+    },
+  });
+
+  const onRegister = async (values: z.infer<typeof signUpSchema>) => {
+    update({
+      ...values,
+    });
 
     if (!hasPermission) {
       try {
@@ -196,26 +177,56 @@ export const SignUp = ({
           </View>
           <Gap height={40} />
           <ScrollView style={styles.main2}>
-            <Input
-              autoCapitalize="words"
-              placeholder="Full Name"
-              value={signUpReq.name}
-              onChangeText={(value: string) => updateSignUp({ name: value })}
+            <Controller
+              name="name"
+              control={form.control}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder="Full Name"
+                  value={value}
+                  onChangeText={onChange}
+                />
+              )}
             />
+            {form.formState.errors.name && (
+              <Text style={{ color: colors._red, marginTop: 4 }}>
+                {form.formState.errors.name.message}
+              </Text>
+            )}
             <Gap height={20} />
-            <Input
-              placeholder="Email"
-              keyboardType="email-address"
-              value={signUpReq.email}
-              onChangeText={(value: string) => updateSignUp({ email: value })}
+            <Controller
+              name="email"
+              control={form.control}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder="Email"
+                  value={value}
+                  onChangeText={onChange}
+                />
+              )}
             />
+            {form.formState.errors.email && (
+              <Text style={{ color: colors._red, marginTop: 4 }}>
+                {form.formState.errors.email.message}
+              </Text>
+            )}
             <Gap height={20} />
-            <Input
-              placeholder="Phone Number"
-              keyboardType="numeric"
-              value={signUpReq.phone}
-              onChangeText={(value: string) => updateSignUp({ phone: value })}
+            <Controller
+              name="phone"
+              control={form.control}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder="Phone Number"
+                  value={value}
+                  onChangeText={onChange}
+                />
+              )}
             />
+            {form.formState.errors.phone && (
+              <Text style={{ color: colors._red, marginTop: 4 }}>
+                {form.formState.errors.phone.message}
+              </Text>
+            )}
             <Gap height={20} />
             <Text style={styles.teks(isDarkMode)}>Select Gender</Text>
             <View
@@ -224,117 +235,81 @@ export const SignUp = ({
                 overflow: "hidden",
                 backgroundColor: isDarkMode ? colors._black : colors._grey2,
               }}>
-              <Picker
-                selectedValue={signUpReq.gender}
-                style={{
-                  color: isDarkMode ? colors._white : colors._black,
-                  fontSize: 14,
-                  fontFamily: fonts.primary[400],
-                }}
-                itemStyle={{
-                  color: isDarkMode ? colors._white : colors._black,
-                  fontSize: 14,
-                  fontFamily: fonts.primary[400],
-                }}
-                dropdownIconColor={isDarkMode ? colors._white : colors._black}
-                onValueChange={itemValue =>
-                  updateSignUp({ gender: itemValue })
-                }>
-                <Picker.Item
-                  label="Male"
-                  value="male"
-                  style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
-                />
-                <Picker.Item
-                  label="Female"
-                  value="female"
-                  style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
-                />
-                <Picker.Item
-                  label="Rather not say"
-                  value="rather_not_say"
-                  style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
-                />
-              </Picker>
+              <Controller
+                name="gender"
+                control={form.control}
+                render={({ field: { onChange, value } }) => (
+                  <Picker
+                    selectedValue={value}
+                    style={{
+                      color: isDarkMode ? colors._white : colors._black,
+                      fontSize: 14,
+                      fontFamily: fonts.primary[400],
+                    }}
+                    itemStyle={{
+                      color: isDarkMode ? colors._white : colors._black,
+                      fontSize: 14,
+                      fontFamily: fonts.primary[400],
+                    }}
+                    dropdownIconColor={
+                      isDarkMode ? colors._white : colors._black
+                    }
+                    onValueChange={onChange}>
+                    <Picker.Item
+                      label="Male"
+                      value="male"
+                      style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
+                    />
+                    <Picker.Item
+                      label="Female"
+                      value="female"
+                      style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
+                    />
+                    <Picker.Item
+                      label="Rather not say"
+                      value="rather_not_say"
+                      style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
+                    />
+                  </Picker>
+                )}
+              />
             </View>
             <Gap height={20} />
-            <Text style={styles.teks(isDarkMode)}>Select ID Card</Text>
-            <View
-              style={{
-                borderRadius: 10,
-                overflow: "hidden",
-                backgroundColor: isDarkMode ? colors._black : colors._grey2,
-              }}>
-              <Picker
-                selectedValue={signUpReq.identity}
-                style={{
-                  color: isDarkMode ? colors._white : colors._black,
-                  fontSize: 14,
-                  fontFamily: fonts.primary[400],
-                }}
-                itemStyle={{
-                  color: isDarkMode ? colors._white : colors._black,
-                  fontSize: 14,
-                  fontFamily: fonts.primary[400],
-                }}
-                dropdownIconColor={isDarkMode ? colors._white : colors._black}
-                onValueChange={itemValue =>
-                  updateSignUp({ identity: itemValue })
-                }>
-                <Picker.Item
-                  label="None"
-                  value="none"
-                  style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
-                />
-                <Picker.Item
-                  label="KTP"
-                  value="ktp"
-                  style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
-                />
-                <Picker.Item
-                  label="Driver license"
-                  value="sim"
-                  style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
-                />
-                <Picker.Item
-                  label="Passport"
-                  value="passport"
-                  style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
-                />
-              </Picker>
-            </View>
-            {signUpReq.identity !== "none" && (
-              <>
-                <Gap height={20} />
+            <Controller
+              name="username"
+              control={form.control}
+              render={({ field: { onChange, value } }) => (
                 <Input
-                  placeholder="Identity Number"
-                  maxLength={16}
-                  value={signUpReq.no_identity}
-                  keyboardType="numeric"
-                  onChangeText={(value: string) =>
-                    updateSignUp({ no_identity: value })
-                  }
+                  placeholder="Username"
+                  value={value}
+                  onChangeText={onChange}
                 />
-              </>
+              )}
+            />
+            {form.formState.errors.username && (
+              <Text style={{ color: colors._red, marginTop: 4 }}>
+                {form.formState.errors.username.message}
+              </Text>
             )}
             <Gap height={20} />
-            <Input
-              placeholder="Username"
-              value={signUpReq.username}
-              onChangeText={(value: string) =>
-                updateSignUp({ username: value })
-              }
-            />
-            <Gap height={20} />
-            <Inputeye
-              placeholder="Password"
-              value={signUpReq.password}
-              onChangeText={(value: string) =>
-                updateSignUp({ password: value })
-              }
+            <Controller
+              name="password"
+              control={form.control}
+              render={({ field: { onChange, value } }) => (
+                <Inputeye
+                  placeholder="Password"
+                  value={value}
+                  onChangeText={onChange}
+                />
+              )}
             />
             <Gap height={25} />
-            <Button teks="Continue" onPress={onRegister} />
+            <ButtonColor
+              teks="Continue"
+              backColor={colors._blue2}
+              textColor={colors._white}
+              onPress={form.handleSubmit(onRegister)}
+            />
             <Gap height={64} />
           </ScrollView>
         </ImageBackground>

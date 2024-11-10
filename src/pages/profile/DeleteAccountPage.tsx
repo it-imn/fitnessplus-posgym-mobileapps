@@ -20,12 +20,14 @@ import { RootStackParamList } from "../../lib/routes";
 import { colors, fonts } from "../../lib/utils";
 import { deleteAccount } from "../../services/auth";
 import { ButtonColor } from "../../components/ui/Button";
+import Loading from "../../components/ui/Loading";
 
 const DeleteAccount = ({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, "DeleteAccount">) => {
   const { isDarkMode } = useContext(ThemeContext);
   const [agree, setAgree] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onDeleteAccount = async () => {
     if (!agree) {
@@ -39,6 +41,7 @@ const DeleteAccount = ({
       return;
     }
 
+    setIsLoading(true);
     try {
       await deleteAccount();
       await removeAllData();
@@ -60,6 +63,8 @@ const DeleteAccount = ({
         backgroundColor: colors._red,
         color: colors._white,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -113,11 +118,11 @@ const DeleteAccount = ({
               justifyContent: "flex-start",
             }}>
             <BouncyCheckbox
-              fillColor={colors._blue2}
               isChecked={!agree}
               onPress={() => setAgree(!agree)}
+              fillColor={colors._blue}
               unFillColor={isDarkMode ? colors._black : colors._white}
-              iconStyle={{ borderColor: colors._blue2 }}
+              iconImageStyle={{ tintColor: colors._black }}
             />
             <Gap width={8} />
             <Text style={styles.text(isDarkMode)}>
@@ -135,6 +140,8 @@ const DeleteAccount = ({
           onPress={onDeleteAccount}
         />
       </View>
+
+      {isLoading && <Loading />}
     </SafeAreaView>
   );
 };

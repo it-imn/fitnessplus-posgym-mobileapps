@@ -18,7 +18,7 @@ import { ThemeContext } from "../../contexts/ThemeContext";
 import { RootStackParamList, TabParamList } from "../../lib/routes";
 import { colors, convertToRupiah, fonts } from "../../lib/utils";
 import { showMessage } from "react-native-flash-message";
-import { Button } from "../../components/ui/Button";
+import { Button, ButtonColor } from "../../components/ui/Button";
 
 const WillTransactionCash = ({
   navigation,
@@ -243,7 +243,12 @@ const WillTransactionCash = ({
       </View>
       <View style={{ flex: 1 }} />
       <View style={{ padding: 24 }}>
-        <Button teks="Buy Now" onPress={gotoWaitingPage} />
+        <ButtonColor
+          teks="Buy Now"
+          onPress={gotoWaitingPage}
+          backColor={colors._blue2}
+          textColor={colors._white}
+        />
       </View>
     </SafeAreaView>
   );

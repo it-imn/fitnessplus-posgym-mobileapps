@@ -8,7 +8,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { ImageNotFound } from "../../assets/index.js";
+import { ImageNotFound } from "../../assets";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import { ThemeType } from "../../lib/definition";
 import { fonts, colors } from "../../lib/utils";

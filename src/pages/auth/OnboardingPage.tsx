@@ -13,7 +13,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { Onboarding1, Onboarding2, Onboarding3 } from "../../assets/index.js";
+import { Onboarding1, Onboarding2, Onboarding3 } from "../../assets";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Gap from "../../components/ui/Gap";
 import { RootStackParamList } from "../../lib/routes";

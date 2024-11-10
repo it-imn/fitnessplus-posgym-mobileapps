@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Modal,
   SafeAreaView,
@@ -25,6 +25,8 @@ import { RootStackParamList } from "../../lib/routes";
 import { colors, convertToRupiah, fonts } from "../../lib/utils";
 import { fetchPersonalTrainerDetailPackage } from "../../services/personal_trainer";
 import { showMessage } from "react-native-flash-message";
+import { ThemeContext } from "../../contexts/ThemeContext";
+import Loading from "../../components/ui/Loading";
 
 const DetailPackageTrainer = ({
   navigation,
@@ -35,6 +37,8 @@ const DetailPackageTrainer = ({
   //   const [modalDp, setModalDp] = useState(false);
   //   const [labelDp, setLabelDp] = useState('Select full payment');
   //   const [down_pay, setdown_pay] = useState('');
+  const { isDarkMode } = useContext(ThemeContext);
+  const [isLoading, setIsLoading] = useState(false);
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [signature, setSignature] = useState("");
   const [modalTtd, setModalTtd] = useState(false);
@@ -98,6 +102,7 @@ const DetailPackageTrainer = ({
   };
 
   const getPackage = async () => {
+    setIsLoading(true);
     try {
       const { data } = await fetchPersonalTrainerDetailPackage(id);
       if (data) {
@@ -137,6 +142,8 @@ const DetailPackageTrainer = ({
         backgroundColor: colors._red,
         color: colors._white,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -146,110 +153,103 @@ const DetailPackageTrainer = ({
   }, []);
 
   return (
-    <LinearGradient
-      colors={[colors._green2, colors._blue2]}
-      start={{ x: 0, y: 1 }}
-      end={{ x: 1, y: 0 }}
-      style={{ flex: 1 }}>
-      <SafeAreaView style={styles.container}>
-        <StatusBarComp />
-        <Header teks="Package PT" onPress={() => navigation.goBack()} />
-        <View style={{ paddingHorizontal: 24, flex: 1, paddingBottom: 24 }}>
-          <Text style={styles.teks}>
-            Package Name : {packagePT.package_name}
-          </Text>
-          <Text style={styles.teks}>
-            Total Price : {convertToRupiah(packagePT.total.toString())}
-          </Text>
-          <Text style={styles.teks}>
-            Base Price : {convertToRupiah(packagePT.base_price.toString())}
-          </Text>
-          <Text style={styles.teks}>Session : {packagePT.session} Session</Text>
-          {feature !== "" && (
-            <>
-              <Text style={styles.teks}>Feature :</Text>
+    <SafeAreaView style={styles.container(isDarkMode)}>
+      <StatusBarComp />
+      <Header teks="Package PT" onPress={() => navigation.goBack()} />
+      <View style={{ paddingHorizontal: 24, flex: 1, paddingBottom: 24 }}>
+        <Text style={styles.teks(isDarkMode)}>Package Name : {packagePT.package_name}</Text>
+        <Text style={styles.teks(isDarkMode)}>
+          Total Price : {convertToRupiah(packagePT.total.toString())}
+        </Text>
+        <Text style={styles.teks(isDarkMode)}>
+          Base Price : {convertToRupiah(packagePT.base_price.toString())}
+        </Text>
+        <Text style={styles.teks(isDarkMode)}>Session : {packagePT.session} Session</Text>
+        {feature !== "" && (
+          <>
+            <Text style={styles.teks(isDarkMode)}>Feature :</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}>
               <View
                 style={{
-                  flexDirection: "row",
+                  backgroundColor: colors._blue,
                   alignItems: "center",
+                  justifyContent: "center",
+                  padding: 4,
+                  borderRadius: 4,
                 }}>
-                <View
-                  style={{
-                    backgroundColor: colors._blue,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: 4,
-                    borderRadius: 4,
-                  }}>
-                  <Text style={styles.teks6}>{feature}</Text>
-                </View>
-              </View>
-            </>
-          )}
-          <View style={{ flex: 1 }} />
-          <View
-            style={{
-              flexDirection: "row",
-              alignContent: "center",
-              justifyContent: "flex-start",
-            }}>
-            <BouncyCheckbox
-              isChecked={toggleCheckBox}
-              onPress={() => setModalTtd(true)}
-              fillColor={colors._white}
-              unFillColor={colors._blue}
-              iconImageStyle={{ tintColor: colors._blue }}
-            />
-            <Gap width={8} />
-            <Text style={styles.teks4}>I agree to </Text>
-            <TouchableOpacity onPress={gotoTerm}>
-              <Text style={styles.teks4}>
-                Terms of Service and Privacy Policy
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <Gap height={16} />
-          {/* <View style={{ flex: 1 }} /> */}
-          <Gap height={16} />
-          <ButtonColor
-            disabled={!toggleCheckBox}
-            backColor={colors._white}
-            textColor={colors._blue2}
-            teks="Next"
-            onPress={gotoVoucher}
-          />
-        </View>
-        {modalTtd && (
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={modalTtd}
-            onRequestClose={() => {
-              setModalTtd(false);
-            }}>
-            <View style={styles.mainModal}>
-              <View style={styles.subModal}>
-                <View
-                  style={{
-                    height: "100%",
-                    width: "100%",
-                    position: "relative",
-                  }}>
-                  <SignatureScreen
-                    // ref={ref}
-                    onEnd={handleEnd}
-                    onOK={handleOK}
-                    onEmpty={handleEmpty}
-                    onClear={handleClear}
-                    onGetData={handleData}
-                    autoClear={false}
-                  />
-                </View>
+                <Text style={styles.teks6(isDarkMode)}>{feature}</Text>
               </View>
             </View>
-          </Modal>
+          </>
         )}
-        {/* <Modal
+        <View style={{ flex: 1 }} />
+        <View
+          style={{
+            flexDirection: "row",
+            alignContent: "center",
+            justifyContent: "flex-start",
+          }}>
+          <BouncyCheckbox
+            isChecked={toggleCheckBox}
+            onPress={() => setModalTtd(true)}
+            fillColor={colors._blue}
+            unFillColor={isDarkMode ? colors._black : colors._white}
+            iconImageStyle={{ tintColor: colors._black }}
+          />
+          <Gap width={8} />
+          <Text style={styles.teks4(isDarkMode)}>I agree to </Text>
+          <TouchableOpacity onPress={gotoTerm}>
+            <Text style={styles.teks4(isDarkMode)}>
+              Terms of Service and Privacy Policy
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <Gap height={16} />
+        {/* <View style={{ flex: 1 }} /> */}
+        <Gap height={16} />
+        <ButtonColor
+          disabled={!toggleCheckBox}
+          backColor={colors._blue2}
+          textColor={colors._white}
+          teks="Next"
+          onPress={gotoVoucher}
+        />
+      </View>
+      {modalTtd && (
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalTtd}
+          onRequestClose={() => {
+            setModalTtd(false);
+          }}>
+          <View style={styles.mainModal}>
+            <View style={styles.subModal}>
+              <View
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  position: "relative",
+                }}>
+                <SignatureScreen
+                  // ref={ref}
+                  onEnd={handleEnd}
+                  onOK={handleOK}
+                  onEmpty={handleEmpty}
+                  onClear={handleClear}
+                  onGetData={handleData}
+                  autoClear={false}
+                />
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+      {/* <Modal
         animationType="fade"
         transparent={true}
         visible={modalDp}
@@ -269,7 +269,7 @@ const DetailPackageTrainer = ({
                     key={data.id}
                     style={styles.buttonDrop}
                     onPress={() => selectDp(params)}>
-                    <Text style={styles.teks2}>{data.label}</Text>
+                    <Text style={styles.teks2(isDarkMode)}>{data.label}</Text>
                   </TouchableOpacity>
                 );
               })}
@@ -277,38 +277,39 @@ const DetailPackageTrainer = ({
           </View>
         </View>
       </Modal> */}
-      </SafeAreaView>
-    </LinearGradient>
+      {isLoading && <Loading />}
+    </SafeAreaView>
   );
 };
 
 const styles = {
-  container: {
+  container: (isDarkMode: boolean) => ({
     flex: 1,
-  },
-  teks: {
+    backgroundColor: isDarkMode ? colors._black2 : colors._white,
+  }),
+  teks: (isDarkMode: boolean) => ({
     fontSize: 14,
     fontFamily: fonts.primary[400],
-    color: colors._white,
+    color: isDarkMode ? colors._white : colors._black,
     marginTop: 12,
-  },
-  teks2: {
+  }),
+  teks2: (isDarkMode: boolean) => ({
     fontSize: 14,
     fontFamily: fonts.primary[300],
-    color: colors._white,
-  },
-  teks3: {
-    color: colors._white,
+    color: isDarkMode ? colors._white : colors._black,
+  }),
+  teks3: (isDarkMode: boolean) => ({
+    color: isDarkMode ? colors._grey4 : colors._grey3,
     fontSize: 12,
     fontFamily: fonts.primary[600],
     textAlign: "center",
-  } as StyleProp<ViewStyle>,
-  teks4: {
+  }) as StyleProp<ViewStyle>,
+  teks4: (isDarkMode: boolean) => ({
     fontSize: 12,
     fontFamily: fonts.primary[300],
-    color: colors._white,
+    color: isDarkMode ? colors._white : colors._black,
     lineHeight: 20,
-  },
+  }),
   button: {
     backgroundColor: colors._white,
     borderRadius: 8,
@@ -330,12 +331,12 @@ const styles = {
     justifyContent: "center",
     backgroundColor: colors._black3,
   },
-  modalView: {
-    backgroundColor: colors._white,
+  modalView: (isDarkMode: boolean) => ({
+    backgroundColor: isDarkMode ? colors._black : colors._grey2,
     padding: 12,
     width: "90%",
     borderRadius: 8,
-  },
+  }),
   buttonDrop: {
     padding: 8,
   },
@@ -364,12 +365,12 @@ const styles = {
     position: "relative",
     height: 400,
   } as StyleProp<ViewStyle>,
-  teks6: {
+  teks6: (isDarkMode: boolean) => ({
     fontSize: 12,
     fontFamily: fonts.primary[400],
-    color: colors._white,
+    color: isDarkMode ? colors._black : colors._white,
     lineHeight: 20,
-  },
+  }),
 };
 
 export default DetailPackageTrainer;

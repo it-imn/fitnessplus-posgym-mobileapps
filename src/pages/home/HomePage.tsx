@@ -653,6 +653,7 @@ export const HomePage = ({ navigation }: any) => {
   };
 
   const getPersonalTrainers = async () => {
+    setIsLoading(true);
     try {
       const { data } = await fetchPersonalTrainers();
       if (data) {
@@ -666,6 +667,8 @@ export const HomePage = ({ navigation }: any) => {
         backgroundColor: colors._red,
         color: colors._white,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 

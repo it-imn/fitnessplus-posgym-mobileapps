@@ -187,7 +187,7 @@ export interface IMembershipPackage {
   admin_id?: number;
   branch_id?: number;
   name: string;
-  periode: number;
+  periode: string;
   desc?: string;
   discount_percent: number;
   discount_value: number;

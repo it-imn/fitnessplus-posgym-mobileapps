@@ -1,13 +1,13 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useContext } from "react";
 import { SafeAreaView, Text } from "react-native";
-import { IconSuccess } from "../../assets/index.js";
+import { IconSuccess } from "../../assets";
 import Gap from "../../components/ui/Gap";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import { ThemeType } from "../../lib/definition";
 import { RootStackParamList } from "../../lib/routes";
 import { colors, fonts } from "../../lib/utils";
-import { Button } from "../../components/ui/Button";
+import { Button, ButtonColor } from "../../components/ui/Button";
 
 export const SignUpSuccess = ({
   navigation,
@@ -44,7 +44,9 @@ export const SignUpSuccess = ({
         Your register was successful. Login through the button below.
       </Text>
       <Gap height={24} />
-      <Button
+      <ButtonColor
+        backColor={colors._blue2}
+        textColor={colors._white}
         teks="Go To Login"
         onPress={() => navigation.replace("LoginPage")}
       />

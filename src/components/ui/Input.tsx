@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import { colors, fonts } from "../../lib/utils";
-import { EyeWhite, EyeSeeWhite, Eye, EyeSee } from "../../assets/index.js";
+import { EyeWhite, EyeSeeWhite, Eye, EyeSee } from "../../assets";
 
 export const Input = ({
   placeholder,
@@ -121,6 +121,8 @@ const styles = {
     backgroundColor: isDarkMode ? colors._black : colors._grey2,
     borderRadius: 10,
     color: isDarkMode ? colors._white : colors._black,
+    borderWidth: 0.5,
+    borderColor: isDarkMode ? colors._grey4 : colors._grey3,
   }),
   teks2: (isDarkMode: boolean) => ({
     color: isDarkMode ? colors._white : colors._black,

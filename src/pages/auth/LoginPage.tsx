@@ -13,66 +13,58 @@ import {
   View,
 } from "react-native";
 import { showMessage } from "react-native-flash-message";
-import { LogoP, ImageSign } from "../../assets/index.js";
+import { LogoP, ImageSign } from "../../assets";
 import Gap from "../../components/ui/Gap";
 import { storeToken, storeUser } from "../../lib/local-storage";
 import { RootStackParamList } from "../../lib/routes";
 import { colors, fonts } from "../../lib/utils";
 import { login } from "../../services/auth";
 import { Input, Inputeye } from "../../components/ui/Input";
-import { Button } from "../../components/ui/Button";
+import { Button, ButtonColor } from "../../components/ui/Button";
 import Loading from "../../components/ui/Loading";
 import { useSignUpStore } from "../../stores/useSignUpStore";
+import { z } from "zod";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const loginSchema = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
 
 export const LoginPage = ({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, "LoginPage">) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { reset } = useSignUpStore();
 
-  const onLogin = async () => {
-    setLoading(true);
-    let error = [];
-    if (username === "") {
-      error.push("Username required");
-    }
-    if (password === "") {
-      error.push("Password required");
-    }
-    if (password.length < 8) {
-      error.push("Password less than 8 characters");
-    }
-    if (error.length > 0) {
-      setLoading(false);
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  const onLogin = async (values: z.infer<typeof loginSchema>) => {
+    setIsLoading(true);
+    try {
+      const { data } = await login(values.username, values.password);
+
+      await storeToken(data.token);
+      await storeUser(data.user);
+
+      navigation.replace("MainApp");
+    } catch (err: any) {
       showMessage({
+        message: err.message || "An error occurred",
+        type: "warning",
         icon: "warning",
-        message: error[0],
-        type: "default",
         backgroundColor: colors._red,
         color: colors._white,
       });
-    } else {
-      try {
-        const { data } = await login(username, password);
-
-        await storeToken(data.token);
-        await storeUser(data.user);
-
-        setLoading(false);
-
-        navigation.replace("MainApp");
-      } catch (err: any) {
-        setLoading(false);
-        showMessage({
-          message: err.message || "An error occurred",
-          type: "warning",
-          icon: "warning",
-          backgroundColor: colors._red,
-          color: colors._white,
-        });
-      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -141,19 +133,41 @@ export const LoginPage = ({
               </View>
               <Gap height={40} />
               <View style={styles.main2}>
-                <Input
-                  placeholder="Username"
-                  autoCapitalize="none"
-                  maxLength={200}
-                  value={username}
-                  onChangeText={(value: string) => setUsername(value)}
+                <Controller
+                  name="username"
+                  control={form.control}
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      placeholder="Username"
+                      autoCapitalize="none"
+                      maxLength={200}
+                      value={value}
+                      onChangeText={onChange}
+                    />
+                  )}
                 />
+                {form.formState.errors.username && (
+                  <Text style={{ color: colors._red, marginTop: 4 }}>
+                    {form.formState.errors.username.message}
+                  </Text>
+                )}
                 <Gap height={20} />
-                <Inputeye
-                  placeholder="Password"
-                  value={password}
-                  onChangeText={(value: string) => setPassword(value)}
+                <Controller
+                  name="password"
+                  control={form.control}
+                  render={({ field: { onChange, value } }) => (
+                    <Inputeye
+                      placeholder="Password"
+                      value={value}
+                      onChangeText={onChange}
+                    />
+                  )}
                 />
+                {form.formState.errors.password && (
+                  <Text style={{ color: colors._red, marginTop: 4 }}>
+                    {form.formState.errors.password.message}
+                  </Text>
+                )}
                 {/* <Gap height={12} />
                 <TouchableOpacity
                   style={{alignItems: 'flex-end'}}
@@ -168,7 +182,12 @@ export const LoginPage = ({
                   </Text>
                 </TouchableOpacity> */}
                 <Gap height={30} />
-                <Button teks="Login" onPress={onLogin} disabled={false} />
+                <ButtonColor
+                  teks="Login"
+                  backColor={colors._blue2}
+                  textColor={colors._white}
+                  onPress={form.handleSubmit(onLogin)}
+                />
                 <Gap height={30} />
                 <View
                   style={{
@@ -262,19 +281,41 @@ export const LoginPage = ({
               </View>
               <Gap height={40} />
               <View style={styles.main2}>
-                <Input
-                  placeholder="Username"
-                  autoCapitalize="none"
-                  maxLength={200}
-                  value={username}
-                  onChangeText={(value: string) => setUsername(value)}
+                <Controller
+                  name="username"
+                  control={form.control}
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      placeholder="Username"
+                      autoCapitalize="none"
+                      maxLength={200}
+                      value={value}
+                      onChangeText={onChange}
+                    />
+                  )}
                 />
+                {form.formState.errors.username && (
+                  <Text style={{ color: colors._red, marginTop: 4 }}>
+                    {form.formState.errors.username.message}
+                  </Text>
+                )}
                 <Gap height={20} />
-                <Inputeye
-                  placeholder="Password"
-                  value={password}
-                  onChangeText={(value: string) => setPassword(value)}
+                <Controller
+                  name="password"
+                  control={form.control}
+                  render={({ field: { onChange, value } }) => (
+                    <Inputeye
+                      placeholder="Password"
+                      value={value}
+                      onChangeText={onChange}
+                    />
+                  )}
                 />
+                {form.formState.errors.password && (
+                  <Text style={{ color: colors._red, marginTop: 4 }}>
+                    {form.formState.errors.password.message}
+                  </Text>
+                )}
                 {/* <Gap height={12} />
                 <TouchableOpacity
                   style={{alignItems: 'flex-end'}}
@@ -289,7 +330,12 @@ export const LoginPage = ({
                   </Text>
                 </TouchableOpacity> */}
                 <Gap height={30} />
-                <Button teks="Login" onPress={onLogin} disabled={false} />
+                <ButtonColor
+                  teks="Login"
+                  backColor={colors._blue2}
+                  textColor={colors._white}
+                  onPress={form.handleSubmit(onLogin)}
+                />
                 <Gap height={30} />
                 <View
                   style={{
@@ -362,7 +408,7 @@ export const LoginPage = ({
         </ScrollView>
       </SafeAreaView>
 
-      {loading && <Loading />}
+      {isLoading && <Loading />}
     </>
   );
 };

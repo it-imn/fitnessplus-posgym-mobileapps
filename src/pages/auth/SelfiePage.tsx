@@ -9,12 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import {
-  EditPenWhite,
-  EditPen,
-  ArrowWhite,
-  ArrowBlack,
-} from "../../assets/index.js";
+import { EditPenWhite, EditPen, ArrowWhite, ArrowBlack } from "../../assets";
 import StatusBarComp from "../../components/ui/StatusBarComp";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import { useIsForeground } from "../../hooks/useIsForeground";
@@ -24,7 +19,7 @@ import { colors, fonts } from "../../lib/utils";
 import { useSignUpStore } from "../../stores/useSignUpStore";
 import { useCameraDevice, PhotoFile, Camera } from "react-native-vision-camera";
 import { showMessage } from "react-native-flash-message";
-import { Button } from "../../components/ui/Button";
+import { Button, ButtonColor } from "../../components/ui/Button";
 
 const Selfie = ({
   navigation,
@@ -249,7 +244,9 @@ const Selfie = ({
           left: 16,
           right: 16,
         }}>
-        <Button
+        <ButtonColor
+          backColor={colors._blue2}
+          textColor={colors._white}
           onPress={() => onTakePicture()}
           teks={photo ? "Next" : "Take Picture"}
         />

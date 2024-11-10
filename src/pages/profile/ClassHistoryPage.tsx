@@ -47,16 +47,13 @@ export const ClassHistory = ({
   const [reason, setReason] = React.useState<string>("");
 
   const getBookingHistory = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-
       const { data } = await fetchBookingHistory();
       if (data) {
         setBookingHistory(data);
         console.log(bookingHistory.length);
       }
-
-      setIsLoading(false);
     } catch (err: any) {
       showMessage({
         icon: "warning",
@@ -65,25 +62,24 @@ export const ClassHistory = ({
         backgroundColor: colors._red,
         color: colors._white,
       });
+    } finally {
       setIsLoading(false);
     }
   };
 
   const onCancel = async () => {
     console.log(cancelClass);
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-
       const { data } = await cancelBooking(cancelClass.id!, reason);
       if (data) {
         setCancelClass({ id: null, name: null });
         setIsViewModal(false);
         getBookingHistory();
       }
-
-      setIsLoading(false);
     } catch (err: any) {
       errorModal(err.message || "An error occured", isDarkMode);
+    } finally {
       setIsLoading(false);
     }
   };

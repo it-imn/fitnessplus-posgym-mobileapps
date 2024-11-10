@@ -24,6 +24,7 @@ import { RootStackParamList } from "../../lib/routes";
 import { colors, fonts } from "../../lib/utils";
 import { checkVoucher } from "../../services/membership";
 import { showMessage } from "react-native-flash-message";
+import { ButtonColor } from "../../components/ui/Button";
 
 const Voucher = ({
   navigation,
@@ -387,25 +388,17 @@ const Voucher = ({
             />
           </View>
           <Gap width={10} />
-          <TouchableOpacity
-            style={{ justifyContent: "flex-end" }}
-            onPress={claimVoucher}>
-            <LinearGradient
-              colors={[colors._green2, colors._blue2]}
-              start={{ x: 0, y: 1 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.btnCheck}>
-              <Text
-                style={{
-                  color: colors._white,
-                  fontSize: 14,
-                  fontFamily: fonts.primary[400],
-                  textAlign: "center",
-                }}>
-                Use
-              </Text>
-            </LinearGradient>
-          </TouchableOpacity>
+          <View
+            style={{
+              justifyContent: "flex-end",
+            }}>
+            <ButtonColor
+              teks="Use"
+              onPress={claimVoucher}
+              backColor={colors._blue2}
+              textColor={colors._white}
+            />
+          </View>
         </View>
         <Gap height={4} />
         {/* {statusCode !== '' && (

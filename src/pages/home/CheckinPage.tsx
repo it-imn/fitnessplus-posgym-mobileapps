@@ -26,6 +26,7 @@ import {
 } from "react-native-vision-camera";
 import { useIsForeground } from "../../hooks/useIsForeground";
 import { ArrowBlack, ArrowWhite } from "../../assets";
+import Loading from "../../components/ui/Loading";
 
 const Checkin = ({
   navigation,
@@ -33,6 +34,7 @@ const Checkin = ({
   NativeStackScreenProps<RootStackParamList, "Checkin">,
   BottomTabScreenProps<TabParamList, "Home">
 >) => {
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const { isDarkMode } = useContext(ThemeContext);
   const { openModal, closeModal } = useModalStore();
   const device = useCameraDevice("back");
@@ -79,6 +81,7 @@ const Checkin = ({
       return;
     }
 
+    setIsLoading(true);
     try {
       // const {status, message} = await checkIn(code);
       // //   Toaster(status, 'success');
@@ -140,9 +143,10 @@ const Checkin = ({
                     borderRadius: 8,
                   }}
                   onPress={async () => {
+                    closeModal();
+                    setIsLoading(true);
                     try {
                       await checkIn(code);
-                      closeModal();
                       showMessage({
                         message: "Checkout Success",
                         type: "success",
@@ -152,7 +156,6 @@ const Checkin = ({
                       });
                       navigation.navigate("Home");
                     } catch (error: any) {
-                      closeModal();
                       showMessage({
                         message: error.message || "An error occured",
                         type: "warning",
@@ -160,6 +163,8 @@ const Checkin = ({
                         backgroundColor: colors._red,
                         color: colors._white,
                       });
+                    } finally {
+                      setIsLoading(false);
                     }
                   }}>
                   <Text
@@ -185,6 +190,8 @@ const Checkin = ({
         backgroundColor: colors._red,
         color: colors._white,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -236,6 +243,8 @@ const Checkin = ({
         audio={false}
         codeScanner={codeScanner}
       />
+
+      {isLoading && <Loading />}
     </SafeAreaView>
   );
 };

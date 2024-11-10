@@ -22,7 +22,7 @@ import { RootStackParamList } from "../../lib/routes";
 import { colors, fonts } from "../../lib/utils";
 import { register } from "../../services/member";
 import { useSignUpStore } from "../../stores/useSignUpStore";
-import { Button } from "../../components/ui/Button";
+import { Button, ButtonColor } from "../../components/ui/Button";
 import { showMessage } from "react-native-flash-message";
 import Header from "../../components/ui/Header";
 
@@ -113,21 +113,6 @@ const SignConfirmation = ({
               <Text style={styles.teks(isDarkMode)}>{signUpReq.phone}</Text>
               <Gap height={20} />
 
-              <Text style={styles.teks2(isDarkMode)}>ID Card</Text>
-              <Gap height={4} />
-              <Text style={styles.teks(isDarkMode)}>
-                {`${
-                  signUpReq.identity === "sim"
-                    ? "SIM - "
-                    : signUpReq.identity === "ktp"
-                    ? "KTP - "
-                    : signUpReq.identity === "passport"
-                    ? "Passport  - "
-                    : "None "
-                }${signUpReq.no_identity}`}
-              </Text>
-              <Gap height={20} />
-
               <Text style={styles.teks2(isDarkMode)}>Password</Text>
               <Gap height={4} />
               <TouchableOpacity onPress={onHide}>
@@ -184,11 +169,9 @@ const SignConfirmation = ({
                 <BouncyCheckbox
                   isChecked={signUpReq.term}
                   onPress={() => updateSignUp({ term: !signUpReq.term })}
-                  fillColor={colors._blue2}
-                  unFillColor={colors._white}
-                  iconStyle={{
-                    borderColor: colors._blue2,
-                  }}
+                  fillColor={colors._blue}
+                  unFillColor={isDarkMode ? colors._black : colors._white}
+                  iconImageStyle={{ tintColor: colors._black }}
                 />
                 <Gap width={8} />
                 <Text style={styles.font6(isDarkMode)}>I agree to </Text>
@@ -202,7 +185,9 @@ const SignConfirmation = ({
               <Gap height={20} />
             </View>
           </ScrollView>
-          <Button
+          <ButtonColor
+            backColor={colors._blue2}
+            textColor={colors._white}
             disabled={!signUpReq.term}
             teks="Confirm Registration"
             onPress={() => setModalVisible(!modalVisible)}
@@ -242,8 +227,8 @@ const SignConfirmation = ({
             </View>
           </View>
         </Modal>
+        {isLoading && <Loading />}
       </SafeAreaView>
-      {isLoading && <Loading />}
     </>
   );
 };

@@ -1,11 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import {
+  FlatList,
+  Image,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleProp,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
   ViewStyle,
@@ -22,12 +25,15 @@ import { colors, convertToRupiah, fonts } from "../../lib/utils";
 import { fetchMembershipPackages } from "../../services/membership";
 import { showMessage } from "react-native-flash-message";
 import { Button } from "../../components/ui/Button";
+import { ThemeContext } from "../../contexts/ThemeContext";
+import StatusBarComp from "../../components/ui/StatusBarComp";
 
 const Membership = ({ navigation }: any) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [packages, setPackages] = React.useState<IMembershipPackage[]>([]);
   const [search, setSearch] = React.useState("");
   const [debouncedText] = useDebounce(search, 500);
+  const { isDarkMode } = useContext(ThemeContext);
 
   const getPackage = async (token: CancelToken) => {
     setIsLoading(true);
@@ -62,107 +68,191 @@ const Membership = ({ navigation }: any) => {
   }, [debouncedText]);
 
   return (
-    <LinearGradient
-      colors={[colors._green2, colors._blue2]}
-      start={{ x: 0, y: 1 }}
-      end={{ x: 1, y: 0 }}
-      style={styles.container}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <StatusBar
-          barStyle="dark-content"
-          hidden={false}
-          backgroundColor={colors._blue2}
-          translucent={false}
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: isDarkMode ? colors._black2 : colors._white,
+      }}>
+      <StatusBarComp />
+      <Header teks="Membership" onPress={() => navigation.goBack()} />
+      <View style={{ paddingHorizontal: 20 }}>
+        <TextInput
+          onChangeText={setSearch}
+          value={search}
+          placeholder={"Search membership"}
+          placeholderTextColor={colors._grey4}
+          style={{
+            padding: 12,
+            fontSize: 13,
+            fontFamily: fonts.primary[300],
+            backgroundColor: isDarkMode ? colors._black : colors._grey2,
+            borderRadius: 10,
+            color: isDarkMode ? colors._white : colors._black,
+            borderWidth: 0.5,
+            borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+          }}
         />
-        <Header teks="Membership" onPress={() => navigation.goBack()} />
-        <View style={{ flex: 1, paddingHorizontal: 20 }}>
-          <Input
-            placeholder="Search Membership"
-            value={search}
-            onChangeText={setSearch}
-          />
-          <Gap height={16} />
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {packages.map((data: IMembershipPackage) => {
-              return (
-                <ItemMember
-                  key={data.id}
-                  membershipPackage={data}
-                  onPress={() =>
-                    navigation.navigate("MembershipDetail", { id: data.id })
-                  }
-                />
-              );
-            })}
-          </ScrollView>
-        </View>
-        {isLoading && <Loading />}
-      </SafeAreaView>
-    </LinearGradient>
+        <Gap height={16} />
+        <FlatList
+          data={packages}
+          renderItem={({ item: membership }) => (
+            <MembershipCard
+              {...membership}
+              onPress={() => {
+                navigation.navigate("MembershipDetail", {
+                  id: membership.id,
+                });
+              }}
+            />
+          )}
+          keyExtractor={item => item.id.toString()}
+        />
+      </View>
+      {isLoading && <Loading />}
+    </SafeAreaView>
   );
 };
 
-const ItemMember = ({
-  membershipPackage,
+const MembershipCard = ({
+  name,
+  image,
+  discount_value,
+  discount_percent,
+  price,
+  total_price,
+  periode,
+  dp_price_disc,
+  dp_discount,
   onPress,
 }: {
-  membershipPackage: IMembershipPackage;
+  name: string;
+  image: string;
+  discount_value: number;
+  discount_percent: number;
+  price: number;
+  total_price: number;
+  periode: string;
+  dp_price_disc: number;
+  dp_discount: number;
   onPress: () => void;
 }) => {
+  const { isDarkMode } = useContext(ThemeContext);
+
   return (
-    <TouchableOpacity style={styles.containerItemMember} onPress={onPress}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text style={styles.namePackage}>{membershipPackage.name}</Text>
-        {membershipPackage.discount_value !== 0 && (
-          <View style={styles.cardDisc}>
-            <Text style={styles.text2}>
-              {membershipPackage.discount_percent
-                ? `${membershipPackage.discount_value} %`
-                : convertToRupiah(membershipPackage.discount_value.toString())}
+    <TouchableOpacity
+      style={{
+        padding: 12,
+        borderRadius: 12,
+        backgroundColor: isDarkMode ? colors._black : colors._white,
+        shadowColor: colors._black,
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 1,
+        marginBottom: 10,
+        marginHorizontal: 4,
+        flexDirection: "row",
+        justifyContent: "space-between",
+      }}
+      onPress={onPress}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          flexShrink: 1,
+        }}>
+        <Image
+          source={{
+            uri: image,
+          }}
+          style={{
+            width: 50,
+            height: 50,
+            alignSelf: "center",
+            borderRadius: 4,
+          }}
+        />
+        <Gap width={12} />
+        <View
+          style={{
+            flexShrink: 1,
+          }}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            {price !== total_price && (
+              <>
+                <Text
+                  style={{
+                    fontFamily: fonts.primary[300],
+                    fontSize: 12,
+                    color: isDarkMode ? colors._white : colors._black,
+                    textDecorationLine: "line-through",
+                  }}>
+                  {convertToRupiah(price.toString())}
+                </Text>
+                <Gap width={4} />
+              </>
+            )}
+            <Text
+              style={{
+                fontFamily: fonts.primary[400],
+                fontSize: 14,
+                color: isDarkMode ? colors._white : colors._black,
+              }}>
+              {convertToRupiah(total_price.toString())}
             </Text>
           </View>
-        )}
-      </View>
-      <View style={{ paddingHorizontal: 12, paddingBottom: 12 }}>
-        <Gap height={8} />
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          {membershipPackage.price !== membershipPackage.total_price && (
-            <>
-              <Text style={styles.text4}>
-                {convertToRupiah(membershipPackage.price.toString())}
-              </Text>
-              <Gap width={4} />
-            </>
-          )}
-          <Text style={styles.textPrice}>
-            {convertToRupiah(membershipPackage.total_price.toString())}
+          <Gap height={8} />
+          <Text
+            style={{
+              fontFamily: fonts.primary[400],
+              fontSize: 14,
+              color: isDarkMode ? colors._white : colors._black,
+            }}
+            numberOfLines={2}>
+            {name}
           </Text>
+          <Gap height={8} />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            {dp_price_disc === 0 && dp_discount === 0 ? (
+              <></>
+            ) : (
+              <View
+                style={{
+                  backgroundColor: colors._blue2,
+                  padding: 8,
+                  borderRadius: 12,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: fonts.primary[400],
+                    fontSize: 12,
+                    color: isDarkMode ? colors._white : colors._black,
+                  }}>
+                  {dp_price_disc === 0
+                    ? `${dp_discount}%`
+                    : convertToRupiah(dp_price_disc.toString())}{" "}
+                  Dp Available
+                </Text>
+              </View>
+            )}
+          </View>
         </View>
-        <Gap height={8} />
-        <Text style={styles.text3}>{membershipPackage.periode} days</Text>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          {membershipPackage.dp_price_disc === 0 &&
-          membershipPackage.dp_discount === 0 ? (
-            <></>
-          ) : (
-            <View style={styles.dpSec}>
-              <Text style={styles.text}>
-                {membershipPackage.dp_price_disc === 0
-                  ? `${membershipPackage.dp_discount}%`
-                  : convertToRupiah(
-                      membershipPackage.dp_price_disc.toString(),
-                    )}{" "}
-                Dp Available
-              </Text>
-            </View>
-          )}
-          {/* <Gap width={10} />
-                    <View style={styles.ptFree}>
-                        <Text style={styles.text}>Free PT</Text>
-                    </View> */}
-        </View>
-        <Gap height={8} />
-        <Button teks="Join Now" onPress={onPress} />
+      </View>
+      <View
+        style={{
+          justifyContent: "center",
+        }}>
+        <Text
+          style={{
+            fontFamily: fonts.primary[400],
+            fontSize: 12,
+            color: isDarkMode ? colors._white : colors._black,
+          }}>
+          {periode}
+        </Text>
       </View>
     </TouchableOpacity>
   );

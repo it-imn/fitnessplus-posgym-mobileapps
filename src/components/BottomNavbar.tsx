@@ -22,7 +22,7 @@ import {
   ProfileGrey,
   ReportBlue,
   ReportGrey,
-} from "../assets/index.js";
+} from "../assets";
 
 export const BottomNavbar = ({
   state,

@@ -10,6 +10,7 @@ import {
   ScrollView,
   StyleProp,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
   ViewStyle,
@@ -26,10 +27,10 @@ import { RootStackParamList } from "../../lib/routes";
 import { colors, fonts } from "../../lib/utils";
 import { fetchAllClasses } from "../../services/class";
 import { useModalStore } from "../../stores/useModalStore";
-import { Button } from "../../components/ui/Button";
+import { Button, ButtonColor } from "../../components/ui/Button";
 import { showMessage } from "react-native-flash-message";
 import { useDebounce } from "use-debounce";
-import { ImageNotFound } from "../../assets/index.js";
+import { ImageNotFound } from "../../assets";
 
 const Class = ({
   navigation,
@@ -95,10 +96,21 @@ const Class = ({
             paddingHorizontal: 24,
             flex: 1,
           }}>
-          <Input
-            placeholder="Search Class"
-            value={search}
+          <TextInput
             onChangeText={setSearch}
+            value={search}
+            placeholder={"Search class"}
+            placeholderTextColor={colors._grey4}
+            style={{
+              padding: 12,
+              fontSize: 13,
+              fontFamily: fonts.primary[300],
+              backgroundColor: isDarkMode ? colors._black : colors._grey2,
+              borderRadius: 10,
+              color: isDarkMode ? colors._white : colors._black,
+              borderWidth: 0.5,
+              borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+            }}
           />
           <Gap height={16} />
           <Text style={styles.sub(isDarkMode)}>Available Classes</Text>
@@ -195,7 +207,9 @@ const Class = ({
           )}
           <Gap height={16} />
 
-          <Button
+          <ButtonColor
+            backColor={colors._blue2}
+            textColor={colors._white}
             teks={selectedId === null ? "Select a class first" : "View Detail"}
             onPress={() => {
               if (selectedId === null) {
