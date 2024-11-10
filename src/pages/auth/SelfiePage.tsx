@@ -171,22 +171,35 @@ const Selfie = ({
           zIndex: 1,
           backgroundColor: isDarkMode ? colors._black : colors._white,
         }}>
-        {photo !== null ? (
+        <View style={{ flexDirection: "row", gap: 8 }}>
           <TouchableOpacity
-            onPress={() => setPhoto(null)}
+            onPress={() => navigation.goBack()}
             style={{
               width: 24,
               height: 24,
               borderRadius: 8,
               justifyContent: "center",
               alignItems: "center",
-              transform: [{ rotate: "180deg" }],
             }}>
-            {isDarkMode ? <EditPenWhite /> : <EditPen />}
+            {isDarkMode ? <ArrowWhite /> : <ArrowBlack />}
           </TouchableOpacity>
-        ) : (
-          <View style={{ width: 24, height: 24 }} />
-        )}
+          {photo !== null ? (
+            <TouchableOpacity
+              onPress={() => setPhoto(null)}
+              style={{
+                width: 24,
+                height: 24,
+                borderRadius: 8,
+                justifyContent: "center",
+                alignItems: "center",
+                transform: [{ rotate: "180deg" }],
+              }}>
+              {isDarkMode ? <EditPenWhite /> : <EditPen />}
+            </TouchableOpacity>
+          ) : (
+            <View style={{ width: 24, height: 24 }} />
+          )}
+        </View>
         <Text
           style={{
             color: isDarkMode ? colors._white : colors._black,
