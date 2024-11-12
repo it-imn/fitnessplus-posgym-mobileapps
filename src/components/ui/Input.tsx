@@ -140,6 +140,8 @@ const styles = {
       borderRadius: 10,
       color: isDarkMode ? colors._white : colors._black,
       position: "relative",
+      borderWidth: 0.5,
+      borderColor: isDarkMode ? colors._grey4 : colors._grey3,
     } as StyleProp<ViewStyle>),
   eye: {
     position: "absolute",

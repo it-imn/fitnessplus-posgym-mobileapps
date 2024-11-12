@@ -5,6 +5,7 @@ import {
   Image,
   ImageBackground,
   Linking,
+  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -234,6 +235,8 @@ export const SignUp = ({
                 borderRadius: 10,
                 overflow: "hidden",
                 backgroundColor: isDarkMode ? colors._black : colors._grey2,
+                borderWidth: Platform.OS === "android" ? 0.5 : 0,
+                borderColor: isDarkMode ? colors._grey4 : colors._grey3,
               }}>
               <Controller
                 name="gender"
