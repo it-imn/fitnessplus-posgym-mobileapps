@@ -143,15 +143,7 @@ const MembershipCard = ({
       style={{
         padding: 12,
         borderRadius: 12,
-        backgroundColor: isDarkMode ? colors._black : colors._white,
-        shadowColor: colors._black,
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 1,
+        backgroundColor: isDarkMode ? colors._black : colors._grey2,
         marginBottom: 10,
         marginHorizontal: 4,
         flexDirection: "row",

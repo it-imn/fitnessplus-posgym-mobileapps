@@ -317,7 +317,7 @@ export const MembershipDetail = ({
           </View>
         </View>
         <Gap height={16} />
-        <View style={{ flex: 0.8 }} />
+        <View style={{ flex: 1 }} />
         <View
           style={{
             flexDirection: "row",
@@ -364,7 +364,6 @@ export const MembershipDetail = ({
             </Text>
           </TouchableOpacity>
         </View>
-        <Gap height={16} />
         <Gap height={16} />
         <ButtonColor
           disabled={!toggleCheckBox}
