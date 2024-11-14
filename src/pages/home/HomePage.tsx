@@ -724,7 +724,16 @@ export const HomePage = ({ navigation }: any) => {
             flex: 1,
           }}>
           <CardInfo
-            onPress={() => navigation.navigate("Membership")}
+            onPress={() => {
+              if (membership.status === "expired" && membership.membership_id) {
+                navigation.navigate("MembershipDetail", {
+                  id: membership.membership_id,
+                });
+                return;
+              }
+
+              navigation.navigate("Membership");
+            }}
             message={membership.message}
             status={membership.status}
           />
