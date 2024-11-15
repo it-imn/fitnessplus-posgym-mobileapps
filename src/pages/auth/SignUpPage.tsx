@@ -40,7 +40,11 @@ const signUpSchema = z
     phone: z
       .string()
       .max(16, "Phone number up to 16 characters")
-      .min(9, "Phone number at least 9 characters"),
+      .min(9, "Phone number at least 9 characters")
+      .regex(
+        new RegExp(/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/),
+        "Invalid Phone Number!",
+      ),
     gender: z.enum(["male", "female", "rather_not_say"]),
     birthDate: z.date().refine(value => value < new Date(), {
       message: "Birth date must be less than today",
