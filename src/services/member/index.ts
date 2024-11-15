@@ -41,6 +41,8 @@ const register = async (req: SignUpReq) => {
   }
   formData.append("name", req.name);
   formData.append("gender", req.gender);
+  formData.append("address", req.address);
+  formData.append("birthdate", req.birthDate.toISOString().slice(0, 10));
   formData.append("email", req.email);
   if (req.phone !== "") {
     formData.append("phone", req.phone);
@@ -64,4 +66,32 @@ const register = async (req: SignUpReq) => {
     });
 };
 
-export { checkIn, scanQR, register };
+const validateSignUp = async (req: {
+  name: string;
+  gender: "rather_not_say" | "male" | "female";
+  email: string;
+  phone: string;
+  address: string;
+  birthdate: string;
+  username: string;
+  password: string;
+  password_confirmation: string;
+}) => {
+  return api
+    .post("/member/validation", req)
+    .then(({ data }) => {
+      console.log(data);
+      return {
+        message: data.message,
+      };
+    })
+    .catch(err => {
+      console.error("error validate sign up", err.response?.data);
+      return Promise.reject({
+        message: err.response?.data.message,
+        errors: err.response?.data.errors,
+      });
+    });
+};
+
+export { checkIn, scanQR, register, validateSignUp };

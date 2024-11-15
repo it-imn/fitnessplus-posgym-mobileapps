@@ -112,7 +112,16 @@ const SignConfirmation = ({
               <Gap height={4} />
               <Text style={styles.teks(isDarkMode)}>{signUpReq.phone}</Text>
               <Gap height={20} />
-
+              <Text style={styles.teks2(isDarkMode)}>Address</Text>
+              <Gap height={4} />
+              <Text style={styles.teks(isDarkMode)}>{signUpReq.address}</Text>
+              <Gap height={20} />
+              <Text style={styles.teks2(isDarkMode)}>Birth Date</Text>
+              <Gap height={4} />
+              <Text style={styles.teks(isDarkMode)}>
+                {signUpReq.birthDate.toISOString().slice(0, 10)}
+              </Text>
+              <Gap height={20} />
               <Text style={styles.teks2(isDarkMode)}>Password</Text>
               <Gap height={4} />
               <TouchableOpacity onPress={onHide}>

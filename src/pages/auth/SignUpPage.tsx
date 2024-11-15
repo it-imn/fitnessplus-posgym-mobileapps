@@ -1,6 +1,6 @@
 import { Picker } from "@react-native-picker/picker";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   Image,
   ImageBackground,
@@ -27,18 +27,33 @@ import { useSignUpStore } from "../../stores/useSignUpStore";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import DateTimePicker, {
+  DateTimePickerAndroid,
+} from "@react-native-community/datetimepicker";
+import { validateSignUp } from "../../services/member";
+import Loading from "../../components/ui/Loading";
 
-const signUpSchema = z.object({
-  name: z.string().min(1, "Name required").max(50, "Name too long"),
-  gender: z.enum(["male", "female", "rather_not_say"]),
-  email: z.string().email("Enter correct email").min(1, "Email required"),
-  phone: z
-    .string()
-    .max(16, "Phone number up to 16 characters")
-    .min(9, "Phone number at least 9 characters"),
-  username: z.string().min(1, "Username required"),
-  password: z.string().min(8, "Password less than 8 characters"),
-});
+const signUpSchema = z
+  .object({
+    name: z.string().min(1, "Name required").max(250, "Name too long"),
+    email: z.string().email("Enter correct email").min(1, "Email required"),
+    phone: z
+      .string()
+      .max(16, "Phone number up to 16 characters")
+      .min(9, "Phone number at least 9 characters"),
+    gender: z.enum(["male", "female", "rather_not_say"]),
+    birthDate: z.date().refine(value => value < new Date(), {
+      message: "Birth date must be less than today",
+    }),
+    address: z.string().min(1, "Address required"),
+    username: z.string().min(1, "Username required"),
+    password: z.string().min(8, "Password less than 8 characters"),
+    confirmPassword: z.string().min(8, "Password less than 8 characters"),
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: "Password not match",
+    path: ["confirmPassword"],
+  });
 
 export const SignUp = ({
   navigation,
@@ -47,20 +62,104 @@ export const SignUp = ({
   const { update } = useSignUpStore();
   const { hasPermission, requestPermission } = useCameraPermission();
   const { openModal, closeModal } = useModalStore();
+  const [showDatePickerIOS, setShowDatePickerIOS] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       name: "",
-      gender: "rather_not_say",
       email: "",
       phone: "",
+      gender: "rather_not_say",
+      address: "",
+      birthDate: new Date(),
       username: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
   const onRegister = async (values: z.infer<typeof signUpSchema>) => {
+    try {
+      setIsLoading(true);
+      await validateSignUp({
+        ...values,
+        birthdate: values.birthDate.toISOString().slice(0, 10),
+        password_confirmation: values.confirmPassword,
+      });
+    } catch (err: any) {
+      if (err.errors) {
+        if (err.errors.name && err.errors.name.length > 0) {
+          form.setError("name", {
+            type: "manual",
+            message: err.errors.name[0],
+          });
+        }
+
+        if (err.errors.gender && err.errors.gender.length > 0) {
+          form.setError("gender", {
+            type: "manual",
+            message: err.errors.gender[0],
+          });
+        }
+
+        if (err.errors.email && err.errors.email.length > 0) {
+          form.setError("email", {
+            type: "manual",
+            message: err.errors.email[0],
+          });
+        }
+
+        if (err.errors.phone && err.errors.phone.length > 0) {
+          form.setError("phone", {
+            type: "manual",
+            message: err.errors.phone[0],
+          });
+        }
+
+        if (err.errors.birthdate && err.errors.birthdate.length > 0) {
+          form.setError("birthDate", {
+            type: "manual",
+            message: err.errors.birthdate[0],
+          });
+        }
+
+        if (err.errors.address && err.errors.address.length > 0) {
+          form.setError("address", {
+            type: "manual",
+            message: err.errors.address[0],
+          });
+        }
+
+        if (err.errors.username && err.errors.username.length > 0) {
+          form.setError("username", {
+            type: "manual",
+            message: err.errors.username[0],
+          });
+        }
+
+        if (err.errors.password && err.errors.password.length > 0) {
+          form.setError("password", {
+            type: "manual",
+            message: err.errors.password[0],
+          });
+        }
+        return;
+      }
+
+      showMessage({
+        icon: "warning",
+        message: err.message || "An error occured",
+        type: "default",
+        backgroundColor: colors._red,
+        color: colors._white,
+      });
+      return;
+    } finally {
+      setIsLoading(false);
+    }
+
     update({
       ...values,
     });
@@ -173,7 +272,7 @@ export const SignUp = ({
             <Text style={styles.teks1}>Join PosGym App</Text>
             <Gap height={14} />
             <Text style={styles.teks2}>
-              Excliusive Gym Portal for Posgym member
+              Exclusive Gym Portal for Posgym member
             </Text>
           </View>
           <Gap height={40} />
@@ -278,6 +377,95 @@ export const SignUp = ({
               />
             </View>
             <Gap height={20} />
+            <Text
+              style={{
+                color: isDarkMode ? colors._white : colors._black,
+                marginBottom: 5,
+                fontSize: 14,
+                fontFamily: fonts.primary[400],
+              }}>
+              Birth Date
+            </Text>
+            <Controller
+              name="birthDate"
+              control={form.control}
+              render={({ field: { onChange, value } }) => (
+                <TouchableOpacity
+                  style={{
+                    padding: 12,
+                    backgroundColor: isDarkMode ? colors._black : colors._grey2,
+                    borderRadius: 10,
+                    borderWidth: 0.5,
+                    borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+                  }}
+                  onPress={() => {
+                    if (Platform.OS === "android") {
+                      DateTimePickerAndroid.open({
+                        value: value,
+                        mode: "date",
+                        onChange: (_, selectedDate) => {
+                          if (selectedDate) {
+                            onChange(selectedDate);
+                          }
+                        },
+                      });
+                    } else if (Platform.OS === "ios") {
+                      setShowDatePickerIOS(true);
+                    }
+                  }}>
+                  <Text
+                    style={{
+                      color: isDarkMode ? colors._white : colors._black,
+                      fontSize: 14,
+                      fontFamily: fonts.primary[400],
+                    }}>
+                    {form.getValues("birthDate").toLocaleDateString()}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            />
+            {showDatePickerIOS && (
+              <Controller
+                name="birthDate"
+                control={form.control}
+                render={({ field: { onChange, value } }) => (
+                  <DateTimePicker
+                    value={value}
+                    mode="date"
+                    display="default"
+                    onChange={(_, selectedDate) => {
+                      setShowDatePickerIOS(false);
+                      if (selectedDate) {
+                        onChange(selectedDate);
+                      }
+                    }}
+                  />
+                )}
+              />
+            )}
+            {form.formState.errors.birthDate && (
+              <Text style={{ color: colors._red, marginTop: 4 }}>
+                {form.formState.errors.birthDate.message}
+              </Text>
+            )}
+            <Gap height={20} />
+            <Controller
+              name="address"
+              control={form.control}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder="Address"
+                  value={value}
+                  onChangeText={onChange}
+                />
+              )}
+            />
+            {form.formState.errors.address && (
+              <Text style={{ color: colors._red, marginTop: 4 }}>
+                {form.formState.errors.address.message}
+              </Text>
+            )}
+            <Gap height={20} />
             <Controller
               name="username"
               control={form.control}
@@ -306,6 +494,28 @@ export const SignUp = ({
                 />
               )}
             />
+            {form.formState.errors.password && (
+              <Text style={{ color: colors._red, marginTop: 4 }}>
+                {form.formState.errors.password.message}
+              </Text>
+            )}
+            <Gap height={20} />
+            <Controller
+              name="confirmPassword"
+              control={form.control}
+              render={({ field: { onChange, value } }) => (
+                <Inputeye
+                  placeholder="Confirm Password"
+                  value={value}
+                  onChangeText={onChange}
+                />
+              )}
+            />
+            {form.formState.errors.confirmPassword && (
+              <Text style={{ color: colors._red, marginTop: 4 }}>
+                {form.formState.errors.confirmPassword.message}
+              </Text>
+            )}
             <Gap height={25} />
             <ButtonColor
               teks="Continue"
@@ -313,8 +523,8 @@ export const SignUp = ({
               textColor={colors._white}
               onPress={form.handleSubmit(onRegister)}
             />
-            <Gap height={64} />
           </ScrollView>
+          {isLoading && <Loading />}
         </ImageBackground>
       </ScrollView>
     </SafeAreaView>

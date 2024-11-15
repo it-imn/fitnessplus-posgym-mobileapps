@@ -5,6 +5,8 @@ export type SignUpReq = {
   gender: 'male' | 'female' | 'rather_not_say';
   email: string;
   phone: string;
+  address: string;
+  birthDate: Date;
   username: string;
   password: string;
   gym_id: number;
@@ -26,6 +28,8 @@ const initialState: SignUpReq = {
   gender: 'rather_not_say',
   email: '',
   phone: '',
+  address: '',
+  birthDate: new Date(),
   username: '',
   password: '',
   gym_id: 0,
