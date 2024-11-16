@@ -321,6 +321,7 @@ export const SignUp = ({
               render={({ field: { onChange, value } }) => (
                 <Input
                   placeholder="Phone Number"
+                  keyboardType="phone-pad"
                   value={value}
                   onChangeText={onChange}
                 />
