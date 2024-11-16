@@ -228,7 +228,7 @@ const Profil = ({
             </TouchableOpacity>
           </View>
           <View style={{ alignItems: "center", marginTop: 10 }}>
-            <Text style={styles.cardBio(isDarkMode)}>{dataProfile.name}</Text>
+            <Text style={styles.cardBio(isDarkMode)}>{dataProfile.name} ({dataProfile.member_id})</Text>
             <Gap height={5} />
             <Text style={styles.cardBio(isDarkMode)}>{dataProfile.email}</Text>
           </View>
