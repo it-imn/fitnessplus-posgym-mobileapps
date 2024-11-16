@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
-import { View } from "react-native";
+import { Platform, StatusBar, View } from "react-native";
 import ThemeProvider from "./contexts/ThemeContext";
 import FlashMessage from "react-native-flash-message";
 import GlobalModal from "./components/Modal";
@@ -16,6 +16,9 @@ export default function App(): React.JSX.Element {
           floating={true}
           animated={true}
           duration={3000}
+          style={{
+            marginTop: Platform.OS === "ios" ? 16 : StatusBar.currentHeight,
+          }}
         />
         <GlobalModal />
       </ThemeProvider>
