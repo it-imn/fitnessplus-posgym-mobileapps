@@ -284,6 +284,15 @@ export const MembershipDetail = ({
           </Text>
         </View>
         <Gap height={16} />
+        <Text
+          style={{
+            fontSize: 12,
+            color: isDarkMode ? colors._grey4 : colors._grey3,
+            fontFamily: fonts.primary[400],
+          }}>
+          Member Consultant
+        </Text>
+        <Gap height={4} />
         <View>
           <TouchableOpacity
             style={styles.button(isDarkMode)}
@@ -447,21 +456,22 @@ const styles = {
     fontFamily: fonts.primary[400],
     color: isDarkMode ? colors._white : colors._black,
   }),
-  button: (isDarkMode: boolean) => ({
-    backgroundColor: isDarkMode ? colors._black : colors._grey2,
-    borderRadius: 8,
-    height: 45,
-    shadowColor: colors._black,
-    shadowOffset: {
-      width: 0.1,
-      height: 0.1,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 1,
-    elevation: 1.5,
-    paddingLeft: 16,
-    justifyContent: "center",
-  }) as StyleProp<ViewStyle>,
+  button: (isDarkMode: boolean) =>
+    ({
+      backgroundColor: isDarkMode ? colors._black : colors._grey2,
+      borderRadius: 8,
+      height: 45,
+      shadowColor: colors._black,
+      shadowOffset: {
+        width: 0.1,
+        height: 0.1,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 1,
+      elevation: 1.5,
+      paddingLeft: 16,
+      justifyContent: "center",
+    } as StyleProp<ViewStyle>),
   centeredView: {
     // width: '100%',
     // height: '100%',
