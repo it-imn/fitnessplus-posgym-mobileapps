@@ -900,7 +900,10 @@ const CardInfo = ({
     <TouchableOpacity
       style={styles.containerCardInfo(isDarkMode)}
       onPress={onPress}
-      disabled={status !== "not_buy_package" && status === "freeze_membership"}>
+      disabled={
+        status !== "not_buy_package" && // udah beli
+        (status === "freeze_membership" || status === "pending")
+      }>
       <View style={styles.cardTopCardInfo}>
         <Text style={styles.teksCardInfo(status)}>{message}</Text>
         {status === "not_buy_package" && (
