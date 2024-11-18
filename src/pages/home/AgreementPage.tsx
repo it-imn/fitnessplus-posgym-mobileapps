@@ -21,7 +21,7 @@ const Agreement = ({
       <Header teks="Terms and Conditions" onPress={() => navigation.goBack()} />
       <WebView
         source={{
-          uri: "https://positive-gym.com/contract_membership_agreement",
+          uri: "https://positive-gym.com/term_condition",
         }}
       />
     </SafeAreaView>
