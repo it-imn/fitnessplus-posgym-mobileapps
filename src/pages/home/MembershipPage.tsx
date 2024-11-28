@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -27,21 +27,32 @@ import { showMessage } from "react-native-flash-message";
 import { Button } from "../../components/ui/Button";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import StatusBarComp from "../../components/ui/StatusBarComp";
+import NoData from "../../components/ui/NoData";
 
 const Membership = ({ navigation }: any) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [packages, setPackages] = React.useState<IMembershipPackage[]>([]);
   const [search, setSearch] = React.useState("");
   const [debouncedText] = useDebounce(search, 500);
+  const [page, setPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(true);
   const { isDarkMode } = useContext(ThemeContext);
 
-  const getPackage = async (token: CancelToken) => {
+  const getPackage = async (
+    _page: number,
+    _search: string,
+    token?: CancelToken,
+  ) => {
     setIsLoading(true);
     try {
-      console.log("debouncedText", debouncedText);
-      const { data } = await fetchMembershipPackages(token, debouncedText);
+      const { data, hasNext } = await fetchMembershipPackages(
+        { page: _page, search: _search },
+        { cancelToken: token },
+      );
+
       if (data) {
-        setPackages(data);
+        setPackages(prev => [...prev, ...data]);
+        setHasNextPage(hasNext);
       }
     } catch (err: any) {
       showMessage({
@@ -56,15 +67,29 @@ const Membership = ({ navigation }: any) => {
     }
   };
 
+  // Handle search input change directly
+  const handleSearchChange = (text: string) => {
+    console.log("search");
+    setSearch(text);
+  };
+
+  // Handle pagination when reaching the end of the list
+  const handleEndReached = async () => {
+    if (!hasNextPage || isLoading) return;
+
+    const nextPage = page + 1;
+    setPage(nextPage);
+
+    getPackage(nextPage, debouncedText);
+  };
+
+  // Fetch
   useEffect(() => {
-    const source = axios.CancelToken.source();
+    console.log("fetch");
+    setPage(1);
+    setPackages([]);
 
-    getPackage(source.token);
-
-    return () => {
-      source.cancel("Cancelling in cleanup");
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    getPackage(1, debouncedText);
   }, [debouncedText]);
 
   return (
@@ -75,9 +100,9 @@ const Membership = ({ navigation }: any) => {
       }}>
       <StatusBarComp />
       <Header teks="Membership" onPress={() => navigation.goBack()} />
-      <View style={{ paddingHorizontal: 20 }}>
+      <View style={{ paddingHorizontal: 20, flex: 1 }}>
         <TextInput
-          onChangeText={setSearch}
+          onChangeText={handleSearchChange}
           value={search}
           placeholder={"Search membership"}
           placeholderTextColor={colors._grey4}
@@ -94,6 +119,15 @@ const Membership = ({ navigation }: any) => {
         />
         <Gap height={16} />
         <FlatList
+          refreshing={isLoading}
+          onRefresh={() => {
+            console.log("refresh");
+            setPage(1);
+            setPackages([]);
+
+            getPackage(1, debouncedText);
+          }}
+          onEndReached={handleEndReached}
           data={packages}
           renderItem={({ item: membership }) => (
             <MembershipCard
@@ -106,6 +140,7 @@ const Membership = ({ navigation }: any) => {
             />
           )}
           keyExtractor={item => item.id.toString()}
+          ListEmptyComponent={<NoData text="No Data Available" />}
         />
       </View>
       {isLoading && <Loading />}

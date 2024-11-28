@@ -49,15 +49,28 @@ const fetchContractAgreementDownload = async () => {
     });
 };
 
-const fetchMembershipPackages = async (token: CancelToken, query?: string) => {
+const fetchMembershipPackages = async (
+  query?: {
+    search?: string;
+    page?: number;
+    per_page?: number;
+  },
+  config?: AxiosRequestConfig<any> | undefined,
+) => {
+  const page = query?.page ?? 1;
+
   return api
-    .get(`/membership/package?search=${query}`, {
-      cancelToken: token,
-    })
+    .get(
+      `/membership/package?page=${page}${
+        query?.search ? `&search=${query.search}` : ""
+      }`,
+      config,
+    )
     .then(({ data }) => {
       console.log(query, "query");
       return {
         data: data.result as IMembershipPackage[],
+        hasNext: data.hasNext,
       };
     })
     .catch((err: any) => {
