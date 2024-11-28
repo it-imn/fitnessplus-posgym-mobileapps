@@ -114,6 +114,7 @@ export const MembershipDetail = ({
                   membershipPackage.installment_first_pay.total_price.toString(),
                 )} Dp Available`
               : "",
+          startDate: new Date(),
         },
         type: TransactionType.MEMBERSHIP,
         signature: signature,

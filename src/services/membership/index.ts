@@ -106,6 +106,7 @@ const buyMembership = async (
   signature: string,
   voucher_code: string | null,
   down_payment_membership: 0 | 1,
+  started_at: string
 ) => {
   return api
     .post("/membership/buy", {
@@ -115,6 +116,7 @@ const buyMembership = async (
       signature: signature,
       voucher_code: voucher_code === "" ? null : voucher_code,
       down_payment_membership: down_payment_membership,
+      started_at: started_at,
     })
     .then(({ data }) => {
       return {

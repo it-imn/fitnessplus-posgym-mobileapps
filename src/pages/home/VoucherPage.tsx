@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
+  Platform,
   SafeAreaView,
   StyleProp,
   Text,
@@ -25,6 +26,18 @@ import { colors, fonts } from "../../lib/utils";
 import { checkVoucher } from "../../services/membership";
 import { showMessage } from "react-native-flash-message";
 import { ButtonColor } from "../../components/ui/Button";
+import { z } from "zod";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import DateTimePicker, {
+  DateTimePickerAndroid,
+} from "@react-native-community/datetimepicker";
+
+const membershipSchema = z.object({
+  startDate: z.date().refine(value => value.getDate() >= new Date().getDate(), {
+    message: "Start date must be at least today",
+  }),
+});
 
 const Voucher = ({
   navigation,
@@ -34,8 +47,15 @@ const Voucher = ({
 
   const { update, transaction } = useTransactionStore();
   // const [statusCode, setStatusCode] = useState('');
+  const [showDatePickerIOS, setShowDatePickerIOS] = useState(false);
+  const form = useForm<z.infer<typeof membershipSchema>>({
+    resolver: zodResolver(membershipSchema),
+    defaultValues: {
+      startDate: new Date(),
+    },
+  });
 
-  const claimVoucher = async () => {
+  const claimVoucher = async (values: z.infer<typeof membershipSchema>) => {
     // const data = {
     //   voucher_code: code,
     //   package_id: id,
@@ -82,14 +102,20 @@ const Voucher = ({
         }
 
         const { membership_id } = transaction.transaction as MembershipReq;
-        const {final_price} = transaction;
+        const { final_price } = transaction;
 
         const { data } = await checkVoucher(voucherCode, membership_id);
 
         update({
           voucher_code: voucherCode,
           voucher: data,
-          final_price: data.package_id ? final_price - data.discount : data.total_price,
+          final_price: data.package_id
+            ? final_price - data.discount
+            : data.total_price,
+          transaction: {
+            ...transaction.transaction,
+            startDate: values.startDate,
+          },
         });
 
         navigation.navigate("PaymentMethod");
@@ -116,14 +142,16 @@ const Voucher = ({
         }
 
         const { package_pt_id } = transaction.transaction as PTReq;
-        const {final_price} = transaction
+        const { final_price } = transaction;
 
         const { data } = await checkVoucher(voucherCode, package_pt_id);
 
         update({
           voucher_code: voucherCode,
           voucher: data,
-          final_price: data.package_id ? final_price - data.discount : data.total_price,
+          final_price: data.package_id
+            ? final_price - data.discount
+            : data.total_price,
         });
 
         navigation.navigate("PaymentMethod");
@@ -241,10 +269,14 @@ const Voucher = ({
     // }
   };
 
-  const onNext = () => {
+  const onNext = (values: z.infer<typeof membershipSchema>) => {
     update({
       voucher: undefined,
       voucher_code: "",
+      transaction: {
+        ...transaction.transaction,
+        startDate: values.startDate,
+      },
     });
 
     navigation.navigate("PaymentMethod");
@@ -381,51 +413,121 @@ const Voucher = ({
       <StatusBarComp />
       <Header teks="Voucher" onPress={() => navigation.goBack()} />
       <View style={styles.content}>
-        <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
-          <View style={{ flex: 1 }}>
-            <Input
-              placeholder="Input Voucher Code"
-              value={voucherCode}
-              onChangeText={value => setVoucherCode(value)}
-            />
+        <View>
+          <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+            <View style={{ flex: 1 }}>
+              <Input
+                placeholder="Input Voucher Code"
+                value={voucherCode}
+                onChangeText={value => setVoucherCode(value)}
+              />
+            </View>
+            <Gap width={10} />
+            <View
+              style={{
+                justifyContent: "flex-end",
+              }}>
+              <ButtonColor
+                teks="Use"
+                onPress={claimVoucher}
+                backColor={colors._blue2}
+                textColor={colors._white}
+              />
+            </View>
           </View>
-          <Gap width={10} />
-          <View
-            style={{
-              justifyContent: "flex-end",
-            }}>
-            <ButtonColor
-              teks="Use"
-              onPress={claimVoucher}
-              backColor={colors._blue2}
-              textColor={colors._white}
-            />
-          </View>
+          <Gap height={4} />
+          <Text style={styles.teks2(isDarkMode)}>
+            * Use the voucher code to get a discount
+          </Text>
         </View>
-        <Gap height={4} />
-        {/* {statusCode !== '' && (
-          <Text style={styles.teks2(isDarkMode)}>{statusCode}</Text>
-        )} */}
-        <Gap height={4} />
-        <Text style={styles.teks2(isDarkMode)}>
-          * Use the voucher code to get a discount
-        </Text>
-        {/* <Gap height={20} />
-                <Text style={styles.teks(isDarkMode)}>Select Voucher</Text>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                    {dataVoucher.map(data => {
-                        const params = {
-                            voucher_code: data.voucher_code
+        {transaction.type === TransactionType.MEMBERSHIP && (
+          <>
+            <Gap height={24} />
+            <View>
+              <Text
+                style={{
+                  color: isDarkMode ? colors._white : colors._black,
+                  marginBottom: 5,
+                  fontSize: 14,
+                  fontFamily: fonts.primary[400],
+                }}>
+                Starting a gym?
+              </Text>
+              <Controller
+                name="startDate"
+                control={form.control}
+                render={({ field: { onChange, value } }) => (
+                  <TouchableOpacity
+                    style={{
+                      padding: 12,
+                      backgroundColor: isDarkMode
+                        ? colors._black
+                        : colors._grey2,
+                      borderRadius: 10,
+                      borderWidth: 0.5,
+                      borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+                    }}
+                    onPress={() => {
+                      if (Platform.OS === "android") {
+                        DateTimePickerAndroid.open({
+                          value: value,
+                          mode: "date",
+                          onChange: (_, selectedDate) => {
+                            if (selectedDate) {
+                              onChange(selectedDate);
+                            }
+                          },
+                        });
+                      } else if (Platform.OS === "ios") {
+                        setShowDatePickerIOS(true);
+                      }
+                    }}>
+                    <Text
+                      style={{
+                        color: isDarkMode ? colors._white : colors._black,
+                        fontSize: 14,
+                        fontFamily: fonts.primary[400],
+                      }}>
+                      {form.getValues("startDate").toLocaleDateString("id-ID")}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              />
+              {showDatePickerIOS && (
+                <Controller
+                  name="startDate"
+                  control={form.control}
+                  render={({ field: { onChange, value } }) => (
+                    <DateTimePicker
+                      value={value}
+                      mode="date"
+                      display="default"
+                      onChange={(_, selectedDate) => {
+                        setShowDatePickerIOS(false);
+                        if (selectedDate) {
+                          onChange(selectedDate);
                         }
-                        return <CardVoucher key={data.id} voucher_name={data.voucher_name} voucher_code={data.voucher_code} voucher_expired={data.voucher_expired} onPress={() => useVoucher(params)} />
-                    })}
-                </ScrollView> */}
+                      }}
+                    />
+                  )}
+                />
+              )}
+              {form.formState.errors.startDate && (
+                <Text style={{ color: colors._red, marginTop: 4 }}>
+                  {form.formState.errors.startDate.message}
+                </Text>
+              )}
+            </View>
+          </>
+        )}
       </View>
       <View
         style={{
           backgroundColor: isDarkMode ? colors._black2 : colors._white,
         }}>
-        <TouchableOpacity style={{ padding: 24 }} onPress={onNext}>
+        <TouchableOpacity
+          style={{ padding: 24 }}
+          onPress={form.handleSubmit(onNext)}>
           <Text style={styles.teskSkip}>Continue Without Use Voucher</Text>
         </TouchableOpacity>
       </View>

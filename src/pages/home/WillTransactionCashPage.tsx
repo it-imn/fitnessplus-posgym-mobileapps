@@ -32,7 +32,7 @@ const WillTransactionCash = ({
   const gotoWaitingPage = async () => {
     try {
       if (transaction.type === TransactionType.MEMBERSHIP) {
-        const { sales_id, membership_id, down_payment_membership } =
+        const { sales_id, membership_id, down_payment_membership, startDate } =
           transaction.transaction as MembershipReq;
 
         const { data } = await buyMembership(
@@ -42,6 +42,7 @@ const WillTransactionCash = ({
           transaction.signature,
           transaction.voucher_code,
           down_payment_membership,
+          startDate.toISOString().slice(0, 10),
         );
 
         showMessage({

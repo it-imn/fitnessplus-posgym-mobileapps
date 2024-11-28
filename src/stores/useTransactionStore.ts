@@ -18,6 +18,7 @@ export interface MembershipReq {
   membership_id: number;
   down_payment_membership: 1 | 0;
   down_payment_label: string;
+  startDate: Date;
 }
 
 export interface PTReq {
@@ -60,6 +61,7 @@ const initialState: TransactionReq = {
     membership_id: 0,
     down_payment_membership: 0,
     down_payment_label: "",
+    startDate: new Date(),
   },
   type: TransactionType.MEMBERSHIP,
   payment_method: "",
