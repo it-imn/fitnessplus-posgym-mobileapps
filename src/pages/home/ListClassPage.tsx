@@ -3,6 +3,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import axios, { CancelToken } from "axios";
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import {
+  FlatList,
   GestureResponderEvent,
   Image,
   RefreshControl,
@@ -42,14 +43,25 @@ const Class = ({
   const [search, setSearch] = useState("");
   const [debouncedText] = useDebounce(search, 500);
   const isFocused = useIsFocused();
+  const [page, setPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(true);
   const { openModal, closeModal } = useModalStore();
 
-  const getAllClasses = async (token: CancelToken) => {
+  const getAllClasses = async (
+    _page: number,
+    _search: string,
+    token?: CancelToken,
+  ) => {
     setIsLoading(true);
     try {
-      const { data } = await fetchAllClasses(token, debouncedText);
+      const { data, hasNext } = await fetchAllClasses(
+        { page: _page, search: _search },
+        { cancelToken: token },
+      );
       if (data) {
-        setClassStd(data);
+        setClassStd(prev => [...prev, ...data]);
+
+        setHasNextPage(hasNext);
       }
     } catch (err: any) {
       showMessage({
@@ -64,27 +76,30 @@ const Class = ({
     }
   };
 
+  // Handle search input change directly
+  const handleSearchChange = (text: string) => {
+    console.log("search");
+    setSearch(text);
+  };
+
+  // Handle pagination when reaching the end of the list
+  const handleEndReached = async () => {
+    if (!hasNextPage || isLoading) return;
+
+    const nextPage = page + 1;
+    setPage(nextPage);
+
+    getAllClasses(nextPage, debouncedText);
+  };
+
+  // Fetch
   useEffect(() => {
-    const source = axios.CancelToken.source();
+    console.log("fetch");
+    setPage(1);
+    setClassStd([]);
 
-    isFocused && getAllClasses(source.token);
-
-    return () => {
-      source.cancel("Cancelling in cleanup");
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFocused, debouncedText]);
-
-  const onRefresh = React.useCallback(() => {
-    const source = axios.CancelToken.source();
-
-    getAllClasses(source.token);
-
-    return () => {
-      source.cancel("Cancelling in cleanup");
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    getAllClasses(1, debouncedText);
+  }, [debouncedText]);
 
   return (
     <>
@@ -97,7 +112,7 @@ const Class = ({
             flex: 1,
           }}>
           <TextInput
-            onChangeText={setSearch}
+            onChangeText={handleSearchChange}
             value={search}
             placeholder={"Search class"}
             placeholderTextColor={colors._grey4}
@@ -115,96 +130,35 @@ const Class = ({
           <Gap height={16} />
           <Text style={styles.sub(isDarkMode)}>Available Classes</Text>
           <Gap height={8} />
-          {!isLoading && classStd.length === 0 ? (
-            <View
-              style={{
-                flex: 1,
-              }}>
-              <NoData text="No classes available" />
-            </View>
-          ) : (
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              refreshControl={
-                <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
-              }
-              contentContainerStyle={{ gap: 12 }}>
-              {classStd.map((data: ClassStd) => {
-                return (
-                  <View
-                    key={data.id}
-                    style={{
-                      borderColor: isDarkMode ? colors._white : colors._black,
-                      borderWidth: selectedId === data.id ? 2 : 0,
-                      borderRadius: 12,
-                    }}>
-                    <CardClass
-                      classStd={data}
-                      onPress={() => {
-                        setSelectedId(selectedId === data.id ? null : data.id);
-                      }}
-                    />
-                  </View>
-                );
-              })}
+          <FlatList
+            refreshing={isLoading}
+            onRefresh={() => {
+              console.log("refresh");
+              setPage(1);
+              setClassStd([]);
 
-              {/* <Text style={styles.sub(isDarkMode)}>Special Classes</Text>
-              <Gap height={8} />
-              {classSpl.map((data: any, index: number) => {
-                const params = {
-                  id: data.id,
-                  class_name: data.class_name,
-                  class_image: data.class_image,
-                  class_price: data.class_total_price,
-                  class_desc: data.class_desc,
-                  instructure_name: data.instructure_name,
-                  instructure_image: data.instructure_image,
-                  quota: data.quota,
-                  periode: data.periode,
-                  schedule: data.schedule,
-                  video_link: data.video_link,
-                  document_link: data.document_link,
-                  available_seat: data.available_seat,
-                  map_seat: data.map_seat,
-                  package_installments: data.package_installments,
-                  type_class: 'SC',
-                  index: index,
-                  isDarkMode: isDarkMode,
-                };
-                return (
-                  <CardClassSpecial
-                    isDarkMode={isDarkMode}
-                    key={data.id}
-                    class_name={data.class_name}
-                    instructure_name={data.instructure_name}
-                    instructure_image={data.instructure_image}
-                    quota={data.quota}
-                    periode={data.periode}
-                    schedule={data.schedule}
-                    class_image={data.class_image}
-                    class_price={data.class_price}
-                    class_desc={data.class_desc}
-                    video_link={data.video_link}
-                    document_link={data.document_link}
-                    class_disc={data.class_disc}
-                    class_disc_percent={data.class_disc_percent}
-                    class_total_price={data.class_total_price}
-                    available_seat={data.available_seat}
-                    map_seat={data.map_seat}
-                    package_installments={data.package_installments}
-                    dp_fixed_price={data.package_installments.dp_fixed_price}
-                    dp_percentage={data.package_installments.dp_percentage}
-                    onPress={() => navigation.navigate('DetailClass', params)}
-                  />
-                );
-              })}
-              {classSpl.length === 0 && (
-                <Text style={styles.notes(isDarkMode)}>
-                  Special class not available
-                </Text>
-              )} */}
-            </ScrollView>
-          )}
+              getAllClasses(1, debouncedText);
+            }}
+            onEndReached={handleEndReached}
+            data={classStd}
+            keyExtractor={(_, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View
+                style={{
+                  borderColor: isDarkMode ? colors._white : colors._black,
+                  borderWidth: selectedId === item.id ? 2 : 0,
+                  borderRadius: 12,
+                }}>
+                <CardClass
+                  classStd={item}
+                  onPress={() => {
+                    setSelectedId(selectedId === item.id ? null : item.id);
+                  }}
+                />
+              </View>
+            )}
+            ListEmptyComponent={<NoData text="No Data Available" />}
+          />
           <Gap height={16} />
 
           <ButtonColor

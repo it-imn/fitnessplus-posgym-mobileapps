@@ -1,15 +1,28 @@
-import { CancelToken } from "axios";
+import { AxiosRequestConfig, CancelToken } from "axios";
 import { api } from "../../lib/axios";
 import { ClassStd, ClassStdDetail, IClassHistory } from "../../lib/definition";
 
-const fetchAllClasses = async (token: CancelToken, query?: string) => {
+const fetchAllClasses = async (
+  query?: {
+    search?: string;
+    page?: number;
+    per_page?: number;
+  },
+  config?: AxiosRequestConfig<any> | undefined,
+) => {
+  const page = query?.page ?? 1;
+
   return api
-    .get(`/get_std_class/branch?search=${query}`, {
-      cancelToken: token,
-    })
+    .get(
+      `/get_std_class/branch?page=${page}${
+        query?.search ? `&search=${query.search}` : ""
+      }`,
+      config,
+    )
     .then(({ data }) => {
       return {
         data: data.result as ClassStd[],
+        hasNext: data.hasNext,
       };
     })
     .catch(err => {
