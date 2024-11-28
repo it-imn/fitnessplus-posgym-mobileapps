@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
+  FlatList,
   GestureResponderEvent,
   Image,
   SafeAreaView,
@@ -22,6 +23,9 @@ import { fetchBranchesWithGym } from "../../services/gym";
 import { useSignUpStore } from "../../stores/useSignUpStore";
 import { showMessage } from "react-native-flash-message";
 import StatusBarComp from "../../components/ui/StatusBarComp";
+import { useDebounce } from "use-debounce";
+import { CancelToken } from "axios";
+import NoData from "../../components/ui/NoData";
 
 const SelectBranch = ({
   navigation,
@@ -31,11 +35,29 @@ const SelectBranch = ({
   const gymId = useSignUpStore(state => state.signUpReq.gym_id);
   const updateSignUpReq = useSignUpStore(state => state.update);
 
-  const getBranch = async () => {
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(true);
+  const [debouncedText] = useDebounce(search, 500);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const getBranch = async (
+    _page: number,
+    _search: string,
+    token?: CancelToken,
+  ) => {
+    setIsLoading(true);
     try {
-      const { data } = await fetchBranchesWithGym(gymId);
+      const { data } = await fetchBranchesWithGym(
+        gymId,
+        { page: _page, search: _search },
+        { cancelToken: token },
+      );
       if (data) {
-        setBranches(data);
+        setBranches(prev => [...prev, ...data]);
+
+        setHasNextPage(true);
       }
     } catch (error: any) {
       showMessage({
@@ -45,12 +67,35 @@ const SelectBranch = ({
         backgroundColor: colors._red,
         color: colors._white,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  // Handle search input change directly
+  const handleSearchChange = (text: string) => {
+    console.log("search");
+    setSearch(text);
+  };
+
+  // Handle pagination when reaching the end of the list
+  const handleEndReached = async () => {
+    if (!hasNextPage || isLoading) return;
+
+    const nextPage = page + 1;
+    setPage(nextPage);
+
+    getBranch(nextPage, debouncedText);
+  };
+
+  // Fetch
   useEffect(() => {
-    getBranch();
-  }, []);
+    console.log("fetch");
+    setPage(1);
+    setBranches([]);
+
+    getBranch(1, debouncedText);
+  }, [debouncedText]);
 
   return (
     <SafeAreaView
@@ -65,24 +110,34 @@ const SelectBranch = ({
           Select branch you want to register
         </Text>
         <Gap height={20} />
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {branches.map((data: IBranch) => {
-            return (
-              <CardSelectBranch
-                key={data.id}
-                branch_name={data.name}
-                branch_image={data.image}
-                onPress={() => {
-                  updateSignUpReq({
-                    branch_id: data.id,
-                    branch_name: data.name,
-                  });
-                  navigation.navigate("SignConfirmation");
-                }}
-              />
-            );
-          })}
-        </ScrollView>
+        <FlatList
+          refreshing={isLoading}
+          onRefresh={() => {
+            console.log("refresh");
+            setPage(1);
+            setBranches([]);
+
+            getBranch(1, debouncedText);
+          }}
+          onEndReached={handleEndReached}
+          data={branches}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({ item }) => (
+            <CardSelectBranch
+              key={item.id}
+              branch_name={item.name}
+              branch_image={item.image}
+              onPress={() => {
+                updateSignUpReq({
+                  branch_id: item.id,
+                  branch_name: item.name,
+                });
+                navigation.navigate("SignConfirmation");
+              }}
+            />
+          )}
+          ListEmptyComponent={<NoData text="No Data Available" />}
+        />
       </View>
     </SafeAreaView>
   );
