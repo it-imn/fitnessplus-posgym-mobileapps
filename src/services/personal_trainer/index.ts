@@ -1,4 +1,4 @@
-import { CancelToken } from "axios";
+import { AxiosRequestConfig, CancelToken } from "axios";
 import { api } from "../../lib/axios";
 import { IPersonalTrainer, IPTPackage } from "../../lib/definition";
 
@@ -18,17 +18,27 @@ const fetchPersonalTrainers = async () => {
 };
 
 const fetchPersonalTrainersWithQuery = async (
-  token?: CancelToken,
-  query?: string,
+  query?: {
+    search?: string;
+    page?: number;
+    per_page?: number;
+  },
+  config?: AxiosRequestConfig<any> | undefined,
 ) => {
+  const page = query?.page ?? 1;
+
   return api
-    .get(`/personal_trainer?search=${query}`, {
-      cancelToken: token,
-    })
+    .get(
+      `/personal_trainer?page=${page}${
+        query?.search ? `&search=${query.search}` : ""
+      }`,
+      config,
+    )
     .then(({ data }) => {
       console.log(data);
       return {
         data: data.result as IPersonalTrainer[],
+        hasNext: data.hasNext,
       };
     })
     .catch(err => {

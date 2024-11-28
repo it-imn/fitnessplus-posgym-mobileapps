@@ -2,6 +2,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import axios, { CancelToken } from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import {
+  FlatList,
   Image,
   SafeAreaView,
   ScrollView,
@@ -39,15 +40,24 @@ const ListPT = ({
   const [search, setSearch] = React.useState("");
   const [debouncedText] = useDebounce(search, 500);
 
-  const getPersonalTrainers = async (token: CancelToken) => {
+  const [page, setPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(true);
+
+  const getPersonalTrainers = async (
+    _page: number,
+    _search: string,
+    token?: CancelToken,
+  ) => {
     setIsLoading(true);
     try {
-      const { data } = await fetchPersonalTrainersWithQuery(
-        token,
-        debouncedText,
+      const { data, hasNext } = await fetchPersonalTrainersWithQuery(
+        { page: _page, search: _search },
+        { cancelToken: token },
       );
       if (data) {
-        setPersonalTrainers(data);
+        setPersonalTrainers(prev => [...prev, ...data]);
+
+        setHasNextPage(hasNext);
       }
     } catch (err: any) {
       showMessage({
@@ -62,24 +72,38 @@ const ListPT = ({
     }
   };
 
+  // Handle search input change directly
+  const handleSearchChange = (text: string) => {
+    console.log("search");
+    setSearch(text);
+  };
+
+  // Handle pagination when reaching the end of the list
+  const handleEndReached = async () => {
+    if (!hasNextPage || isLoading) return;
+
+    const nextPage = page + 1;
+    setPage(nextPage);
+
+    getPersonalTrainers(nextPage, debouncedText);
+  };
+
+  // Fetch
   useEffect(() => {
-    const source = axios.CancelToken.source();
+    console.log("fetch");
+    setPage(1);
+    setPersonalTrainers([]);
 
-    getPersonalTrainers(source.token);
-
-    return () => {
-      source.cancel("Cancelling in cleanup");
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    getPersonalTrainers(1, debouncedText);
   }, [debouncedText]);
 
   return (
     <SafeAreaView style={styles.container(isDarkMode)}>
       <StatusBarComp />
       <Header teks="Personal Trainer" onPress={() => navigation.goBack()} />
-      <View style={{ paddingHorizontal: 24 }}>
+      <View style={{ paddingHorizontal: 24, flex: 1 }}>
         <TextInput
-          onChangeText={setSearch}
+          onChangeText={handleSearchChange}
           value={search}
           placeholder={"Search personal trainer"}
           placeholderTextColor={colors._grey4}
@@ -94,29 +118,33 @@ const ListPT = ({
             borderColor: isDarkMode ? colors._grey4 : colors._grey3,
           }}
         />
+        <Gap height={16} />
+        <FlatList
+          refreshing={isLoading}
+          onRefresh={() => {
+            console.log("refresh");
+            setPage(1);
+            setPersonalTrainers([]);
+
+            getPersonalTrainers(1, debouncedText);
+          }}
+          onEndReached={handleEndReached}
+          data={personalTrainers}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({ item }) => (
+            <CardPT
+              isDarkMode={isDarkMode}
+              personalTrainer={item}
+              onPress={() =>
+                navigation.navigate("DetailPT", {
+                  id: item.id,
+                })
+              }
+            />
+          )}
+          ListEmptyComponent={<NoData text="No Data Available" />}
+        />
       </View>
-      <Gap height={16} />
-      {personalTrainers.length > 0 ? (
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={{ paddingHorizontal: 24 }}>
-            {personalTrainers.map((data: IPersonalTrainer) => {
-              return (
-                <CardPT
-                  isDarkMode={isDarkMode}
-                  personalTrainer={data}
-                  onPress={() =>
-                    navigation.navigate("DetailPT", {
-                      id: data.id,
-                    })
-                  }
-                />
-              );
-            })}
-          </View>
-        </ScrollView>
-      ) : (
-        <NoData text="No personal trainer available" />
-      )}
       {isLoading && <Loading />}
     </SafeAreaView>
   );
