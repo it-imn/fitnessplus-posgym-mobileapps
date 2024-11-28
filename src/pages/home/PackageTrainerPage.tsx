@@ -1,6 +1,7 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useEffect, useState } from "react";
 import {
+  FlatList,
   SafeAreaView,
   ScrollView,
   StyleProp,
@@ -18,6 +19,10 @@ import { colors, convertToRupiah, fonts } from "../../lib/utils";
 import { fetchPersonalTrainerPackage } from "../../services/personal_trainer";
 import { showMessage } from "react-native-flash-message";
 import Gap from "../../components/ui/Gap";
+import { useDebounce } from "use-debounce";
+import { CancelToken } from "axios";
+import NoData from "../../components/ui/NoData";
+import Loading from "../../components/ui/Loading";
 
 const PackageTrainer = ({
   navigation,
@@ -27,11 +32,28 @@ const PackageTrainer = ({
   const { isDarkMode } = useContext(ThemeContext);
   const [packages, setPackages] = useState<IPTPackage[]>([]);
 
-  const getPackage = async () => {
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(true);
+  const [debouncedText] = useDebounce(search, 500);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const getPackage = async (
+    _page: number,
+    _search: string,
+    token?: CancelToken,
+  ) => {
     try {
-      const { data } = await fetchPersonalTrainerPackage(id);
+      const { data, hasNext } = await fetchPersonalTrainerPackage(
+        id,
+        { page: _page, search: _search },
+        { cancelToken: token },
+      );
       if (data) {
-        setPackages(data);
+        setPackages(prev => [...prev, ...data]);
+
+        setHasNextPage(hasNext);
       }
     } catch (err: any) {
       showMessage({
@@ -44,35 +66,65 @@ const PackageTrainer = ({
     }
   };
 
+  // Handle search input change directly
+  const handleSearchChange = (text: string) => {
+    console.log("search");
+    setSearch(text);
+  };
+
+  // Handle pagination when reaching the end of the list
+  const handleEndReached = async () => {
+    if (!hasNextPage || isLoading) return;
+
+    const nextPage = page + 1;
+    setPage(nextPage);
+
+    getPackage(nextPage, debouncedText);
+  };
+
+  // Fetch
   useEffect(() => {
-    getPackage();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    console.log("fetch");
+    setPage(1);
+    setPackages([]);
+
+    getPackage(1, debouncedText);
+  }, [debouncedText]);
 
   return (
     <SafeAreaView style={styles.container(isDarkMode)}>
       <StatusBarComp />
       <Header teks="Package PT" onPress={() => navigation.goBack()} />
-      <ScrollView style={{ paddingHorizontal: 24 }}>
-        {packages.map((packagePT: IPTPackage) => {
-          return (
+      <View style={{ paddingHorizontal: 24, flex: 1 }}>
+        <FlatList
+          refreshing={isLoading}
+          onRefresh={() => {
+            console.log("refresh");
+            setPage(1);
+            setPackages([]);
+
+            getPackage(1, debouncedText);
+          }}
+          onEndReached={handleEndReached}
+          data={packages}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({ item }) => (
             <CardPackageTrainer
-              key={packagePT.id}
-              packagePT={packagePT}
+              key={item.id}
+              packagePT={item}
               onPress={() =>
                 navigation.navigate("DetailPackageTrainer", {
-                  id: packagePT.id,
+                  id: item.id,
                   pt_id: id,
                 })
               }
-              // aditional_feature={data.aditional_feature}
-              // down_payment={data.down_payment}
-              // pt_two_name={data.pt_two_name}
-              //   onPress={() => gotoDetail(package.id)}
             />
-          );
-        })}
-      </ScrollView>
+          )}
+          ListEmptyComponent={<NoData text="No Data Available" />}
+        />
+      </View>
+
+      {isLoading && <Loading />}
     </SafeAreaView>
   );
 };

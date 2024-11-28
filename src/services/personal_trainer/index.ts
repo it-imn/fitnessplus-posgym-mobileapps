@@ -61,13 +61,29 @@ const fetchDetailPersonalTrainer = async (id: number) => {
     });
 };
 
-const fetchPersonalTrainerPackage = async (id: number) => {
+const fetchPersonalTrainerPackage = async (
+  id: number,
+  query?: {
+    search?: string;
+    page?: number;
+    per_page?: number;
+  },
+  config?: AxiosRequestConfig<any> | undefined,
+) => {
+  const page = query?.page ?? 1;
+
   return api
-    .get(`/personal_trainer/${id}/package`)
+    .get(
+      `/personal_trainer/${id}/package?page=${page}${
+        query?.search ? `&search=${query.search}` : ""
+      }`,
+      config,
+    )
     .then(({ data }) => {
       console.log(data.result, "package");
       return {
         data: data.result as IPTPackage[],
+        hasNext: data.hasNext,
       };
     })
     .catch(err => {
