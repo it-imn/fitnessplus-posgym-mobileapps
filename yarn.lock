@@ -5609,6 +5609,7 @@ __metadata:
     react-native: 0.75.4
     react-native-blob-util: ^0.19.11
     react-native-bouncy-checkbox: ^4.1.2
+    react-native-compressor: ^1.9.0
     react-native-flash-message: ^0.4.2
     react-native-linear-gradient: ^2.8.3
     react-native-safe-area-context: ^4.11.1
@@ -8479,6 +8480,16 @@ __metadata:
   dependencies:
     "@freakycoder/react-native-bounceable": ^1.0.3
   checksum: d197e60db0ee7909f62be963b36ca5e1fd7cc164367e00a43c57d11382dba3b8d728fcb20d805a4768c168167107135ec88559bc239553926947c9386f82b71f
+  languageName: node
+  linkType: hard
+
+"react-native-compressor@npm:^1.9.0":
+  version: 1.9.0
+  resolution: "react-native-compressor@npm:1.9.0"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: a0c77a655834a23251c83a152cba808cad9572a5c77661922126cada3746097c7937e8d0aa013c8684c7e19a0ec6136c450703ce2123a245d05858ccaf299665
   languageName: node
   linkType: hard
 

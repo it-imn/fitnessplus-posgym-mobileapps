@@ -1,3 +1,4 @@
+import { Image } from "react-native-compressor";
 import { api } from "../../lib/axios";
 import { SignUpReq } from "../../stores/useSignUpStore";
 
@@ -33,8 +34,12 @@ const scanQR = async (code: string) => {
 const register = async (req: SignUpReq) => {
   const formData = new FormData();
   if (req.image !== "") {
+    const photo = await Image.compress(`file://${req.image}`, {
+      quality: 0.1,
+      compressionMethod: "auto",
+    });
     formData.append("image", {
-      uri: `file://${req.image}`,
+      uri: photo,
       name: req.image,
       type: "image/jpeg",
     });
