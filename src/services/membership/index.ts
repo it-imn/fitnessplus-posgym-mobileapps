@@ -1,8 +1,9 @@
-import { CancelToken } from "axios";
+import { AxiosRequestConfig, CancelToken } from "axios";
 import { api } from "../../lib/axios";
 import {
   IMembershipPackage,
   IMembershipPackageDetail,
+  ISubmissionPackage,
   IVoucher,
 } from "../../lib/definition";
 
@@ -106,7 +107,7 @@ const buyMembership = async (
   signature: string,
   voucher_code: string | null,
   down_payment_membership: 0 | 1,
-  started_at: string
+  started_at: string,
 ) => {
   return api
     .post("/membership/buy", {
@@ -129,6 +130,35 @@ const buyMembership = async (
     });
 };
 
+const fetchSubmissionPackages = async (
+  query?: {
+    search?: string;
+    page?: number;
+    per_page?: number;
+  },
+  config?: AxiosRequestConfig<any> | undefined,
+) => {
+  const page = query?.page ?? 1;
+
+  return api
+    .get(
+      `/membership/history?page=${page}${
+        query?.search ? `&search=${query.search}` : ""
+      }`,
+      config,
+    )
+    .then(({ data }) => {
+      return {
+        data: data.result as ISubmissionPackage[],
+        hasNext: data.hasNext,
+      };
+    })
+    .catch(err => {
+      console.error("error fetch history transactions");
+      throw new Error(err.response?.data.message);
+    });
+};
+
 export {
   fetchContractAgreement,
   fetchContractAgreementView,
@@ -137,4 +167,5 @@ export {
   fetchMembershipPackageDetail,
   checkVoucher,
   buyMembership,
+  fetchSubmissionPackages,
 };

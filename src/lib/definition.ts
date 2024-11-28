@@ -347,3 +347,15 @@ export interface IWOG {
   count_personal_trainer: number;
   count_member: number;
 }
+
+export interface ISubmissionPackage {
+  id: number;
+  order_code: string;
+  package: string;
+  membership: string;
+  total_price: number;
+  expired_at: string;
+  status: string;
+  sales: string;
+  created_at: string;
+}
