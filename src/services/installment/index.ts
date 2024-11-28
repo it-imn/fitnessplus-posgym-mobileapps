@@ -1,15 +1,31 @@
+import { AxiosRequestConfig } from "axios";
 import { api } from "../../lib/axios";
 import {
   IInstallmentMembership,
   IDetailInstallmentMembership,
 } from "../../lib/definition";
 
-const fetchInstallmentsMembership = async () => {
+const fetchInstallmentsMembership = async (
+  query?: {
+    search?: string;
+    page?: number;
+    per_page?: number;
+  },
+  config?: AxiosRequestConfig<any> | undefined,
+) => {
+  const page = query?.page ?? 1;
+
   return api
-    .get("/member/installment")
+    .get(
+      `/member/installment?page=${page}${
+        query?.search ? `&search=${query.search}` : ""
+      }`,
+      config,
+    )
     .then(({ data }) => {
       return {
         data: data.response as IInstallmentMembership[],
+        hasNext: data.hasNext,
       };
     })
     .catch((err: any) => {

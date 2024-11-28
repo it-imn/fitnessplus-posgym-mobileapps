@@ -1,6 +1,7 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
+  FlatList,
   SafeAreaView,
   ScrollView,
   Text,
@@ -18,6 +19,8 @@ import { RootStackParamList } from "../../lib/routes";
 import { colors, convertToRupiah, fonts } from "../../lib/utils";
 import { fetchInstallmentsMembership } from "../../services/installment";
 import { showMessage } from "react-native-flash-message";
+import { useDebounce } from "use-debounce";
+import { CancelToken } from "axios";
 
 export const InstallmentPackage = ({
   navigation,
@@ -26,12 +29,26 @@ export const InstallmentPackage = ({
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [packages, setPackages] = React.useState<IInstallmentMembership[]>([]);
 
-  const getInstallments = async () => {
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(true);
+  const [debouncedText] = useDebounce(search, 500);
+
+  const getInstallments = async (
+    _page: number,
+    _search: string,
+    token?: CancelToken,
+  ) => {
     setIsLoading(true);
     try {
-      const { data } = await fetchInstallmentsMembership();
+      const { data, hasNext } = await fetchInstallmentsMembership(
+        { page: _page, search: _search },
+        { cancelToken: token },
+      );
       if (data) {
-        setPackages(data);
+        setPackages(prev => [...prev, ...data]);
+
+        setHasNextPage(hasNext);
       }
     } catch (error: any) {
       showMessage({
@@ -46,9 +63,30 @@ export const InstallmentPackage = ({
     }
   };
 
+  // Handle search input change directly
+  const handleSearchChange = (text: string) => {
+    console.log("search");
+    setSearch(text);
+  };
+
+  // Handle pagination when reaching the end of the list
+  const handleEndReached = async () => {
+    if (!hasNextPage || isLoading) return;
+
+    const nextPage = page + 1;
+    setPage(nextPage);
+
+    getInstallments(nextPage, debouncedText);
+  };
+
+  // Fetch
   useEffect(() => {
-    getInstallments();
-  }, []);
+    console.log("fetch");
+    setPage(1);
+    setPackages([]);
+
+    getInstallments(1, debouncedText);
+  }, [debouncedText]);
 
   return (
     <SafeAreaView
@@ -59,34 +97,32 @@ export const InstallmentPackage = ({
       <StatusBarComp />
       <Header teks="Installment Package" onPress={() => navigation.goBack()} />
 
-      {packages.length === 0 ? (
-        <View
-          style={{
-            flex: 1,
-            alignContent: "center",
-            justifyContent: "center",
-          }}>
-          <NoData text="No Data Available" />
-        </View>
-      ) : (
-        <ScrollView
-          style={{
-            paddingHorizontal: 24,
-          }}>
-          {packages.map((packageInstallment: IInstallmentMembership) => {
-            return (
-              <PackageCard
-                packageInstallment={packageInstallment}
-                onPress={() =>
-                  navigation.navigate("DetailInstallmentPackage", {
-                    id: packageInstallment.payment_id,
-                  })
-                }
-              />
-            );
-          })}
-        </ScrollView>
-      )}
+      <View style={{ paddingHorizontal: 24, flex: 1 }}>
+        <FlatList
+          refreshing={isLoading}
+          onRefresh={() => {
+            console.log("refresh");
+            setPage(1);
+            setPackages([]);
+
+            getInstallments(1, debouncedText);
+          }}
+          onEndReached={handleEndReached}
+          data={packages}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({ item }) => (
+            <PackageCard
+              packageInstallment={item}
+              onPress={() =>
+                navigation.navigate("DetailInstallmentPackage", {
+                  id: item.payment_id,
+                })
+              }
+            />
+          )}
+          ListEmptyComponent={<NoData text="No Data Available" />}
+        />
+      </View>
 
       {isLoading && <Loading />}
     </SafeAreaView>
