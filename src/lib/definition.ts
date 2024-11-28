@@ -254,20 +254,16 @@ export interface IFacility {
 }
 
 export interface IVoucher {
-  code: string;
-  expired_at: string;
-  expired_date: string;
   id: number;
-  membership_id: number;
+  package_id?: number;
+  package?: string;
+  total_package?: number;
+  code: string;
   name: string;
-  package_membership: string;
-  package_membership_amount: number;
-  periode: string;
-  total_package_discount: number;
   type: string;
-  value_percent?: number;
-  value_price?: number;
-  total_price: number;
+  discount: number;
+  total_price?: number;
+  expired_at: string;
 }
 
 export interface IPTPackage {

@@ -157,11 +157,9 @@ const WillTransactionCash = ({
                 {transaction.voucher?.name}
               </Text>
               <Text style={styles.teks3(isDarkMode)}>
-                {transaction.voucher?.value_percent
-                  ? `${transaction.voucher?.value_percent * 100}%`
-                  : transaction.voucher?.value_price
-                  ? convertToRupiah(transaction.voucher?.value_price.toString())
-                  : 0}
+                {convertToRupiah(
+                  transaction.voucher?.discount.toString() || "",
+                )}
               </Text>
             </View>
             <Gap height={12} />

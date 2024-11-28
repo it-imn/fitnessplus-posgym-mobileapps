@@ -82,13 +82,14 @@ const Voucher = ({
         }
 
         const { membership_id } = transaction.transaction as MembershipReq;
+        const {final_price} = transaction;
 
         const { data } = await checkVoucher(voucherCode, membership_id);
 
         update({
           voucher_code: voucherCode,
           voucher: data,
-          final_price: data.total_price,
+          final_price: data.package_id ? final_price - data.discount : data.total_price,
         });
 
         navigation.navigate("PaymentMethod");
@@ -115,13 +116,14 @@ const Voucher = ({
         }
 
         const { package_pt_id } = transaction.transaction as PTReq;
+        const {final_price} = transaction
 
         const { data } = await checkVoucher(voucherCode, package_pt_id);
 
         update({
           voucher_code: voucherCode,
           voucher: data,
-          final_price: data.total_price,
+          final_price: data.package_id ? final_price - data.discount : data.total_price,
         });
 
         navigation.navigate("PaymentMethod");
