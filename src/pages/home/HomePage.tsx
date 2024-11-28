@@ -121,11 +121,11 @@ function GymServiceSection({
       image: "class",
       onPress: () => navigation.navigate("Class"),
     },
-    // {
-    //   name: "Who's on Gym",
-    //   image: 'who',
-    //   onPress: gotoWOG,
-    // },
+    {
+      name: "Who's on Gym",
+      image: 'who',
+      onPress: () => navigation.navigate("WOG"),
+    },
     // {
     //   name: 'Schedule',
     //   image: 'schedule',

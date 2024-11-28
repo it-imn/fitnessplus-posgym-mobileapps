@@ -43,6 +43,7 @@ import Agreement from "../pages/home/AgreementPage";
 import MembershipAgreement from "../pages/profile/MembershipAgreementPage";
 import PackagePTAgreement from "../pages/profile/PackagePTAgreementPage";
 import SignConfirmation from "../pages/auth/SignConfirmation";
+import { WOG } from "../pages/home/WOGPage";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -76,10 +77,10 @@ export const Router = () => {
       <Stack.Screen name="Membership" component={Membership} />
       <Stack.Screen name="Checkin" component={Checkin} />
       <Stack.Screen name="Selfie" component={Selfie} />
+      <Stack.Screen name="WOG" component={WOG} />
       {/*
       <Stack.Screen name="Splash" component={Splash} />
       <Stack.Screen name="Sign" component={Sign} />
-      <Stack.Screen name="Whogym" component={Whogym} />
       <Stack.Screen name="Consultation" component={Consultation} />
       <Stack.Screen name="Merchandise" component={Merchandise} />
       <Stack.Screen name="PTConsult" component={PTConsult} />

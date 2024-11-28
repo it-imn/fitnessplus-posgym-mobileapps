@@ -164,8 +164,8 @@ export interface IClassHistory {
 export type Token = string;
 
 export const ThemeType = {
-  light: 'light',
-  dark: 'dark',
+  light: "light",
+  dark: "dark",
 };
 
 export type Theme = keyof typeof ThemeType;
@@ -335,4 +335,15 @@ export interface IDetailInstallmentMembership {
   payment_id: number;
   status: string;
   total: number;
+}
+
+export interface IWOG {
+  id: number;
+  branch: string;
+  date: string;
+  count_sales: number;
+  count_operational: number;
+  count_instructor: number;
+  count_personal_trainer: number;
+  count_member: number;
 }

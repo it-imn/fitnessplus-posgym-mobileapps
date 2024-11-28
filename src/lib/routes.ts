@@ -101,4 +101,5 @@ export type RootStackParamList = {
   DetailInstallmentPackage: {
     id: number;
   };
+  WOG: undefined;
 };
