@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   StyleProp,
   ViewStyle,
+  FlatList,
 } from "react-native";
 import Header from "../../components/ui/Header";
 import Gap from "../../components/ui/Gap";
@@ -21,6 +22,10 @@ import { colors, fonts } from "../../lib/utils";
 import { fetchGyms } from "../../services/gym";
 import { useSignUpStore } from "../../stores/useSignUpStore";
 import { showMessage } from "react-native-flash-message";
+import { useDebounce } from "use-debounce";
+import { CancelToken } from "axios";
+import Loading from "../../components/ui/Loading";
+import NoData from "../../components/ui/NoData";
 
 const SelectGym = ({
   navigation,
@@ -29,11 +34,28 @@ const SelectGym = ({
   const [gyms, setGyms] = useState<IGym[]>([]);
   const updateSignUpReq = useSignUpStore(state => state.update);
 
-  const getGym = async () => {
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(true);
+  const [debouncedText] = useDebounce(search, 500);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const getGym = async (
+    _page: number,
+    _search: string,
+    token?: CancelToken,
+  ) => {
+    setIsLoading(true);
     try {
-      const { data } = await fetchGyms();
+      const { data, hasNext } = await fetchGyms(
+        { page: _page, search: _search },
+        { cancelToken: token },
+      );
       if (data) {
-        setGyms(data);
+        setGyms(prev => [...prev, ...data]);
+
+        setHasNextPage(hasNext);
       }
     } catch (error: any) {
       showMessage({
@@ -43,12 +65,35 @@ const SelectGym = ({
         backgroundColor: colors._red,
         color: colors._white,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  // Handle search input change directly
+  const handleSearchChange = (text: string) => {
+    console.log("search");
+    setSearch(text);
+  };
+
+  // Handle pagination when reaching the end of the list
+  const handleEndReached = async () => {
+    if (!hasNextPage || isLoading) return;
+
+    const nextPage = page + 1;
+    setPage(nextPage);
+
+    getGym(nextPage, debouncedText);
+  };
+
+  // Fetch
   useEffect(() => {
-    getGym();
-  }, []);
+    console.log("fetch");
+    setPage(1);
+    setGyms([]);
+
+    getGym(1, debouncedText);
+  }, [debouncedText]);
 
   return (
     <SafeAreaView
@@ -63,22 +108,34 @@ const SelectGym = ({
           Select gym you want to register
         </Text>
         <Gap height={20} />
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {gyms.map((data: IGym) => {
-            return (
-              <CardSelectGym
-                key={data.id}
-                gym_name={data.name_gym}
-                onPress={() => {
-                  updateSignUpReq({ gym_id: data.id, gym_name: data.name_gym });
+        <FlatList
+          refreshing={isLoading}
+          onRefresh={() => {
+            console.log("refresh");
+            setPage(1);
+            setGyms([]);
 
-                  navigation.navigate("SelectBranch");
-                }}
-              />
-            );
-          })}
-        </ScrollView>
+            getGym(1, debouncedText);
+          }}
+          onEndReached={handleEndReached}
+          data={gyms}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({ item }) => (
+            <CardSelectGym
+              key={item.id}
+              gym_name={item.name_gym}
+              onPress={() => {
+                updateSignUpReq({ gym_id: item.id, gym_name: item.name_gym });
+
+                navigation.navigate("SelectBranch");
+              }}
+            />
+          )}
+          ListEmptyComponent={<NoData text="No Data Available" />}
+        />
       </View>
+
+      {isLoading && <Loading />}
     </SafeAreaView>
   );
 };

@@ -1,12 +1,26 @@
+import { AxiosRequestConfig } from "axios";
 import { api } from "../../lib/axios";
 import { IGym, IBranch } from "../../lib/definition";
 
-const fetchGyms = async () => {
+const fetchGyms = async (
+  query?: {
+    search?: string;
+    page?: number;
+    per_page?: number;
+  },
+  config?: AxiosRequestConfig<any> | undefined,
+) => {
+  const page = query?.page ?? 1;
+
   return api
-    .get("/gym/list")
+    .get(
+      `/gym/list?page=${page}${query?.search ? `&search=${query.search}` : ""}`,
+      config,
+    )
     .then(({ data }) => {
       return {
         data: data.result as IGym[],
+        hasNext: data.hasNext,
       };
     })
     .catch(err => {
