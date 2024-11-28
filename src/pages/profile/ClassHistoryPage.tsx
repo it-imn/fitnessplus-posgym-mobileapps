@@ -1,7 +1,7 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { CompositeScreenProps, Theme } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
+  FlatList,
 } from "react-native";
 import Header from "../../components/ui/Header";
 import { errorModal } from "../../components/Modal";
@@ -26,6 +27,8 @@ import { colors, fonts } from "../../lib/utils";
 import { fetchBookingHistory, cancelBooking } from "../../services/class";
 import { showMessage } from "react-native-flash-message";
 import { Button } from "../../components/ui/Button";
+import { useDebounce } from "use-debounce";
+import { CancelToken } from "axios";
 
 export const ClassHistory = ({
   navigation,
@@ -45,14 +48,25 @@ export const ClassHistory = ({
     name: string | null;
   }>({ id: null, name: null });
   const [reason, setReason] = React.useState<string>("");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(true);
+  const [debouncedText] = useDebounce(search, 500);
 
-  const getBookingHistory = async () => {
+  const getBookingHistory = async (
+    _page: number,
+    _search: string,
+    token?: CancelToken,
+  ) => {
     setIsLoading(true);
     try {
-      const { data } = await fetchBookingHistory();
+      const { data, hasNext } = await fetchBookingHistory(
+        { page: _page, search: _search },
+        { cancelToken: token },
+      );
       if (data) {
-        setBookingHistory(data);
-        console.log(bookingHistory.length);
+        setBookingHistory(prev => [...prev, ...data]);
+        setHasNextPage(hasNext);
       }
     } catch (err: any) {
       showMessage({
@@ -75,7 +89,7 @@ export const ClassHistory = ({
       if (data) {
         setCancelClass({ id: null, name: null });
         setIsViewModal(false);
-        getBookingHistory();
+        getBookingHistory(1, debouncedText);
       }
     } catch (err: any) {
       errorModal(err.message || "An error occured", isDarkMode);
@@ -84,10 +98,30 @@ export const ClassHistory = ({
     }
   };
 
-  React.useEffect(() => {
-    getBookingHistory();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Handle search input change directly
+  const handleSearchChange = (text: string) => {
+    console.log("search");
+    setSearch(text);
+  };
+
+  // Handle pagination when reaching the end of the list
+  const handleEndReached = async () => {
+    if (!hasNextPage || isLoading) return;
+
+    const nextPage = page + 1;
+    setPage(nextPage);
+
+    getBookingHistory(nextPage, debouncedText);
+  };
+
+  // Fetch
+  useEffect(() => {
+    console.log("fetch");
+    setPage(1);
+    setBookingHistory([]);
+
+    getBookingHistory(1, debouncedText);
+  }, [debouncedText]);
 
   return (
     <SafeAreaView
@@ -103,74 +137,35 @@ export const ClassHistory = ({
           navigation.navigate("Home");
         }}
       />
-
-      {/*
-      <View
-        style={{
-          flexDirection: 'row',
-          gap: 16,
-          justifyContent: 'center',
-        }}>
-        {Object.keys(tabStatus).map(key => (
-          <TouchableOpacity
-            style={{
-              paddingHorizontal: 8,
-              paddingVertical: 4,
-              borderWidth: 1,
-              borderColor:
-                isDarkMode ? colors._white : colors._grey,
-              borderRadius: 8,
-              justifyContent: 'center',
-              backgroundColor: status === key ? colors._blue : 'transparent',
-            }}
-            onPress={() => {
-              if (status === key) {
-                setStatus(undefined);
-              } else {
-                setStatus(key as TabStatus);
-              }
-            }}>
-            <Text
-              style={{
-                maxWidth: 120,
-                textAlign: 'center',
-              }}>
-              {tabStatus[key]}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-      */}
       <Gap height={16} />
 
-      <ScrollView>
-        <View
-          style={{
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
-            rowGap: 16,
-            padding: 16,
-          }}>
-          {bookingHistory.length !== 0 ? (
-            bookingHistory.map((data, _) => (
-              <ClassHistoryCard
-                key={data.id}
-                classHistory={data}
-                cancelClassId={cancelClass.id}
-                onCancel={() => {
-                  setCancelClass({
-                    id: data.id,
-                    name: data.class_name,
-                  });
-                }}
-              />
-            ))
-          ) : (
-            <NoData text="No Data Available" />
-          )}
-        </View>
-      </ScrollView>
+      <FlatList
+        refreshing={isLoading}
+        onRefresh={() => {
+          console.log("refresh");
+          setPage(1);
+          setBookingHistory([]);
+
+          getBookingHistory(1, debouncedText);
+        }}
+        onEndReached={handleEndReached}
+        data={bookingHistory}
+        keyExtractor={(_, index) => index.toString()}
+        renderItem={({ item }) => (
+          <ClassHistoryCard
+            key={item.id}
+            classHistory={item}
+            cancelClassId={cancelClass.id}
+            onCancel={() => {
+              setCancelClass({
+                id: item.id,
+                name: item.class_name,
+              });
+            }}
+          />
+        )}
+        ListEmptyComponent={<NoData text="No Data Available" />}
+      />
       <Gap height={16} />
       <View
         style={{

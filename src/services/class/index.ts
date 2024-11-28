@@ -60,13 +60,28 @@ const postBooking = async (schedule_id: number) => {
     });
 };
 
-const fetchBookingHistory = async () => {
+const fetchBookingHistory = async (
+  query?: {
+    search?: string;
+    page?: number;
+    per_page?: number;
+  },
+  config?: AxiosRequestConfig<any> | undefined,
+) => {
+  const page = query?.page ?? 1;
+
   return api
-    .get("/get_std_class/history_booking_class")
+    .get(
+      `/get_std_class/history_booking_class?page=${page}${
+        query?.search ? `&search=${query.search}` : ""
+      }`,
+      config,
+    )
     .then(({ data }) => {
       console.log(data);
       return {
         data: data.result as IClassHistory[],
+        hasNext: data.hasNext,
       };
     })
     .catch(err => {
