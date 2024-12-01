@@ -155,12 +155,13 @@ const fetchSubmissionPackages = async (
 
   return api
     .get(
-      `/membership/history?page=${page}${
+      `/submission_package?page=${page}${
         query?.search ? `&search=${query.search}` : ""
       }`,
       config,
     )
     .then(({ data }) => {
+      console.log(data, "data");
       return {
         data: data.result as ISubmissionPackage[],
         hasNext: data.hasNext,

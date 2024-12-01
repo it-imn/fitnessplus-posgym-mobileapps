@@ -350,12 +350,25 @@ export interface IWOG {
 
 export interface ISubmissionPackage {
   id: number;
-  order_code: string;
-  package: string;
   membership: string;
-  total_price: number;
-  expired_at: string;
+  package_id: number;
+  package_table: string;
+  payment_date: string;
+  payment_id: number;
+  payment_method: string;
+  payment_order_code: string;
+  period: number;
+  price: number;
+  remaining_expired: number;
+  remaining_expired_message: string;
+  sales_id: number;
+  sales_name: number;
+  started_at: string;
   status: string;
-  sales: string;
+  total_price: number;
+  user_id: number;
+  // voucher_id:
+  expired_at: string;
+  discount: number;
   created_at: string;
 }

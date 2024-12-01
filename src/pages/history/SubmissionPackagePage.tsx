@@ -1,13 +1,13 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { Fragment, useContext, useEffect, useState } from "react";
-import { FlatList, Image, SafeAreaView, Text, View } from "react-native";
+import { FlatList, Image, SafeAreaView, Text, TextInput, View } from "react-native";
 import Header from "../../components/ui/Header";
 import NoData from "../../components/ui/NoData";
 import StatusBarComp from "../../components/ui/StatusBarComp";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import { ISubmissionPackage, ThemeType } from "../../lib/definition";
 import { RootStackParamList } from "../../lib/routes";
-import { colors, fonts } from "../../lib/utils";
+import { colors, convertToRupiah, fonts } from "../../lib/utils";
 import Gap from "../../components/ui/Gap";
 import { useIsFocused } from "@react-navigation/native";
 import { useDebounce } from "use-debounce";
@@ -94,10 +94,9 @@ export const SubmissionPackage = ({
       <View
         style={{
           paddingHorizontal: 20,
-          backgroundColor: colors._backBlue,
           flex: 1,
         }}>
-        {/* <TextInput
+        <TextInput
           onChangeText={handleSearchChange}
           value={search}
           placeholder="Search"
@@ -113,7 +112,7 @@ export const SubmissionPackage = ({
             borderColor: isDarkMode ? colors._grey4 : colors._grey3,
           }}
         />
-        <Gap height={24} /> */}
+        <Gap height={24} />
         <FlatList
           refreshing={isLoading}
           onRefresh={() => {
@@ -161,7 +160,7 @@ const ListHistoryDetail = ({
             alignItems: "center",
             flexShrink: 1,
           }}>
-          <Image
+          {/* <Image
             source={
               {
                 // uri: submissionPackage.image,
@@ -176,7 +175,7 @@ const ListHistoryDetail = ({
               borderColor: isDarkMode ? colors._grey4 : colors._grey3,
             }}
           />
-          <Gap width={16} />
+          <Gap width={16} /> */}
           <View
             style={{
               flexDirection: "column",
@@ -189,7 +188,7 @@ const ListHistoryDetail = ({
                 color: isDarkMode ? colors._white : colors._black,
                 flexShrink: 1,
               }}>
-              {submissionPackage.sales}
+              {submissionPackage.membership}
             </Text>
             <Gap height={8} />
             <Text
@@ -200,7 +199,7 @@ const ListHistoryDetail = ({
                 flexShrink: 1,
               }}
               numberOfLines={2}>
-              {submissionPackage.membership}
+              {convertToRupiah(submissionPackage.total_price.toString())}
             </Text>
             <Gap height={4} />
             <Text
@@ -210,7 +209,7 @@ const ListHistoryDetail = ({
                 color: isDarkMode ? colors._white : colors._black,
               }}
               numberOfLines={2}>
-              {submissionPackage.order_code}
+              {submissionPackage.payment_order_code}
             </Text>
           </View>
         </View>
@@ -219,14 +218,11 @@ const ListHistoryDetail = ({
             flexDirection: "column",
             alignItems: "flex-end",
             justifyContent: "space-between",
-            width: 90,
+            width: 120,
           }}>
           <View
             style={{
-              backgroundColor:
-                submissionPackage.status === "active"
-                  ? colors._green
-                  : colors._red,
+              backgroundColor: colors._blue2,
               borderRadius: 8,
             }}>
             <Text
@@ -249,6 +245,15 @@ const ListHistoryDetail = ({
             numberOfLines={2}>
             {submissionPackage.expired_at}
           </Text>
+          <Gap height={4}/>
+          <Text
+              style={{
+                fontFamily: fonts.primary[300],
+                fontSize: 8,
+                color: isDarkMode ? colors._white : colors._black,
+              }}>
+              {submissionPackage.payment_date}
+            </Text>
         </View>
       </View>
       <View
