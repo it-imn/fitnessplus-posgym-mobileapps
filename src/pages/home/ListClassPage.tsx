@@ -32,6 +32,7 @@ import { Button, ButtonColor } from "../../components/ui/Button";
 import { showMessage } from "react-native-flash-message";
 import { useDebounce } from "use-debounce";
 import { ImageNotFound } from "../../assets";
+import { DoorClosedIcon, DoorOpenIcon } from "lucide-react-native";
 
 const Class = ({
   navigation,
@@ -128,8 +129,6 @@ const Class = ({
             }}
           />
           <Gap height={16} />
-          <Text style={styles.sub(isDarkMode)}>Available Classes</Text>
-          <Gap height={8} />
           <FlatList
             refreshing={isLoading}
             onRefresh={() => {
@@ -257,12 +256,34 @@ const CardClass = ({
         <Text style={styles.teksCardClass(isDarkMode)}>
           {classStd.class_name}
         </Text>
-        <Text style={styles.teks2CardClass(isDarkMode)}>
-          Opened at: {classStd.opened_at_local}
-        </Text>
-        <Text style={styles.teks2CardClass(isDarkMode)}>
-          Closed at: {classStd.date_class_local}
-        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 4,
+          }}>
+          <DoorOpenIcon
+            size={12}
+            color={isDarkMode ? colors._grey4 : colors._grey3}
+          />
+          <Text style={styles.teks2CardClass(isDarkMode)}>
+            {classStd.opened_at_local}
+          </Text>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 4,
+          }}>
+          <DoorClosedIcon
+            size={12}
+            color={isDarkMode ? colors._grey4 : colors._grey3}
+          />
+          <Text style={styles.teks2CardClass(isDarkMode)}>
+            {classStd.date_class_local}
+          </Text>
+        </View>
       </View>
       <Text style={styles.teks3CardClass(isDarkMode)}>
         {classStd.count_member || 0}/{classStd.quota || 0}
@@ -278,8 +299,8 @@ const styles = {
     fontSize: 18,
   }),
   teks2CardClass: (isDarkMode: boolean) => ({
-    color: isDarkMode ? colors._white : colors._black,
-    fontFamily: fonts.primary[200],
+    color: isDarkMode ? colors._grey4 : colors._grey3,
+    fontFamily: fonts.primary[400],
     fontSize: 12,
   }),
   teks3CardClass: (isDarkMode: boolean) => ({
