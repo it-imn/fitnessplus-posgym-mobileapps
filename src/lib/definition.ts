@@ -372,3 +372,17 @@ export interface ISubmissionPackage {
   discount: number;
   created_at: string;
 }
+
+export interface IPaymentPackage {
+  created_at: string;
+  id: number;
+  member: string;
+  member_profile: string;
+  membership: string;
+  order_code: string;
+  package: string;
+  payment_date: string;
+  payment_method: string;
+  status: string;
+  total_price: number;
+}

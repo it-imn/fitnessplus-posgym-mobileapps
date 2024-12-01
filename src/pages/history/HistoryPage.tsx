@@ -56,6 +56,16 @@ export const History = ({
             navigation.navigate("InstallmentPackage");
           }}
         />
+        <Gap height={12} />
+        <ButtonIconTeks
+          teksColor={isDarkMode ? colors._white : colors._black}
+          backColor={isDarkMode ? colors._black : colors._grey2}
+          teks="Payment Package"
+          type="approval"
+          onPress={() => {
+            navigation.navigate("PaymentPackage");
+          }}
+        />
       </View>
     </SafeAreaView>
   );

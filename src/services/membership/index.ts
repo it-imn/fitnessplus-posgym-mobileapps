@@ -3,6 +3,7 @@ import { api } from "../../lib/axios";
 import {
   IMembershipPackage,
   IMembershipPackageDetail,
+  IPaymentPackage,
   ISubmissionPackage,
   IVoucher,
 } from "../../lib/definition";
@@ -173,12 +174,43 @@ const fetchSubmissionPackages = async (
     });
 };
 
+const fetchPaymentPackages = async (
+  query?: {
+    search?: string;
+    page?: number;
+    per_page?: number;
+  },
+  config?: AxiosRequestConfig<any> | undefined,
+) => {
+  const page = query?.page ?? 1;
+
+  return api
+    .get(
+      `/member/payment?page=${page}${
+        query?.search ? `&search=${query.search}` : ""
+      }`,
+      config,
+    )
+    .then(({ data }) => {
+      console.log(data.result[0], "data");
+      return {
+        data: data.result as IPaymentPackage[],
+        hasNext: data.hasNext,
+      };
+    })
+    .catch(err => {
+      console.error("error fetch history transactions");
+      throw new Error(err.response?.data.message);
+    });
+};
+
 export {
   fetchContractAgreement,
   fetchContractAgreementView,
   fetchContractAgreementDownload,
   fetchMembershipPackages,
   fetchMembershipPackageDetail,
+  fetchPaymentPackages,
   checkVoucher,
   buyMembership,
   fetchSubmissionPackages,

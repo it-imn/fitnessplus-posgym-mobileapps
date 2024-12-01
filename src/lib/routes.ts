@@ -102,4 +102,5 @@ export type RootStackParamList = {
     id: number;
   };
   WOG: undefined;
+  PaymentPackage: undefined;
 };
