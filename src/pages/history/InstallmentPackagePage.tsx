@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -97,7 +98,24 @@ export const InstallmentPackage = ({
       <StatusBarComp />
       <Header teks="Installment Package" onPress={() => navigation.goBack()} />
 
-      <View style={{ paddingHorizontal: 24, flex: 1 }}>
+      <View style={{ paddingHorizontal: 20, flex: 1 }}>
+        <TextInput
+          onChangeText={handleSearchChange}
+          value={search}
+          placeholder="Search"
+          placeholderTextColor={colors._grey4}
+          style={{
+            padding: 12,
+            fontSize: 13,
+            fontFamily: fonts.primary[300],
+            backgroundColor: isDarkMode ? colors._black : colors._grey2,
+            borderRadius: 10,
+            color: isDarkMode ? colors._white : colors._black,
+            borderWidth: 0.5,
+            borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+          }}
+        />
+        <Gap height={24} />
         <FlatList
           refreshing={isLoading}
           onRefresh={() => {
