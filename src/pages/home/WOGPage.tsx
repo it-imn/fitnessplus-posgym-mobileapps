@@ -14,6 +14,7 @@ import { fetchCountWOG } from "../../services/who-on-gym";
 import { showMessage } from "react-native-flash-message";
 import Loading from "../../components/ui/Loading";
 import Gap from "../../components/ui/Gap";
+import { ContactIcon, ContactRoundIcon, DumbbellIcon, UsersIcon } from "lucide-react-native";
 
 const width = Dimensions.get("window").width;
 
@@ -103,7 +104,12 @@ export const WOG = ({
             }}>
             {countWOG?.count_member}
           </Text>
-          <Gap height={5} />
+          <Gap height={4} />
+          <UsersIcon
+            size={16}
+            color={isDarkMode ? colors._white : colors._black2}
+          />
+          <Gap height={4} />
           <Text
             style={{
               fontFamily: fonts.primary[300],
@@ -137,7 +143,12 @@ export const WOG = ({
             }}>
             {countWOG?.count_personal_trainer}
           </Text>
-          <Gap height={5} />
+          <Gap height={4} />
+          <DumbbellIcon
+            size={16}
+            color={isDarkMode ? colors._white : colors._black2}
+          />
+          <Gap height={4} />
           <Text
             style={{
               fontFamily: fonts.primary[300],
@@ -171,7 +182,12 @@ export const WOG = ({
             }}>
             {countWOG?.count_instructor}
           </Text>
-          <Gap height={5} />
+          <Gap height={4} />
+          <ContactIcon
+            size={16}
+            color={isDarkMode ? colors._white : colors._black2}
+          />
+          <Gap height={4} />
           <Text
             style={{
               fontFamily: fonts.primary[300],
@@ -205,7 +221,12 @@ export const WOG = ({
             }}>
             {countWOG?.count_operational}
           </Text>
-          <Gap height={5} />
+          <Gap height={4} />
+          <ContactRoundIcon
+            size={16}
+            color={isDarkMode ? colors._white : colors._black2}
+          />
+          <Gap height={4} />
           <Text
             style={{
               fontFamily: fonts.primary[300],
