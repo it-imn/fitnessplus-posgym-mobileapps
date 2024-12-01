@@ -156,23 +156,95 @@ const DetailPackageTrainer = ({
     <SafeAreaView style={styles.container(isDarkMode)}>
       <StatusBarComp />
       <Header teks="Package PT" onPress={() => navigation.goBack()} />
-      <View style={{ paddingHorizontal: 24, flex: 1, paddingBottom: 24 }}>
-        <Text style={styles.teks(isDarkMode)}>Package Name : {packagePT.package_name}</Text>
-        <Text style={styles.teks(isDarkMode)}>
-          Total Price : {convertToRupiah(packagePT.total.toString())}
+      <View style={{ padding: 24, flex: 1 }}>
+        <Text
+          style={{
+            fontSize: 12,
+            color: isDarkMode ? colors._grey4 : colors._grey3,
+            fontFamily: fonts.primary[400],
+          }}>
+          Package Name
         </Text>
-        <Text style={styles.teks(isDarkMode)}>
-          Base Price : {convertToRupiah(packagePT.base_price.toString())}
+        <Gap height={4} />
+        <Text
+          style={{
+            fontSize: 12,
+            fontFamily: fonts.primary[300],
+            color: isDarkMode ? colors._white : colors._black,
+            lineHeight: 20,
+          }}>
+          {packagePT.package_name}
         </Text>
-        <Text style={styles.teks(isDarkMode)}>Session : {packagePT.session} Session</Text>
+        <Gap height={16} />
+        <Text
+          style={{
+            fontSize: 12,
+            color: isDarkMode ? colors._grey4 : colors._grey3,
+            fontFamily: fonts.primary[400],
+          }}>
+          Total Price
+        </Text>
+        <Gap height={4} />
+        <Text
+          style={{
+            fontSize: 12,
+            fontFamily: fonts.primary[300],
+            color: isDarkMode ? colors._white : colors._black,
+            lineHeight: 20,
+          }}>
+          {convertToRupiah(packagePT.total.toString())}
+        </Text>
+        <Gap height={16} />
+        <Text
+          style={{
+            fontSize: 12,
+            color: isDarkMode ? colors._grey4 : colors._grey3,
+            fontFamily: fonts.primary[400],
+          }}>
+          Base Price
+        </Text>
+        <Gap height={4} />
+        <Text
+          style={{
+            fontSize: 12,
+            fontFamily: fonts.primary[300],
+            color: isDarkMode ? colors._white : colors._black,
+            lineHeight: 20,
+          }}>
+          {convertToRupiah(packagePT.base_price.toString())}
+        </Text>
+        <Gap height={16} />
+        <Text
+          style={{
+            fontSize: 12,
+            color: isDarkMode ? colors._grey4 : colors._grey3,
+            fontFamily: fonts.primary[400],
+          }}>
+          Session
+        </Text>
+        <Gap height={4} />
+        <Text
+          style={{
+            fontSize: 12,
+            fontFamily: fonts.primary[300],
+            color: isDarkMode ? colors._white : colors._black,
+            lineHeight: 20,
+          }}>
+          {packagePT.session} Session
+        </Text>
+        <Gap height={16} />
         {feature !== "" && (
           <>
-            <Text style={styles.teks(isDarkMode)}>Feature :</Text>
-            <View
+            <Text
               style={{
-                flexDirection: "row",
-                alignItems: "center",
+                fontSize: 12,
+                color: isDarkMode ? colors._grey4 : colors._grey3,
+                fontFamily: fonts.primary[400],
               }}>
+              Feature
+            </Text>
+            <Gap height={4} />
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
               <View
                 style={{
                   backgroundColor: colors._blue,
@@ -181,8 +253,17 @@ const DetailPackageTrainer = ({
                   padding: 4,
                   borderRadius: 4,
                 }}>
-                <Text style={styles.teks6(isDarkMode)}>{feature}</Text>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontFamily: fonts.primary[400],
+                    color: isDarkMode ? colors._white : colors._black,
+                    lineHeight: 20,
+                  }}>
+                  {feature}
+                </Text>
               </View>
+              <Gap width={4} />
             </View>
           </>
         )}
@@ -215,7 +296,7 @@ const DetailPackageTrainer = ({
           disabled={!toggleCheckBox}
           backColor={colors._blue2}
           textColor={colors._white}
-          teks="Next"
+          teks="Continue"
           onPress={gotoVoucher}
         />
       </View>
@@ -298,12 +379,13 @@ const styles = {
     fontFamily: fonts.primary[300],
     color: isDarkMode ? colors._white : colors._black,
   }),
-  teks3: (isDarkMode: boolean) => ({
-    color: isDarkMode ? colors._grey4 : colors._grey3,
-    fontSize: 12,
-    fontFamily: fonts.primary[600],
-    textAlign: "center",
-  }) as StyleProp<ViewStyle>,
+  teks3: (isDarkMode: boolean) =>
+    ({
+      color: isDarkMode ? colors._grey4 : colors._grey3,
+      fontSize: 12,
+      fontFamily: fonts.primary[600],
+      textAlign: "center",
+    } as StyleProp<ViewStyle>),
   teks4: (isDarkMode: boolean) => ({
     fontSize: 12,
     fontFamily: fonts.primary[300],
