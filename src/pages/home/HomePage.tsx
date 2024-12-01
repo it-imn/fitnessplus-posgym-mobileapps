@@ -71,10 +71,12 @@ function ListPTSection({
   isDarkMode,
   personalTrainers,
   navigation,
+  haveMembership,
 }: {
   isDarkMode: boolean;
   personalTrainers: IPersonalTrainer[];
   navigation: any;
+  haveMembership: boolean;
 }) {
   return (
     <React.Fragment>
@@ -89,6 +91,18 @@ function ListPTSection({
               pt_image={personalTrainer.image}
               paket={personalTrainer.total_package}
               onPress={() => {
+                if (!haveMembership) {
+                  showMessage({
+                    message: "You need to buy membership first",
+                    type: "warning",
+                    icon: "warning",
+                    backgroundColor: colors._red,
+                    color: colors._white,
+                  });
+                  return;
+                  
+                }
+
                 navigation.navigate("DetailPT", {
                   id: personalTrainer.id,
                 });
@@ -123,7 +137,7 @@ function GymServiceSection({
     },
     {
       name: "Who's on Gym",
-      image: 'who',
+      image: "who",
       onPress: () => navigation.navigate("WOG"),
     },
     // {
@@ -751,6 +765,7 @@ export const HomePage = ({ navigation }: any) => {
               isDarkMode={isDarkMode}
               personalTrainers={personalTrainers}
               navigation={navigation}
+              haveMembership={membership.status === "active"}
             />
           )}
         </ScrollView>

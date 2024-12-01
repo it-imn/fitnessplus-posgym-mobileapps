@@ -26,6 +26,7 @@ import { RootStackParamList } from "../../lib/routes";
 import { colors, fonts } from "../../lib/utils";
 import { fetchPersonalTrainersWithQuery } from "../../services/personal_trainer";
 import { showMessage } from "react-native-flash-message";
+import { fetchProfile } from "../../services/profile";
 
 const ListPT = ({
   navigation,
@@ -36,6 +37,7 @@ const ListPT = ({
   const [personalTrainers, setPersonalTrainers] = useState<IPersonalTrainer[]>(
     [],
   );
+  const [haveMembership, setHaveMembership] = useState<boolean>(false);
 
   const [search, setSearch] = React.useState("");
   const [debouncedText] = useDebounce(search, 500);
@@ -88,6 +90,28 @@ const ListPT = ({
     getPersonalTrainers(nextPage, debouncedText);
   };
 
+  const getProfile = async () => {
+    try {
+      setIsLoading(true);
+
+      const { data } = await fetchProfile();
+      if (data) {
+        setHaveMembership(data.membership.status === "active");
+      }
+
+      setIsLoading(false);
+    } catch (err: any) {
+      showMessage({
+        message: err.message || "An error occurred",
+        type: "warning",
+        icon: "warning",
+        backgroundColor: colors._red,
+        color: colors._white,
+      });
+      setIsLoading(false);
+    }
+  };
+
   // Fetch
   useEffect(() => {
     console.log("fetch");
@@ -95,6 +119,7 @@ const ListPT = ({
     setPersonalTrainers([]);
 
     getPersonalTrainers(1, debouncedText);
+    getProfile();
   }, [debouncedText]);
 
   return (
@@ -135,11 +160,22 @@ const ListPT = ({
             <CardPT
               isDarkMode={isDarkMode}
               personalTrainer={item}
-              onPress={() =>
+              onPress={() => {
+                if (!haveMembership) {
+                  showMessage({
+                    message: "You need to buy membership first",
+                    type: "warning",
+                    icon: "warning",
+                    backgroundColor: colors._red,
+                    color: colors._white,
+                  });
+                  return;
+                }
+
                 navigation.navigate("DetailPT", {
                   id: item.id,
-                })
-              }
+                });
+              }}
             />
           )}
           ListEmptyComponent={<NoData text="No Data Available" />}
