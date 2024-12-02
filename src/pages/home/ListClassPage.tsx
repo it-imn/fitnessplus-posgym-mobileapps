@@ -32,7 +32,13 @@ import { Button, ButtonColor } from "../../components/ui/Button";
 import { showMessage } from "react-native-flash-message";
 import { useDebounce } from "use-debounce";
 import { ImageNotFound } from "../../assets";
-import { DoorClosedIcon, DoorOpenIcon } from "lucide-react-native";
+import {
+  CalendarDaysIcon,
+  Clock4Icon,
+  DoorClosedIcon,
+  DoorOpenIcon,
+} from "lucide-react-native";
+import moment from "moment";
 
 const Class = ({
   navigation,
@@ -147,6 +153,7 @@ const Class = ({
                   borderColor: isDarkMode ? colors._white : colors._black,
                   borderWidth: selectedId === item.id ? 2 : 0,
                   borderRadius: 12,
+                  paddingBottom: 8,
                 }}>
                 <CardClass
                   classStd={item}
@@ -262,12 +269,12 @@ const CardClass = ({
             alignItems: "center",
             gap: 4,
           }}>
-          <DoorOpenIcon
+          <CalendarDaysIcon
             size={12}
             color={isDarkMode ? colors._grey4 : colors._grey3}
           />
           <Text style={styles.teks2CardClass(isDarkMode)}>
-            {classStd.opened_at_local}
+            {moment(classStd.date_class).format("dddd, DD MMM YYYY")}
           </Text>
         </View>
         <View
@@ -276,12 +283,12 @@ const CardClass = ({
             alignItems: "center",
             gap: 4,
           }}>
-          <DoorClosedIcon
+          <Clock4Icon
             size={12}
             color={isDarkMode ? colors._grey4 : colors._grey3}
           />
           <Text style={styles.teks2CardClass(isDarkMode)}>
-            {classStd.date_class_local}
+            {classStd.start_time_class} - {classStd.finish_time_class}
           </Text>
         </View>
       </View>
