@@ -1,8 +1,16 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useContext, useEffect, useState } from "react";
-import { Dimensions, SafeAreaView, Text, View } from "react-native";
+import React, { Fragment, useContext, useEffect, useState } from "react";
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import { RootStackParamList } from "../../lib/routes";
 import { colors, fonts } from "../../lib/utils";
@@ -14,7 +22,14 @@ import { fetchCountWOG } from "../../services/who-on-gym";
 import { showMessage } from "react-native-flash-message";
 import Loading from "../../components/ui/Loading";
 import Gap from "../../components/ui/Gap";
-import { ContactIcon, ContactRoundIcon, DumbbellIcon, UsersIcon } from "lucide-react-native";
+import {
+  ContactIcon,
+  ContactRoundIcon,
+  DumbbellIcon,
+  MailIcon,
+  PhoneIcon,
+  UsersIcon,
+} from "lucide-react-native";
 
 const width = Dimensions.get("window").width;
 
@@ -237,27 +252,141 @@ export const WOG = ({
           </Text>
         </View>
       </View>
-      {/* <Gap height={16} />
-      {noData && <NoData text="No data available" theme={theme} />}
-      {isData && (
-        <View style={styles.scrolls}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {wog.map(data => {
-              return (
-                <ListGym
-                  theme={theme}
-                  key={data.id}
-                  name={data.name}
-                  role={data.role}
-                  time={data.time}
-                  image={data.image}
-                />
-              );
-            })}
-          </ScrollView>
-        </View>
-      )} */}
+      <Gap height={16} />
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexDirection: "row",
+          paddingVertical: 10,
+          paddingHorizontal: 24,
+        }}>
+        <Text
+          style={{
+            color: isDarkMode ? colors._white : colors._black2,
+            fontFamily: fonts.primary[400],
+            fontSize: 12,
+          }}>
+          Users
+        </Text>
+      </View>
+      <FlatList
+        style={{ paddingHorizontal: 24, flex: 1 }}
+        refreshing={isLoading}
+        onRefresh={() => {}}
+        // onEndReached={handleEndReached}
+        data={countWOG?.cico}
+        renderItem={({ item }) => (
+          <MemberCard
+            name={item.user.name}
+            image={item.user.image_thumbnail}
+            status={item.status}
+            onPress={() => {}}
+          />
+        )}
+        keyExtractor={item => item.id.toString()}
+        ListEmptyComponent={<NoData text="No Data Available" />}
+      />
+
       {isLoading && <Loading />}
     </SafeAreaView>
+  );
+};
+
+const MemberCard = ({
+  name,
+  status,
+  // phone,
+  image,
+  onPress,
+}: {
+  name: string;
+  status: string;
+  // phone: string;
+  image: string;
+  onPress: () => void;
+}) => {
+  const { isDarkMode } = useContext(ThemeContext);
+
+  return (
+    <Fragment>
+      <TouchableOpacity
+        onPress={onPress}
+        style={{
+          flexDirection: "row",
+          padding: 12,
+          borderRadius: 12,
+          justifyContent: "space-between",
+          alignItems: "center",
+          flex: 1,
+        }}>
+        <View
+          style={{ flexDirection: "row", alignItems: "center", flexShrink: 1 }}>
+          <Image
+            source={{ uri: image }}
+            style={{
+              width: 50,
+              height: 50,
+              borderWidth: 0.5,
+              borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+              borderRadius: 50,
+            }}
+          />
+          <Gap width={16} />
+          <View
+            style={{
+              flexDirection: "column",
+              justifyContent: "space-between",
+              flexShrink: 1,
+            }}>
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: fonts.primary[600],
+                color: isDarkMode ? colors._white : colors._black,
+              }}>
+              {name}
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 4,
+              }}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: fonts.primary[400],
+                  color: isDarkMode ? colors._grey4 : colors._grey3,
+                }}>
+                {status}
+              </Text>
+            </View>
+            {/* <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 4,
+              }}>
+              <PhoneIcon
+                size={12}
+                color={isDarkMode ? colors._grey4 : colors._grey3}
+              />
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: fonts.primary[400],
+                  color: isDarkMode ? colors._grey4 : colors._grey3,
+                }}>
+                {phone}
+              </Text>
+            </View> */}
+          </View>
+        </View>
+      </TouchableOpacity>
+      <View
+        style={{ width: "100%", height: 1, backgroundColor: colors._grey3 }}
+      />
+    </Fragment>
   );
 };

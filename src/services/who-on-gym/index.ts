@@ -5,6 +5,7 @@ const fetchCountWOG = async () => {
   return api
     .get("/staff/wog/count")
     .then(({ data }) => {
+      console.log(data.result.cico[0])
       return {
         data: data.result as IWOG,
       };

@@ -346,6 +346,25 @@ export interface IWOG {
   count_instructor: number;
   count_personal_trainer: number;
   count_member: number;
+  cico: ICICO[]
+}
+
+export interface ICICO {
+  checkinTime: string;
+  checkin_image_thubmnail: string;
+  checkoutTime: string;
+  checkout_image_thubmnail: string;
+  id: number;
+  status: string;
+  user: ICICOUser
+}
+
+export interface ICICOUser {
+  default_thumbnail: string;
+  id: number;
+  image: string;
+  image_thumbnail: string;
+  name: string;
 }
 
 export interface ISubmissionPackage {
