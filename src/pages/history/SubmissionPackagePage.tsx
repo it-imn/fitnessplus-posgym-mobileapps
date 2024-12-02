@@ -1,6 +1,13 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { Fragment, useContext, useEffect, useState } from "react";
-import { FlatList, Image, SafeAreaView, Text, TextInput, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  SafeAreaView,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import Header from "../../components/ui/Header";
 import NoData from "../../components/ui/NoData";
 import StatusBarComp from "../../components/ui/StatusBarComp";
@@ -37,19 +44,13 @@ export const SubmissionPackage = ({
   ) => {
     setIsLoading(true);
     try {
-      const {
-        data,
-        // hasNext
-      } = await fetchSubmissionPackages(
+      const { data, hasNext } = await fetchSubmissionPackages(
         { page: _page, search: _search },
         { cancelToken: token },
       );
       setSubmissionPackages(prev => [...prev, ...data]); // Append for pagination
 
-      setHasNextPage(
-        false,
-        // hasNext
-      );
+      setHasNextPage(hasNext);
     } catch (error: any) {
       console.error(error);
     } finally {
@@ -245,15 +246,15 @@ const ListHistoryDetail = ({
             numberOfLines={2}>
             {submissionPackage.expired_at}
           </Text>
-          <Gap height={4}/>
+          <Gap height={4} />
           <Text
-              style={{
-                fontFamily: fonts.primary[300],
-                fontSize: 8,
-                color: isDarkMode ? colors._white : colors._black,
-              }}>
-              {submissionPackage.payment_date}
-            </Text>
+            style={{
+              fontFamily: fonts.primary[300],
+              fontSize: 8,
+              color: isDarkMode ? colors._white : colors._black,
+            }}>
+            {submissionPackage.payment_date}
+          </Text>
         </View>
       </View>
       <View
