@@ -49,7 +49,7 @@ const SelectBranch = ({
   ) => {
     setIsLoading(true);
     try {
-      const { data } = await fetchBranchesWithGym(
+      const { data, hasNext } = await fetchBranchesWithGym(
         gymId,
         { page: _page, search: _search },
         { cancelToken: token },
@@ -57,7 +57,7 @@ const SelectBranch = ({
       if (data) {
         setBranches(prev => [...prev, ...data]);
 
-        setHasNextPage(true);
+        setHasNextPage(hasNext);
       }
     } catch (error: any) {
       showMessage({
