@@ -174,6 +174,28 @@ const fetchSubmissionPackages = async (
     });
 };
 
+const fetchSubmissionPackage = async (
+  id: number,
+  config?: AxiosRequestConfig<any> | undefined,
+) => {
+  return api
+    .get(`/submission_package/${id}`, config)
+    .then(({ data }) => {
+      console.log(data);
+      return {
+        data: data.result as ISubmissionPackage,
+        member: data.member as {
+          id: number;
+          name: string;
+        },
+      };
+    })
+    .catch(err => {
+      console.error("error fetch history transactions");
+      throw new Error(err.response?.data.message);
+    });
+};
+
 const fetchPaymentPackages = async (
   query?: {
     search?: string;
@@ -204,6 +226,24 @@ const fetchPaymentPackages = async (
     });
 };
 
+const fetchPaymentPackage = async (
+  id: number,
+  config?: AxiosRequestConfig<any> | undefined,
+) => {
+  return api
+    .get(`/member/payment/${id}`, config)
+    .then(({ data }) => {
+      console.log(data);
+      return {
+        data: data.result as IPaymentPackage,
+      };
+    })
+    .catch(err => {
+      console.error("error fetch history transactions");
+      throw new Error(err.response?.data.message);
+    });
+};
+
 export {
   fetchContractAgreement,
   fetchContractAgreementView,
@@ -211,7 +251,9 @@ export {
   fetchMembershipPackages,
   fetchMembershipPackageDetail,
   fetchPaymentPackages,
+  fetchPaymentPackage,
   checkVoucher,
   buyMembership,
   fetchSubmissionPackages,
+  fetchSubmissionPackage,
 };

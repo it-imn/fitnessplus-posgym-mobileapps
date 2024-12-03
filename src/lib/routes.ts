@@ -103,4 +103,11 @@ export type RootStackParamList = {
   };
   WOG: undefined;
   PaymentPackage: undefined;
+  RequestLogout: undefined;
+  DetailPaymentPackage: {
+    id: number;
+  };
+  DetailSubmissionPackage: {
+    id: number;
+  };
 };

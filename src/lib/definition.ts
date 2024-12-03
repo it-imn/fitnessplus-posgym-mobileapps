@@ -395,6 +395,7 @@ export interface ISubmissionPackage {
 export interface IPaymentPackage {
   created_at: string;
   id: number;
+  discount: number;
   member: string;
   member_profile: string;
   membership: string;

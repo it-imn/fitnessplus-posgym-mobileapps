@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
 import Header from "../../components/ui/Header";
@@ -127,7 +128,12 @@ export const SubmissionPackage = ({
           data={submissionPackages}
           keyExtractor={(_, index) => index.toString()}
           renderItem={({ item }) => (
-            <ListHistoryDetail submissionPackage={item} />
+            <ListHistoryDetail
+              submissionPackage={item}
+              onPress={() =>
+                navigation.navigate("DetailSubmissionPackage", { id: item.id })
+              }
+            />
           )}
           ListEmptyComponent={<NoData text="No Data Available" />}
         />
@@ -140,13 +146,15 @@ export const SubmissionPackage = ({
 
 const ListHistoryDetail = ({
   submissionPackage,
+  onPress,
 }: {
   submissionPackage: ISubmissionPackage;
+  onPress: () => void;
 }) => {
   const { isDarkMode } = useContext(ThemeContext);
   return (
     <Fragment>
-      <View
+      <TouchableOpacity
         style={{
           flexDirection: "row",
           padding: 12,
@@ -154,7 +162,8 @@ const ListHistoryDetail = ({
           justifyContent: "space-between",
           alignItems: "center",
           flex: 1,
-        }}>
+        }}
+        onPress={onPress}>
         <View
           style={{
             flexDirection: "row",
@@ -256,7 +265,7 @@ const ListHistoryDetail = ({
             {submissionPackage.payment_date}
           </Text>
         </View>
-      </View>
+      </TouchableOpacity>
       <View
         style={{ width: "100%", height: 1, backgroundColor: colors._grey3 }}
       />

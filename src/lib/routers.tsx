@@ -45,6 +45,9 @@ import PackagePTAgreement from "../pages/profile/PackagePTAgreementPage";
 import SignConfirmation from "../pages/auth/SignConfirmation";
 import { WOG } from "../pages/home/WOGPage";
 import { PaymentPackage } from "../pages/history/PaymentPackagePage";
+import { RequestLogout } from "../pages/auth/RequestLogout";
+import { DetailPaymentPackage } from "../pages/history/DetailPaymentPackagePage";
+import { DetailSubmissionPackage } from "../pages/history/DetailSubmissionPackagePage";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -80,6 +83,15 @@ export const Router = () => {
       <Stack.Screen name="Selfie" component={Selfie} />
       <Stack.Screen name="WOG" component={WOG} />
       <Stack.Screen name="PaymentPackage" component={PaymentPackage} />
+      <Stack.Screen name="RequestLogout" component={RequestLogout} />
+      <Stack.Screen
+        name="DetailPaymentPackage"
+        component={DetailPaymentPackage}
+      />
+      <Stack.Screen
+        name="DetailSubmissionPackage"
+        component={DetailSubmissionPackage}
+      />
       {/*
       <Stack.Screen name="Splash" component={Splash} />
       <Stack.Screen name="Sign" component={Sign} />

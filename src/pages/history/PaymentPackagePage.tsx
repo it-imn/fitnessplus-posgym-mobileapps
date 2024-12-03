@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
 import Header from "../../components/ui/Header";
@@ -131,7 +132,14 @@ export const PaymentPackage = ({
           onEndReached={handleEndReached}
           data={paymentPackages}
           keyExtractor={(_, index) => index.toString()}
-          renderItem={({ item }) => <ListHistoryDetail paymentPackage={item} />}
+          renderItem={({ item }) => (
+            <ListHistoryDetail
+              paymentPackage={item}
+              onPress={() =>
+                navigation.navigate("DetailPaymentPackage", { id: item.id })
+              }
+            />
+          )}
           ListEmptyComponent={<NoData text="No Data Available" />}
         />
       </View>
@@ -143,13 +151,15 @@ export const PaymentPackage = ({
 
 const ListHistoryDetail = ({
   paymentPackage,
+  onPress,
 }: {
   paymentPackage: IPaymentPackage;
+  onPress: () => void;
 }) => {
   const { isDarkMode } = useContext(ThemeContext);
   return (
     <Fragment>
-      <View
+      <TouchableOpacity
         style={{
           flexDirection: "row",
           padding: 12,
@@ -157,7 +167,8 @@ const ListHistoryDetail = ({
           justifyContent: "space-between",
           alignItems: "center",
           flex: 1,
-        }}>
+        }}
+        onPress={onPress}>
         <View
           style={{
             flexDirection: "row",
@@ -262,7 +273,7 @@ const ListHistoryDetail = ({
             {paymentPackage.payment_date}
           </Text> */}
         </View>
-      </View>
+      </TouchableOpacity>
       <View
         style={{ width: "100%", height: 1, backgroundColor: colors._grey3 }}
       />
