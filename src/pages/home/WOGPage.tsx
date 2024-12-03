@@ -23,6 +23,7 @@ import { showMessage } from "react-native-flash-message";
 import Loading from "../../components/ui/Loading";
 import Gap from "../../components/ui/Gap";
 import {
+  Clock4Icon,
   ContactIcon,
   ContactRoundIcon,
   DumbbellIcon,
@@ -30,6 +31,7 @@ import {
   PhoneIcon,
   UsersIcon,
 } from "lucide-react-native";
+import moment from "moment";
 
 const width = Dimensions.get("window").width;
 
@@ -281,6 +283,9 @@ export const WOG = ({
             name={item.user.name}
             image={item.user.image_thumbnail}
             status={item.status}
+            time={
+              item.status === "CHECKIN" ? item.checkinTime : item.checkoutTime
+            }
             onPress={() => {}}
           />
         )}
@@ -296,13 +301,13 @@ export const WOG = ({
 const MemberCard = ({
   name,
   status,
-  // phone,
+  time,
   image,
   onPress,
 }: {
   name: string;
   status: string;
-  // phone: string;
+  time: string;
   image: string;
   onPress: () => void;
 }) => {
@@ -362,13 +367,13 @@ const MemberCard = ({
                 {status}
               </Text>
             </View>
-            {/* <View
+            <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
                 gap: 4,
               }}>
-              <PhoneIcon
+              <Clock4Icon
                 size={12}
                 color={isDarkMode ? colors._grey4 : colors._grey3}
               />
@@ -378,9 +383,9 @@ const MemberCard = ({
                   fontFamily: fonts.primary[400],
                   color: isDarkMode ? colors._grey4 : colors._grey3,
                 }}>
-                {phone}
+                {moment(time).format("HH:mm")}
               </Text>
-            </View> */}
+            </View>
           </View>
         </View>
       </TouchableOpacity>
