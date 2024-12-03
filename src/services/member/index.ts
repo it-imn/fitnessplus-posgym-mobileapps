@@ -99,4 +99,21 @@ const validateSignUp = async (req: {
     });
 };
 
-export { checkIn, scanQR, register, validateSignUp };
+const requestLogout = async (req: { email: string }) => {
+  return api
+    .post("/member/request-logout-manual", req)
+    .then(({ data }) => {
+      console.log(data);
+      return {
+        message: data.message,
+      };
+    })
+    .catch(err => {
+      console.error("error request logout manual", err.response?.data);
+      return Promise.reject({
+        message: err.response?.data.message,
+      });
+    });
+};
+
+export { checkIn, scanQR, register, validateSignUp, requestLogout };
