@@ -77,7 +77,7 @@ export const LoginPage = ({
 
   const gotoSign = () => {
     reset();
-    navigation.navigate("SignUp");
+    navigation.navigate("SelectBranch");
   };
 
   // const gotoForgotPassword = () => {
@@ -106,217 +106,68 @@ export const LoginPage = ({
 
       </View> */}
       <SafeAreaView style={{ flex: 1, backgroundColor: colors._white }}>
-        <ScrollView>
-          {Platform.OS === "ios" && Platform.isPad ? (
-            <View style={styles.container}>
-              <StatusBar
-                // hidden={false}
-                translucent={true}
-                barStyle={
-                  Platform.OS === "ios" ? "dark-content" : "light-content"
-                }
-                backgroundColor="transparent"
+        {Platform.OS === "ios" && Platform.isPad ? (
+          <View style={styles.container}>
+            <StatusBar
+              // hidden={false}
+              translucent={true}
+              barStyle={
+                Platform.OS === "ios" ? "dark-content" : "light-content"
+              }
+              backgroundColor="transparent"
+            />
+            <View style={{ marginLeft: 30 }}>
+              <Image
+                source={LogoP}
+                resizeMode="contain"
+                style={{ width: 160 }}
               />
-              <View style={{ marginLeft: 30 }}>
-                <Image
-                  source={LogoP}
-                  resizeMode="contain"
-                  style={{ width: 160 }}
-                />
-              </View>
-              <View style={styles.main}>
-                <Text style={styles.teks1}>Exercise Your Mind and Body</Text>
-                <Gap height={14} />
-                <Text style={styles.teks2}>
-                  Login to continue and you can access posgym
-                </Text>
-              </View>
-              <Gap height={40} />
-              <View style={styles.main2}>
-                <Controller
-                  name="username"
-                  control={form.control}
-                  render={({ field: { onChange, value } }) => (
-                    <Input
-                      placeholder="Username"
-                      autoCapitalize="none"
-                      maxLength={200}
-                      value={value}
-                      onChangeText={onChange}
-                    />
-                  )}
-                />
-                {form.formState.errors.username && (
-                  <Text style={{ color: colors._red, marginTop: 4 }}>
-                    {form.formState.errors.username.message}
-                  </Text>
-                )}
-                <Gap height={20} />
-                <Controller
-                  name="password"
-                  control={form.control}
-                  render={({ field: { onChange, value } }) => (
-                    <Inputeye
-                      placeholder="Password"
-                      value={value}
-                      onChangeText={onChange}
-                    />
-                  )}
-                />
-                {form.formState.errors.password && (
-                  <Text style={{ color: colors._red, marginTop: 4 }}>
-                    {form.formState.errors.password.message}
-                  </Text>
-                )}
-                {/* <Gap height={12} />
-                <TouchableOpacity
-                  style={{alignItems: 'flex-end'}}
-                  onPress={gotoForgotPassword}>
-                  <Text
-                    style={{
-                      color: colors._blue2,
-                      fontSize: 14,
-                      fontFamily: fonts.primary[400],
-                    }}>
-                    Forgot Password
-                  </Text>
-                </TouchableOpacity> */}
-                <Gap height={30} />
-                <ButtonColor
-                  teks="Login"
-                  backColor={colors._blue2}
-                  textColor={colors._white}
-                  onPress={form.handleSubmit(onLogin)}
-                />
-                <Gap height={30} />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}>
-                  <Text
-                    style={{
-                      color: colors._black,
-                      fontSize: 14,
-                      fontFamily: fonts.primary[300],
-                    }}>
-                    Not a member?{" "}
-                  </Text>
-                  <TouchableOpacity onPress={gotoSign}>
-                    <Text
-                      style={{
-                        color: colors._blue2,
-                        fontSize: 14,
-                        fontFamily: fonts.primary[400],
-                      }}>
-                      Register
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                {/*
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}>
-                  <TouchableOpacity
-                    style={styles.btnScan}
-                    onPress={gotoQRExisting}>
-                    <IconQrBlue />
-                    <Gap width={6} />
-                    <Text
-                      style={{
-                        color: colors._blue2,
-                        fontSize: 14,
-                        fontFamily: fonts.primary[400],
-                        textAlign: 'center',
-                      }}>
-                      Existing Member
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.btnScan}
-                    onPress={gotoQRTrial}>
-                    <IconVoucher />
-                    <Gap width={4} />
-                    <Text
-                      style={{
-                        color: colors._blue2,
-                        fontSize: 14,
-                        fontFamily: fonts.primary[400],
-                        textAlign: 'center',
-                      }}>
-                      Trial Voucher
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                */}
-              </View>
             </View>
-          ) : (
-            <ImageBackground source={ImageSign} style={styles.container}>
-              <StatusBar
-                // hidden={false}
-                translucent={true}
-                barStyle={
-                  Platform.OS === "ios" ? "dark-content" : "light-content"
-                }
-                backgroundColor="transparent"
+            <View style={styles.main}>
+              <Text style={styles.teks1}>Exercise Your Mind and Body</Text>
+              <Gap height={14} />
+              <Text style={styles.teks2}>
+                Login to continue and you can access posgym
+              </Text>
+            </View>
+            <Gap height={40} />
+            <View style={styles.main2}>
+              <Controller
+                name="username"
+                control={form.control}
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    placeholder="Username"
+                    autoCapitalize="none"
+                    maxLength={200}
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
               />
-              <View style={{ marginLeft: 30 }}>
-                <Image
-                  source={LogoP}
-                  resizeMode="contain"
-                  style={{ width: 160 }}
-                />
-              </View>
-              <View style={styles.main}>
-                <Text style={styles.teks1}>Exercise Your Mind and Body</Text>
-                <Gap height={14} />
-                <Text style={styles.teks2}>
-                  Login to continue and you can access posgym
+              {form.formState.errors.username && (
+                <Text style={{ color: colors._red, marginTop: 4 }}>
+                  {form.formState.errors.username.message}
                 </Text>
-              </View>
-              <Gap height={40} />
-              <View style={styles.main2}>
-                <Controller
-                  name="username"
-                  control={form.control}
-                  render={({ field: { onChange, value } }) => (
-                    <Input
-                      placeholder="Username"
-                      autoCapitalize="none"
-                      maxLength={200}
-                      value={value}
-                      onChangeText={onChange}
-                    />
-                  )}
-                />
-                {form.formState.errors.username && (
-                  <Text style={{ color: colors._red, marginTop: 4 }}>
-                    {form.formState.errors.username.message}
-                  </Text>
+              )}
+              <Gap height={20} />
+              <Controller
+                name="password"
+                control={form.control}
+                render={({ field: { onChange, value } }) => (
+                  <Inputeye
+                    placeholder="Password"
+                    value={value}
+                    onChangeText={onChange}
+                  />
                 )}
-                <Gap height={20} />
-                <Controller
-                  name="password"
-                  control={form.control}
-                  render={({ field: { onChange, value } }) => (
-                    <Inputeye
-                      placeholder="Password"
-                      value={value}
-                      onChangeText={onChange}
-                    />
-                  )}
-                />
-                {form.formState.errors.password && (
-                  <Text style={{ color: colors._red, marginTop: 4 }}>
-                    {form.formState.errors.password.message}
-                  </Text>
-                )}
-                {/* <Gap height={12} />
+              />
+              {form.formState.errors.password && (
+                <Text style={{ color: colors._red, marginTop: 4 }}>
+                  {form.formState.errors.password.message}
+                </Text>
+              )}
+              {/* <Gap height={12} />
                 <TouchableOpacity
                   style={{alignItems: 'flex-end'}}
                   onPress={gotoForgotPassword}>
@@ -329,41 +180,40 @@ export const LoginPage = ({
                     Forgot Password
                   </Text>
                 </TouchableOpacity> */}
-                <Gap height={30} />
-                <ButtonColor
-                  teks="Login"
-                  backColor={colors._blue2}
-                  textColor={colors._white}
-                  onPress={form.handleSubmit(onLogin)}
-                />
-                <Gap height={30} />
-                <View
+              <Gap height={30} />
+              <ButtonColor
+                teks="Login"
+                backColor={colors._blue2}
+                textColor={colors._white}
+                onPress={form.handleSubmit(onLogin)}
+              />
+              <Gap height={30} />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}>
+                <Text
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    marginTop: 22,
-                    alignItems: "center",
+                    color: colors._black,
+                    fontSize: 14,
+                    fontFamily: fonts.primary[300],
                   }}>
+                  Not a member?{" "}
+                </Text>
+                <TouchableOpacity onPress={gotoSign}>
                   <Text
                     style={{
-                      color: colors._black,
+                      color: colors._blue2,
                       fontSize: 14,
-                      fontFamily: fonts.primary[300],
+                      fontFamily: fonts.primary[400],
                     }}>
-                    Not a member?{" "}
+                    Register
                   </Text>
-                  <TouchableOpacity onPress={gotoSign}>
-                    <Text
-                      style={{
-                        color: colors._blue2,
-                        fontSize: 14,
-                        fontFamily: fonts.primary[400],
-                      }}>
-                      Register
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                {/*
+                </TouchableOpacity>
+              </View>
+              {/*
                 <View
                   style={{
                     flexDirection: 'row',
@@ -402,10 +252,184 @@ export const LoginPage = ({
                   </TouchableOpacity>
                 </View>
                 */}
+            </View>
+          </View>
+        ) : (
+          <ImageBackground source={ImageSign} style={styles.container}>
+            <StatusBar
+              // hidden={false}
+              translucent={true}
+              barStyle={
+                Platform.OS === "ios" ? "dark-content" : "light-content"
+              }
+              backgroundColor="transparent"
+            />
+            <View style={{ marginLeft: 30 }}>
+              <Image
+                source={LogoP}
+                resizeMode="contain"
+                style={{ width: 160 }}
+              />
+            </View>
+            <View style={styles.main}>
+              <Text style={styles.teks1}>Exercise Your Mind and Body</Text>
+              <Gap height={14} />
+              <Text style={styles.teks2}>
+                Login to continue and you can access posgym
+              </Text>
+            </View>
+            <Gap height={40} />
+            <View style={styles.main2}>
+              <Controller
+                name="username"
+                control={form.control}
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    placeholder="Username"
+                    autoCapitalize="none"
+                    maxLength={200}
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+              {form.formState.errors.username && (
+                <Text style={{ color: colors._red, marginTop: 4 }}>
+                  {form.formState.errors.username.message}
+                </Text>
+              )}
+              <Gap height={20} />
+              <Controller
+                name="password"
+                control={form.control}
+                render={({ field: { onChange, value } }) => (
+                  <Inputeye
+                    placeholder="Password"
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+              {form.formState.errors.password && (
+                <Text style={{ color: colors._red, marginTop: 4 }}>
+                  {form.formState.errors.password.message}
+                </Text>
+              )}
+              {/* <Gap height={12} />
+                <TouchableOpacity
+                  style={{alignItems: 'flex-end'}}
+                  onPress={gotoForgotPassword}>
+                  <Text
+                    style={{
+                      color: colors._blue2,
+                      fontSize: 14,
+                      fontFamily: fonts.primary[400],
+                    }}>
+                    Forgot Password
+                  </Text>
+                </TouchableOpacity> */}
+              <Gap height={30} />
+              <ButtonColor
+                teks="Login"
+                backColor={colors._blue2}
+                textColor={colors._white}
+                onPress={form.handleSubmit(onLogin)}
+              />
+              <Gap height={24} />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}>
+                <Text
+                  style={{
+                    color: colors._black,
+                    fontSize: 14,
+                    fontFamily: fonts.primary[300],
+                  }}>
+                  Not a member?{" "}
+                </Text>
+                <TouchableOpacity onPress={gotoSign}>
+                  <Text
+                    style={{
+                      color: colors._blue2,
+                      fontSize: 14,
+                      fontFamily: fonts.primary[400],
+                    }}>
+                    Register
+                  </Text>
+                </TouchableOpacity>
               </View>
-            </ImageBackground>
-          )}
-        </ScrollView>
+              <Gap height={8} />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}>
+                <Text
+                  style={{
+                    color: colors._black,
+                    fontSize: 14,
+                    fontFamily: fonts.primary[300],
+                  }}>
+                  Logged in elsewhere?{" "}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("RequestLogout")}>
+                  <Text
+                    style={{
+                      color: colors._blue2,
+                      fontSize: 14,
+                      fontFamily: fonts.primary[400],
+                    }}>
+                    Request Logout
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              {/*
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                  <TouchableOpacity
+                    style={styles.btnScan}
+                    onPress={gotoQRExisting}>
+                    <IconQrBlue />
+                    <Gap width={6} />
+                    <Text
+                      style={{
+                        color: colors._blue2,
+                        fontSize: 14,
+                        fontFamily: fonts.primary[400],
+                        textAlign: 'center',
+                      }}>
+                      Existing Member
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.btnScan}
+                    onPress={gotoQRTrial}>
+                    <IconVoucher />
+                    <Gap width={4} />
+                    <Text
+                      style={{
+                        color: colors._blue2,
+                        fontSize: 14,
+                        fontFamily: fonts.primary[400],
+                        textAlign: 'center',
+                      }}>
+                      Trial Voucher
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                */}
+            </View>
+          </ImageBackground>
+        )}
       </SafeAreaView>
 
       {isLoading && <Loading />}

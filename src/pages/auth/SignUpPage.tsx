@@ -261,277 +261,273 @@ export const SignUp = ({
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView>
-        <ImageBackground source={ImageSign} style={styles.container}>
-          <StatusBar
-            hidden={false}
-            translucent={true}
-            barStyle={"light-content"}
-            backgroundColor="transparent"
-          />
-          <View style={{ marginLeft: 30 }}>
-            <Image source={LogoP} resizeMode="contain" style={{ width: 160 }} />
-          </View>
-          <View style={styles.main}>
-            <Text style={styles.teks1}>Join PosGym App</Text>
-            <Gap height={14} />
-            <Text style={styles.teks2}>
-              Exclusive Gym Portal for Posgym member
-            </Text>
-          </View>
-          <Gap height={40} />
-          <ScrollView style={styles.main2}>
-            <Controller
-              name="name"
-              control={form.control}
-              render={({ field: { onChange, value } }) => (
-                <Input
-                  placeholder="Full Name"
-                  value={value}
-                  onChangeText={onChange}
-                />
-              )}
-            />
-            {form.formState.errors.name && (
-              <Text style={{ color: colors._red, marginTop: 4 }}>
-                {form.formState.errors.name.message}
-              </Text>
-            )}
-            <Gap height={20} />
-            <Controller
-              name="email"
-              control={form.control}
-              render={({ field: { onChange, value } }) => (
-                <Input
-                  placeholder="Email"
-                  value={value}
-                  onChangeText={onChange}
-                />
-              )}
-            />
-            {form.formState.errors.email && (
-              <Text style={{ color: colors._red, marginTop: 4 }}>
-                {form.formState.errors.email.message}
-              </Text>
-            )}
-            <Gap height={20} />
-            <Controller
-              name="phone"
-              control={form.control}
-              render={({ field: { onChange, value } }) => (
-                <Input
-                  placeholder="Phone Number"
-                  keyboardType="phone-pad"
-                  value={value}
-                  onChangeText={onChange}
-                />
-              )}
-            />
-            {form.formState.errors.phone && (
-              <Text style={{ color: colors._red, marginTop: 4 }}>
-                {form.formState.errors.phone.message}
-              </Text>
-            )}
-            <Gap height={20} />
-            <Text style={styles.teks(isDarkMode)}>Select Gender</Text>
-            <View
-              style={{
-                borderRadius: 10,
-                overflow: "hidden",
-                backgroundColor: isDarkMode ? colors._black : colors._grey2,
-                borderWidth: Platform.OS === "android" ? 0.5 : 0,
-                borderColor: isDarkMode ? colors._grey4 : colors._grey3,
-              }}>
-              <Controller
-                name="gender"
-                control={form.control}
-                render={({ field: { onChange, value } }) => (
-                  <Picker
-                    selectedValue={value}
-                    style={{
-                      color: isDarkMode ? colors._white : colors._black,
-                      fontSize: 14,
-                      fontFamily: fonts.primary[400],
-                    }}
-                    itemStyle={{
-                      color: isDarkMode ? colors._white : colors._black,
-                      fontSize: 14,
-                      fontFamily: fonts.primary[400],
-                    }}
-                    dropdownIconColor={
-                      isDarkMode ? colors._white : colors._black
-                    }
-                    onValueChange={onChange}>
-                    <Picker.Item
-                      label="Male"
-                      value="male"
-                      style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
-                    />
-                    <Picker.Item
-                      label="Female"
-                      value="female"
-                      style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
-                    />
-                    <Picker.Item
-                      label="Rather not say"
-                      value="rather_not_say"
-                      style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
-                    />
-                  </Picker>
-                )}
+      <ImageBackground source={ImageSign} style={styles.container}>
+        <StatusBar
+          hidden={false}
+          translucent={true}
+          barStyle={"light-content"}
+          backgroundColor="transparent"
+        />
+        <View style={{ marginLeft: 30 }}>
+          <Image source={LogoP} resizeMode="contain" style={{ width: 160 }} />
+        </View>
+        <View style={styles.main}>
+          <Text style={styles.teks1}>Join PosGym App</Text>
+          <Gap height={14} />
+          <Text style={styles.teks2}>
+            Exclusive Gym Portal for Posgym member
+          </Text>
+        </View>
+        <Gap height={40} />
+        <ScrollView style={styles.main2}>
+          <Controller
+            name="name"
+            control={form.control}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Full Name"
+                value={value}
+                onChangeText={onChange}
               />
-            </View>
-            <Gap height={20} />
-            <Text
-              style={{
-                color: isDarkMode ? colors._white : colors._black,
-                marginBottom: 5,
-                fontSize: 14,
-                fontFamily: fonts.primary[400],
-              }}>
-              Birth Date
+            )}
+          />
+          {form.formState.errors.name && (
+            <Text style={{ color: colors._red, marginTop: 4 }}>
+              {form.formState.errors.name.message}
             </Text>
+          )}
+          <Gap height={20} />
+          <Controller
+            name="email"
+            control={form.control}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Email"
+                value={value}
+                onChangeText={onChange}
+              />
+            )}
+          />
+          {form.formState.errors.email && (
+            <Text style={{ color: colors._red, marginTop: 4 }}>
+              {form.formState.errors.email.message}
+            </Text>
+          )}
+          <Gap height={20} />
+          <Controller
+            name="phone"
+            control={form.control}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Phone Number"
+                keyboardType="phone-pad"
+                value={value}
+                onChangeText={onChange}
+              />
+            )}
+          />
+          {form.formState.errors.phone && (
+            <Text style={{ color: colors._red, marginTop: 4 }}>
+              {form.formState.errors.phone.message}
+            </Text>
+          )}
+          <Gap height={20} />
+          <Text style={styles.teks(isDarkMode)}>Select Gender</Text>
+          <View
+            style={{
+              borderRadius: 10,
+              overflow: "hidden",
+              backgroundColor: isDarkMode ? colors._black : colors._grey2,
+              borderWidth: Platform.OS === "android" ? 0.5 : 0,
+              borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+            }}>
+            <Controller
+              name="gender"
+              control={form.control}
+              render={({ field: { onChange, value } }) => (
+                <Picker
+                  selectedValue={value}
+                  style={{
+                    color: isDarkMode ? colors._white : colors._black,
+                    fontSize: 14,
+                    fontFamily: fonts.primary[400],
+                  }}
+                  itemStyle={{
+                    color: isDarkMode ? colors._white : colors._black,
+                    fontSize: 14,
+                    fontFamily: fonts.primary[400],
+                  }}
+                  dropdownIconColor={isDarkMode ? colors._white : colors._black}
+                  onValueChange={onChange}>
+                  <Picker.Item
+                    label="Male"
+                    value="male"
+                    style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
+                  />
+                  <Picker.Item
+                    label="Female"
+                    value="female"
+                    style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
+                  />
+                  <Picker.Item
+                    label="Rather not say"
+                    value="rather_not_say"
+                    style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
+                  />
+                </Picker>
+              )}
+            />
+          </View>
+          <Gap height={20} />
+          <Text
+            style={{
+              color: isDarkMode ? colors._white : colors._black,
+              marginBottom: 5,
+              fontSize: 14,
+              fontFamily: fonts.primary[400],
+            }}>
+            Birth Date
+          </Text>
+          <Controller
+            name="birthDate"
+            control={form.control}
+            render={({ field: { onChange, value } }) => (
+              <TouchableOpacity
+                style={{
+                  padding: 12,
+                  backgroundColor: isDarkMode ? colors._black : colors._grey2,
+                  borderRadius: 10,
+                  borderWidth: 0.5,
+                  borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+                }}
+                onPress={() => {
+                  if (Platform.OS === "android") {
+                    DateTimePickerAndroid.open({
+                      value: value,
+                      mode: "date",
+                      onChange: (_, selectedDate) => {
+                        if (selectedDate) {
+                          onChange(selectedDate);
+                        }
+                      },
+                    });
+                  } else if (Platform.OS === "ios") {
+                    setShowDatePickerIOS(true);
+                  }
+                }}>
+                <Text
+                  style={{
+                    color: isDarkMode ? colors._white : colors._black,
+                    fontSize: 14,
+                    fontFamily: fonts.primary[400],
+                  }}>
+                  {form.getValues("birthDate").toLocaleDateString()}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+          {showDatePickerIOS && (
             <Controller
               name="birthDate"
               control={form.control}
               render={({ field: { onChange, value } }) => (
-                <TouchableOpacity
-                  style={{
-                    padding: 12,
-                    backgroundColor: isDarkMode ? colors._black : colors._grey2,
-                    borderRadius: 10,
-                    borderWidth: 0.5,
-                    borderColor: isDarkMode ? colors._grey4 : colors._grey3,
-                  }}
-                  onPress={() => {
-                    if (Platform.OS === "android") {
-                      DateTimePickerAndroid.open({
-                        value: value,
-                        mode: "date",
-                        onChange: (_, selectedDate) => {
-                          if (selectedDate) {
-                            onChange(selectedDate);
-                          }
-                        },
-                      });
-                    } else if (Platform.OS === "ios") {
-                      setShowDatePickerIOS(true);
+                <DateTimePicker
+                  value={value}
+                  mode="date"
+                  display="default"
+                  onChange={(_, selectedDate) => {
+                    setShowDatePickerIOS(false);
+                    if (selectedDate) {
+                      onChange(selectedDate);
                     }
-                  }}>
-                  <Text
-                    style={{
-                      color: isDarkMode ? colors._white : colors._black,
-                      fontSize: 14,
-                      fontFamily: fonts.primary[400],
-                    }}>
-                    {form.getValues("birthDate").toLocaleDateString()}
-                  </Text>
-                </TouchableOpacity>
+                  }}
+                />
               )}
             />
-            {showDatePickerIOS && (
-              <Controller
-                name="birthDate"
-                control={form.control}
-                render={({ field: { onChange, value } }) => (
-                  <DateTimePicker
-                    value={value}
-                    mode="date"
-                    display="default"
-                    onChange={(_, selectedDate) => {
-                      setShowDatePickerIOS(false);
-                      if (selectedDate) {
-                        onChange(selectedDate);
-                      }
-                    }}
-                  />
-                )}
+          )}
+          {form.formState.errors.birthDate && (
+            <Text style={{ color: colors._red, marginTop: 4 }}>
+              {form.formState.errors.birthDate.message}
+            </Text>
+          )}
+          <Gap height={20} />
+          <Controller
+            name="address"
+            control={form.control}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Address"
+                value={value}
+                onChangeText={onChange}
               />
             )}
-            {form.formState.errors.birthDate && (
-              <Text style={{ color: colors._red, marginTop: 4 }}>
-                {form.formState.errors.birthDate.message}
-              </Text>
+          />
+          {form.formState.errors.address && (
+            <Text style={{ color: colors._red, marginTop: 4 }}>
+              {form.formState.errors.address.message}
+            </Text>
+          )}
+          <Gap height={20} />
+          <Controller
+            name="username"
+            control={form.control}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Username"
+                value={value}
+                onChangeText={onChange}
+              />
             )}
-            <Gap height={20} />
-            <Controller
-              name="address"
-              control={form.control}
-              render={({ field: { onChange, value } }) => (
-                <Input
-                  placeholder="Address"
-                  value={value}
-                  onChangeText={onChange}
-                />
-              )}
-            />
-            {form.formState.errors.address && (
-              <Text style={{ color: colors._red, marginTop: 4 }}>
-                {form.formState.errors.address.message}
-              </Text>
+          />
+          {form.formState.errors.username && (
+            <Text style={{ color: colors._red, marginTop: 4 }}>
+              {form.formState.errors.username.message}
+            </Text>
+          )}
+          <Gap height={20} />
+          <Controller
+            name="password"
+            control={form.control}
+            render={({ field: { onChange, value } }) => (
+              <Inputeye
+                placeholder="Password"
+                value={value}
+                onChangeText={onChange}
+              />
             )}
-            <Gap height={20} />
-            <Controller
-              name="username"
-              control={form.control}
-              render={({ field: { onChange, value } }) => (
-                <Input
-                  placeholder="Username"
-                  value={value}
-                  onChangeText={onChange}
-                />
-              )}
-            />
-            {form.formState.errors.username && (
-              <Text style={{ color: colors._red, marginTop: 4 }}>
-                {form.formState.errors.username.message}
-              </Text>
+          />
+          {form.formState.errors.password && (
+            <Text style={{ color: colors._red, marginTop: 4 }}>
+              {form.formState.errors.password.message}
+            </Text>
+          )}
+          <Gap height={20} />
+          <Controller
+            name="confirmPassword"
+            control={form.control}
+            render={({ field: { onChange, value } }) => (
+              <Inputeye
+                placeholder="Confirm Password"
+                value={value}
+                onChangeText={onChange}
+              />
             )}
-            <Gap height={20} />
-            <Controller
-              name="password"
-              control={form.control}
-              render={({ field: { onChange, value } }) => (
-                <Inputeye
-                  placeholder="Password"
-                  value={value}
-                  onChangeText={onChange}
-                />
-              )}
-            />
-            {form.formState.errors.password && (
-              <Text style={{ color: colors._red, marginTop: 4 }}>
-                {form.formState.errors.password.message}
-              </Text>
-            )}
-            <Gap height={20} />
-            <Controller
-              name="confirmPassword"
-              control={form.control}
-              render={({ field: { onChange, value } }) => (
-                <Inputeye
-                  placeholder="Confirm Password"
-                  value={value}
-                  onChangeText={onChange}
-                />
-              )}
-            />
-            {form.formState.errors.confirmPassword && (
-              <Text style={{ color: colors._red, marginTop: 4 }}>
-                {form.formState.errors.confirmPassword.message}
-              </Text>
-            )}
-            <Gap height={25} />
-            <ButtonColor
-              teks="Continue"
-              backColor={colors._blue2}
-              textColor={colors._white}
-              onPress={form.handleSubmit(onRegister)}
-            />
-          </ScrollView>
-          {isLoading && <Loading />}
-        </ImageBackground>
-      </ScrollView>
+          />
+          {form.formState.errors.confirmPassword && (
+            <Text style={{ color: colors._red, marginTop: 4 }}>
+              {form.formState.errors.confirmPassword.message}
+            </Text>
+          )}
+          <Gap height={25} />
+          <ButtonColor
+            teks="Continue"
+            backColor={colors._blue2}
+            textColor={colors._white}
+            onPress={form.handleSubmit(onRegister)}
+          />
+        </ScrollView>
+        {isLoading && <Loading />}
+      </ImageBackground>
     </SafeAreaView>
   );
 };
