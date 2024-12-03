@@ -1,6 +1,7 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useState } from "react";
 import {
+  Image,
   Modal,
   SafeAreaView,
   StyleProp,
@@ -182,7 +183,7 @@ const DetailPackageTrainer = ({
             color: isDarkMode ? colors._grey4 : colors._grey3,
             fontFamily: fonts.primary[400],
           }}>
-          Total Price
+          Periode
         </Text>
         <Gap height={4} />
         <Text
@@ -192,26 +193,7 @@ const DetailPackageTrainer = ({
             color: isDarkMode ? colors._white : colors._black,
             lineHeight: 20,
           }}>
-          {convertToRupiah(packagePT.total.toString())}
-        </Text>
-        <Gap height={16} />
-        <Text
-          style={{
-            fontSize: 12,
-            color: isDarkMode ? colors._grey4 : colors._grey3,
-            fontFamily: fonts.primary[400],
-          }}>
-          Base Price
-        </Text>
-        <Gap height={4} />
-        <Text
-          style={{
-            fontSize: 12,
-            fontFamily: fonts.primary[300],
-            color: isDarkMode ? colors._white : colors._black,
-            lineHeight: 20,
-          }}>
-          {convertToRupiah(packagePT.base_price.toString())}
+          {packagePT.period}
         </Text>
         <Gap height={16} />
         <Text
@@ -231,6 +213,24 @@ const DetailPackageTrainer = ({
             lineHeight: 20,
           }}>
           {packagePT.session} Session
+        </Text>
+        <Gap height={16} />
+        <Text
+          style={{
+            fontSize: 12,
+            color: isDarkMode ? colors._grey4 : colors._grey3,
+            fontFamily: fonts.primary[400],
+          }}>
+          Total Price
+        </Text>
+        <Gap height={4} />
+        <Text
+          style={{
+            fontSize: 14,
+            fontFamily: fonts.primary[400],
+            color: isDarkMode ? colors._white : colors._black,
+          }}>
+          {convertToRupiah(packagePT.total.toString())}
         </Text>
         <Gap height={16} />
         {feature !== "" && (
