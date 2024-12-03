@@ -525,6 +525,7 @@ export const SignUp = ({
             textColor={colors._white}
             onPress={form.handleSubmit(onRegister)}
           />
+          <Gap height={25} />
         </ScrollView>
         {isLoading && <Loading />}
       </ImageBackground>
