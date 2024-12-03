@@ -110,6 +110,7 @@ const SelectGym = ({
         <Gap height={20} />
         <FlatList
           refreshing={isLoading}
+          style={{flex: 1}}
           onRefresh={() => {
             console.log("refresh");
             setPage(1);

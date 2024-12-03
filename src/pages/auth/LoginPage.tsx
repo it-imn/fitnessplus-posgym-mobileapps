@@ -77,7 +77,7 @@ export const LoginPage = ({
 
   const gotoSign = () => {
     reset();
-    navigation.navigate("SelectBranch");
+    navigation.navigate("SignUp"); 
   };
 
   // const gotoForgotPassword = () => {
