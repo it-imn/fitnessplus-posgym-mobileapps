@@ -346,7 +346,17 @@ export interface IWOG {
   count_instructor: number;
   count_personal_trainer: number;
   count_member: number;
-  cico: ICICO[]
+}
+
+export interface ICICO {
+  checkinTime: string;
+  checkinImage: string;
+  checkoutTime: string;
+  checkoutImage: string;
+  id: number;
+  status: string;
+  image: string;
+  name: string;
 }
 
 export interface ICICO {

@@ -17,21 +17,15 @@ import { colors, fonts } from "../../lib/utils";
 import NoData from "../../components/ui/NoData";
 import StatusBarComp from "../../components/ui/StatusBarComp";
 import Header from "../../components/ui/Header";
-import { IWOG } from "../../lib/definition";
-import { fetchCountWOG } from "../../services/who-on-gym";
+import { ICICO, IWOG } from "../../lib/definition";
+import { fetchWOGCount, fetchWOGSegment } from "../../services/who-on-gym";
 import { showMessage } from "react-native-flash-message";
 import Loading from "../../components/ui/Loading";
 import Gap from "../../components/ui/Gap";
-import {
-  Clock4Icon,
-  ContactIcon,
-  ContactRoundIcon,
-  DumbbellIcon,
-  MailIcon,
-  PhoneIcon,
-  UsersIcon,
-} from "lucide-react-native";
+import { useDebounce } from "use-debounce";
+import { CancelToken } from "axios";
 import moment from "moment";
+import { Clock4Icon } from "lucide-react-native";
 
 const width = Dimensions.get("window").width;
 
@@ -41,12 +35,66 @@ export const WOG = ({
   const { isDarkMode } = useContext(ThemeContext);
 
   const [countWOG, setCountWOG] = useState<IWOG | null>(null);
+  const [usersWOG, setUsersWOG] = useState<ICICO[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [role, setRole] = useState<
+    "member" | "instructure" | "trainer" | "operational" | ""
+  >("");
+  const [page, setPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(true);
+
+  const getMember = async (
+    _page: number,
+    _role: "member" | "instructure" | "trainer" | "operational" | "",
+    token?: CancelToken,
+  ) => {
+    setIsLoading(true);
+    try {
+      const { data, hasNext } = await fetchWOGSegment(
+        { page: _page, role: _role },
+        {
+          cancelToken: token,
+        },
+      );
+      setUsersWOG(prev => [...prev, ...data]); // Append for pagination
+
+      setHasNextPage(hasNext);
+    } catch (error: any) {
+      showMessage({
+        message: error.message || "An error occurred",
+        type: "warning",
+        icon: "warning",
+        backgroundColor: colors._red,
+        color: colors._white,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle pagination when reaching the end of the list
+  const handleEndReached = async () => {
+    if (!hasNextPage || isLoading) return;
+
+    const nextPage = page + 1;
+    setPage(nextPage);
+
+    getMember(nextPage, role);
+  };
+
+  // Fetch
+  useEffect(() => {
+    console.log("fetch");
+    setPage(1);
+    setUsersWOG([]);
+
+    getMember(1, role);
+  }, [role]);
 
   const getCountWOG = async () => {
     setIsLoading(true);
     try {
-      const { data } = await fetchCountWOG();
+      const { data } = await fetchWOGCount();
       setCountWOG(data);
     } catch (error: any) {
       showMessage({
@@ -97,13 +145,16 @@ export const WOG = ({
           alignItems: "center",
           marginHorizontal: 24,
         }}>
-        <View
+        <TouchableOpacity
+          onPress={() => (role !== "member" ? setRole("member") : setRole(""))}
           style={{
             width: width / 5,
             backgroundColor: isDarkMode ? colors._black : colors._white,
             alignItems: "center",
             padding: 10,
             borderRadius: 10,
+            borderColor: isDarkMode ? colors._white : colors._black,
+            borderWidth: role === 'member' ? 1 : 0,
             shadowColor: "#000",
             shadowOffset: {
               width: 0,
@@ -121,12 +172,7 @@ export const WOG = ({
             }}>
             {countWOG?.count_member}
           </Text>
-          <Gap height={4} />
-          <UsersIcon
-            size={16}
-            color={isDarkMode ? colors._white : colors._black2}
-          />
-          <Gap height={4} />
+          <Gap height={5} />
           <Text
             style={{
               fontFamily: fonts.primary[300],
@@ -135,14 +181,19 @@ export const WOG = ({
             }}>
             Member
           </Text>
-        </View>
-        <View
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            role !== "trainer" ? setRole("trainer") : setRole("")
+          }
           style={{
             width: width / 5,
             backgroundColor: isDarkMode ? colors._black : colors._white,
             alignItems: "center",
             padding: 10,
             borderRadius: 10,
+            borderColor: isDarkMode ? colors._white : colors._black,
+            borderWidth: role === 'trainer' ? 1 : 0,
             shadowColor: "#000",
             shadowOffset: {
               width: 0,
@@ -160,12 +211,7 @@ export const WOG = ({
             }}>
             {countWOG?.count_personal_trainer}
           </Text>
-          <Gap height={4} />
-          <DumbbellIcon
-            size={16}
-            color={isDarkMode ? colors._white : colors._black2}
-          />
-          <Gap height={4} />
+          <Gap height={5} />
           <Text
             style={{
               fontFamily: fonts.primary[300],
@@ -174,14 +220,19 @@ export const WOG = ({
             }}>
             Trainer
           </Text>
-        </View>
-        <View
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            role !== "instructure" ? setRole("instructure") : setRole("")
+          }
           style={{
             width: width / 5,
             backgroundColor: isDarkMode ? colors._black : colors._white,
             alignItems: "center",
             padding: 10,
             borderRadius: 10,
+            borderColor: isDarkMode ? colors._white : colors._black,
+            borderWidth: role === 'instructure' ? 1 : 0,
             shadowColor: "#000",
             shadowOffset: {
               width: 0,
@@ -199,12 +250,7 @@ export const WOG = ({
             }}>
             {countWOG?.count_instructor}
           </Text>
-          <Gap height={4} />
-          <ContactIcon
-            size={16}
-            color={isDarkMode ? colors._white : colors._black2}
-          />
-          <Gap height={4} />
+          <Gap height={5} />
           <Text
             style={{
               fontFamily: fonts.primary[300],
@@ -213,14 +259,19 @@ export const WOG = ({
             }}>
             Instructure
           </Text>
-        </View>
-        <View
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            role !== "operational" ? setRole("operational") : setRole("")
+          }
           style={{
             width: width / 5,
             backgroundColor: isDarkMode ? colors._black : colors._white,
             alignItems: "center",
             padding: 10,
             borderRadius: 10,
+            borderColor: isDarkMode ? colors._white : colors._black,
+            borderWidth: role === 'operational' ? 1 : 0,
             shadowColor: "#000",
             shadowOffset: {
               width: 0,
@@ -238,12 +289,7 @@ export const WOG = ({
             }}>
             {countWOG?.count_operational}
           </Text>
-          <Gap height={4} />
-          <ContactRoundIcon
-            size={16}
-            color={isDarkMode ? colors._white : colors._black2}
-          />
-          <Gap height={4} />
+          <Gap height={5} />
           <Text
             style={{
               fontFamily: fonts.primary[300],
@@ -252,7 +298,7 @@ export const WOG = ({
             }}>
             Operational
           </Text>
-        </View>
+        </TouchableOpacity>
       </View>
       <Gap height={16} />
       <View
@@ -275,13 +321,19 @@ export const WOG = ({
       <FlatList
         style={{ paddingHorizontal: 24, flex: 1 }}
         refreshing={isLoading}
-        onRefresh={() => {}}
-        // onEndReached={handleEndReached}
-        data={countWOG?.cico}
+        onRefresh={() => {
+          console.log("refresh");
+          setPage(1);
+          setUsersWOG([]);
+
+          getMember(1, role);
+        }}
+        onEndReached={handleEndReached}
+        data={usersWOG}
         renderItem={({ item }) => (
           <MemberCard
-            name={item.user.name}
-            image={item.user.image_thumbnail}
+            name={item.name}
+            image={item.image}
             status={item.status}
             time={
               item.status === "CHECKIN" ? item.checkinTime : item.checkoutTime
