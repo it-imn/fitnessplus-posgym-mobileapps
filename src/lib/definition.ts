@@ -39,6 +39,7 @@ export type UserDetail = {
   branch: Branch;
   membership: Membership;
   visit_gym: VisitGym;
+  notif_count: number;
 };
 
 export type Role = {
@@ -415,4 +416,14 @@ export interface IPaymentPackage {
   payment_method: string;
   status: string;
   total_price: number;
+}
+
+export interface INotification {
+  id: number;
+  user_name: string;
+  user_image: string;
+  notifiable_type: string;
+  notifiable_id: number;
+  message: string;
+  created_at: string;
 }

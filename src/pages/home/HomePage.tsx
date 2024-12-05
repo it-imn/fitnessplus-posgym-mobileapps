@@ -100,7 +100,6 @@ function ListPTSection({
                     color: colors._white,
                   });
                   return;
-                  
                 }
 
                 navigation.navigate("DetailPT", {
@@ -570,11 +569,13 @@ function HeaderSection({
   branch_name,
   membership,
   navigation,
+  notifCount,
 }: {
   name: string;
   branch_name: string;
   membership: Membership;
   navigation: any;
+  notifCount: number;
 }) {
   return (
     <View
@@ -619,6 +620,29 @@ function HeaderSection({
           height: 25,
         }}
         onPress={() => navigation.navigate("Notification")}>
+        <View
+          style={{
+            backgroundColor: colors._red,
+            width: 30,
+            height: 30,
+            borderRadius: 50,
+            position: "absolute",
+            zIndex: 10,
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            top: -15,
+            right: -15,
+          }}>
+          <Text
+            style={{
+              color:
+               colors._white,
+               fontSize: 12,
+            }}>
+            {notifCount}
+          </Text>
+        </View>
         <IconNotification width={24} height={24} />
       </TouchableOpacity>
     </View>
@@ -719,6 +743,7 @@ export const HomePage = ({ navigation }: any) => {
           branch_name={dataProfile.branch.name}
           membership={membership}
           navigation={navigation}
+          notifCount={dataProfile.notif_count}
         />
         <Gap height={20} />
         <CheckCardSection
