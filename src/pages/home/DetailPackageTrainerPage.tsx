@@ -158,115 +158,132 @@ const DetailPackageTrainer = ({
       <StatusBarComp />
       <Header teks="Package PT" onPress={() => navigation.goBack()} />
       <View style={{ padding: 24, flex: 1 }}>
-        <Text
+        <Image
+          source={{
+            uri: packagePT.image,
+          }}
           style={{
-            fontSize: 12,
-            color: isDarkMode ? colors._grey4 : colors._grey3,
-            fontFamily: fonts.primary[400],
-          }}>
-          Package Name
-        </Text>
-        <Gap height={4} />
-        <Text
+            width: 96,
+            height: 96,
+            alignSelf: "center",
+            borderRadius: 4,
+          }}
+        />
+        <Gap height={24} />
+        <View
           style={{
-            fontSize: 12,
-            fontFamily: fonts.primary[300],
-            color: isDarkMode ? colors._white : colors._black,
-            lineHeight: 20,
+            paddingHorizontal: 16,
           }}>
-          {packagePT.package_name}
-        </Text>
-        <Gap height={16} />
-        <Text
-          style={{
-            fontSize: 12,
-            color: isDarkMode ? colors._grey4 : colors._grey3,
-            fontFamily: fonts.primary[400],
-          }}>
-          Periode
-        </Text>
-        <Gap height={4} />
-        <Text
-          style={{
-            fontSize: 12,
-            fontFamily: fonts.primary[300],
-            color: isDarkMode ? colors._white : colors._black,
-            lineHeight: 20,
-          }}>
-          {packagePT.period}
-        </Text>
-        <Gap height={16} />
-        <Text
-          style={{
-            fontSize: 12,
-            color: isDarkMode ? colors._grey4 : colors._grey3,
-            fontFamily: fonts.primary[400],
-          }}>
-          Session
-        </Text>
-        <Gap height={4} />
-        <Text
-          style={{
-            fontSize: 12,
-            fontFamily: fonts.primary[300],
-            color: isDarkMode ? colors._white : colors._black,
-            lineHeight: 20,
-          }}>
-          {packagePT.session} Session
-        </Text>
-        <Gap height={16} />
-        <Text
-          style={{
-            fontSize: 12,
-            color: isDarkMode ? colors._grey4 : colors._grey3,
-            fontFamily: fonts.primary[400],
-          }}>
-          Total Price
-        </Text>
-        <Gap height={4} />
-        <Text
-          style={{
-            fontSize: 14,
-            fontFamily: fonts.primary[400],
-            color: isDarkMode ? colors._white : colors._black,
-          }}>
-          {convertToRupiah(packagePT.total.toString())}
-        </Text>
-        <Gap height={16} />
-        {feature !== "" && (
-          <>
-            <Text
-              style={{
-                fontSize: 12,
-                color: isDarkMode ? colors._grey4 : colors._grey3,
-                fontFamily: fonts.primary[400],
-              }}>
-              Feature
-            </Text>
-            <Gap height={4} />
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <View
+          <Text
+            style={{
+              fontSize: 12,
+              color: isDarkMode ? colors._grey4 : colors._grey3,
+              fontFamily: fonts.primary[400],
+            }}>
+            Package Name
+          </Text>
+          <Gap height={4} />
+          <Text
+            style={{
+              fontSize: 12,
+              fontFamily: fonts.primary[300],
+              color: isDarkMode ? colors._white : colors._black,
+              lineHeight: 20,
+            }}>
+            {packagePT.package_name}
+          </Text>
+          <Gap height={16} />
+          <Text
+            style={{
+              fontSize: 12,
+              color: isDarkMode ? colors._grey4 : colors._grey3,
+              fontFamily: fonts.primary[400],
+            }}>
+            Periode
+          </Text>
+          <Gap height={4} />
+          <Text
+            style={{
+              fontSize: 12,
+              fontFamily: fonts.primary[300],
+              color: isDarkMode ? colors._white : colors._black,
+              lineHeight: 20,
+            }}>
+            {packagePT.period}
+          </Text>
+          <Gap height={16} />
+          <Text
+            style={{
+              fontSize: 12,
+              color: isDarkMode ? colors._grey4 : colors._grey3,
+              fontFamily: fonts.primary[400],
+            }}>
+            Session
+          </Text>
+          <Gap height={4} />
+          <Text
+            style={{
+              fontSize: 12,
+              fontFamily: fonts.primary[300],
+              color: isDarkMode ? colors._white : colors._black,
+              lineHeight: 20,
+            }}>
+            {packagePT.session} Session
+          </Text>
+          <Gap height={16} />
+          <Text
+            style={{
+              fontSize: 12,
+              color: isDarkMode ? colors._grey4 : colors._grey3,
+              fontFamily: fonts.primary[400],
+            }}>
+            Total Price
+          </Text>
+          <Gap height={4} />
+          <Text
+            style={{
+              fontSize: 14,
+              fontFamily: fonts.primary[400],
+              color: isDarkMode ? colors._white : colors._black,
+            }}>
+            {convertToRupiah(packagePT.total.toString())}
+          </Text>
+          <Gap height={16} />
+          {feature !== "" && (
+            <>
+              <Text
                 style={{
-                  backgroundColor: colors._blue,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: 4,
-                  borderRadius: 4,
+                  fontSize: 12,
+                  color: isDarkMode ? colors._grey4 : colors._grey3,
+                  fontFamily: fonts.primary[400],
                 }}>
-                <Text
+                Feature
+              </Text>
+              <Gap height={4} />
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View
                   style={{
-                    fontSize: 12,
-                    fontFamily: fonts.primary[400],
-                    color: isDarkMode ? colors._white : colors._black,
-                    lineHeight: 20,
+                    backgroundColor: colors._blue,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 4,
+                    borderRadius: 4,
                   }}>
-                  {feature}
-                </Text>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontFamily: fonts.primary[400],
+                      color: isDarkMode ? colors._white : colors._black,
+                      lineHeight: 20,
+                    }}>
+                    {feature}
+                  </Text>
+                </View>
+                <Gap width={4} />
               </View>
-              <Gap width={4} />
-            </View>
-          </>
-        )}
+            </>
+          )}
+        </View>
         <View style={{ flex: 1 }} />
         <View
           style={{

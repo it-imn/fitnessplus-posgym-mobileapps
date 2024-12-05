@@ -271,6 +271,7 @@ export interface IPTPackage {
   base_price: number;
   discount: number;
   down_payment: boolean;
+  image: string;
   dp_discount: number;
   dp_price_disc: number;
   dp_total: number;

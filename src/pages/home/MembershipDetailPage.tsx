@@ -178,152 +178,157 @@ export const MembershipDetail = ({
             uri: membershipPackage.image,
           }}
           style={{
-            width: 50,
-            height: 50,
+            width: 96,
+            height: 96,
             alignSelf: "center",
             borderRadius: 4,
           }}
         />
-        <Gap height={16} />
-        <Text
+        <Gap height={24} />
+        <View
           style={{
-            fontSize: 12,
-            color: isDarkMode ? colors._grey4 : colors._grey3,
-            fontFamily: fonts.primary[400],
+            paddingHorizontal: 16,
           }}>
-          Description
-        </Text>
-        <Gap height={4} />
-        <Text
-          style={{
-            fontSize: 12,
-            fontFamily: fonts.primary[300],
-            color: isDarkMode ? colors._white : colors._black,
-            lineHeight: 20,
-          }}>
-          {membershipPackage.desc}
-        </Text>
-        <Gap height={16} />
-        <Text
-          style={{
-            fontSize: 12,
-            color: isDarkMode ? colors._grey4 : colors._grey3,
-            fontFamily: fonts.primary[400],
-          }}>
-          Periode
-        </Text>
-        <Gap height={4} />
-        <Text
-          style={{
-            fontSize: 12,
-            fontFamily: fonts.primary[300],
-            color: isDarkMode ? colors._white : colors._black,
-            lineHeight: 20,
-          }}>{`${membershipPackage.periode}`}</Text>
-        <Gap height={16} />
-        {membershipPackage.down_payment_membership === 1 && (
-          <>
-            <Text
-              style={{
-                fontSize: 12,
-                color: isDarkMode ? colors._grey4 : colors._grey3,
-                fontFamily: fonts.primary[400],
-              }}>
-              Feature
-            </Text>
-            <Gap height={4} />
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <View
-                style={{
-                  backgroundColor: colors._blue,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: 4,
-                  borderRadius: 4,
-                }}>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontFamily: fonts.primary[400],
-                    color: isDarkMode ? colors._white : colors._black,
-                    lineHeight: 20,
-                  }}>
-                  {membershipPackage.installment_first_pay?.total_price &&
-                    convertToRupiah(
-                      membershipPackage.installment_first_pay.total_price.toString() ||
-                        "0",
-                    )}{" "}
-                  Dp Available
-                </Text>
-              </View>
-              <Gap width={4} />
-            </View>
-          </>
-        )}
-        <Gap height={16} />
-        <Text
-          style={{
-            fontSize: 12,
-            color: isDarkMode ? colors._grey4 : colors._grey3,
-            fontFamily: fonts.primary[400],
-          }}>
-          Price
-        </Text>
-        <Gap height={4} />
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text
             style={{
-              fontSize: 14,
+              fontSize: 12,
+              color: isDarkMode ? colors._grey4 : colors._grey3,
               fontFamily: fonts.primary[400],
-              color: isDarkMode ? colors._white : colors._black,
             }}>
-            {convertToRupiah(
-              membershipPackage?.total_price !== undefined
-                ? membershipPackage.total_price.toString()
-                : "0",
-            )}
+            Description
           </Text>
-        </View>
-        <Gap height={16} />
-        <Text
-          style={{
-            fontSize: 12,
-            color: isDarkMode ? colors._grey4 : colors._grey3,
-            fontFamily: fonts.primary[400],
-          }}>
-          Member Consultant
-        </Text>
-        <Gap height={4} />
-        <View>
-          <TouchableOpacity
-            style={styles.button(isDarkMode)}
-            onPress={() => {
-              openModal({
-                children: (
-                  <ScrollView>
-                    {sales.map((data: ISales) => {
-                      return (
-                        <TouchableOpacity
-                          key={data.id}
-                          style={styles.buttonDrop}
-                          onPress={() => {
-                            selectSales({ id: data.id, label: data.name });
-                            closeModal();
-                          }}>
-                          <Text style={styles.teks5(isDarkMode)}>
-                            {data.name}
-                          </Text>
-                        </TouchableOpacity>
-                      );
-                    })}
-                  </ScrollView>
-                ),
-              });
+          <Gap height={4} />
+          <Text
+            style={{
+              fontSize: 12,
+              fontFamily: fonts.primary[300],
+              color: isDarkMode ? colors._white : colors._black,
+              lineHeight: 20,
             }}>
-            <Text style={styles.teks5(isDarkMode)}>{labels}</Text>
-          </TouchableOpacity>
-          <View style={{ position: "absolute", right: 12, top: 12 }}>
-            <IconDown />
+            {membershipPackage.desc}
+          </Text>
+          <Gap height={16} />
+          <Text
+            style={{
+              fontSize: 12,
+              color: isDarkMode ? colors._grey4 : colors._grey3,
+              fontFamily: fonts.primary[400],
+            }}>
+            Periode
+          </Text>
+          <Gap height={4} />
+          <Text
+            style={{
+              fontSize: 12,
+              fontFamily: fonts.primary[300],
+              color: isDarkMode ? colors._white : colors._black,
+              lineHeight: 20,
+            }}>{`${membershipPackage.periode}`}</Text>
+          <Gap height={16} />
+          {membershipPackage.down_payment_membership === 1 && (
+            <>
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: isDarkMode ? colors._grey4 : colors._grey3,
+                  fontFamily: fonts.primary[400],
+                }}>
+                Feature
+              </Text>
+              <Gap height={4} />
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View
+                  style={{
+                    backgroundColor: colors._blue,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 4,
+                    borderRadius: 4,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontFamily: fonts.primary[400],
+                      color: isDarkMode ? colors._white : colors._black,
+                      lineHeight: 20,
+                    }}>
+                    {membershipPackage.installment_first_pay?.total_price &&
+                      convertToRupiah(
+                        membershipPackage.installment_first_pay.total_price.toString() ||
+                          "0",
+                      )}{" "}
+                    Dp Available
+                  </Text>
+                </View>
+                <Gap width={4} />
+              </View>
+            </>
+          )}
+          <Gap height={16} />
+          <Text
+            style={{
+              fontSize: 12,
+              color: isDarkMode ? colors._grey4 : colors._grey3,
+              fontFamily: fonts.primary[400],
+            }}>
+            Price
+          </Text>
+          <Gap height={4} />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: fonts.primary[400],
+                color: isDarkMode ? colors._white : colors._black,
+              }}>
+              {convertToRupiah(
+                membershipPackage?.total_price !== undefined
+                  ? membershipPackage.total_price.toString()
+                  : "0",
+              )}
+            </Text>
+          </View>
+          <Gap height={16} />
+          <Text
+            style={{
+              fontSize: 12,
+              color: isDarkMode ? colors._grey4 : colors._grey3,
+              fontFamily: fonts.primary[400],
+            }}>
+            Member Consultant
+          </Text>
+          <Gap height={4} />
+          <View>
+            <TouchableOpacity
+              style={styles.button(isDarkMode)}
+              onPress={() => {
+                openModal({
+                  children: (
+                    <ScrollView>
+                      {sales.map((data: ISales) => {
+                        return (
+                          <TouchableOpacity
+                            key={data.id}
+                            style={styles.buttonDrop}
+                            onPress={() => {
+                              selectSales({ id: data.id, label: data.name });
+                              closeModal();
+                            }}>
+                            <Text style={styles.teks5(isDarkMode)}>
+                              {data.name}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </ScrollView>
+                  ),
+                });
+              }}>
+              <Text style={styles.teks5(isDarkMode)}>{labels}</Text>
+            </TouchableOpacity>
+            <View style={{ position: "absolute", right: 12, top: 12 }}>
+              <IconDown />
+            </View>
           </View>
         </View>
         <Gap height={16} />
