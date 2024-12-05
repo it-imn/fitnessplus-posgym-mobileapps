@@ -417,6 +417,7 @@ export interface IPaymentPackage {
   payment_method: string;
   status: string;
   total_price: number;
+  receipt: string;
 }
 
 export interface INotification {

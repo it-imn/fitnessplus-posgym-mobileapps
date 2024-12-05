@@ -2,7 +2,7 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useEffect, useState } from "react";
-import { SafeAreaView, Text, View } from "react-native";
+import { Linking, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import NoData from "../../components/ui/NoData";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import { IPaymentPackage, ThemeType } from "../../lib/definition";
@@ -14,6 +14,7 @@ import StatusBarComp from "../../components/ui/StatusBarComp";
 import Header from "../../components/ui/Header";
 import Loading from "../../components/ui/Loading";
 import Gap from "../../components/ui/Gap";
+import { ReceiptIcon } from "lucide-react-native";
 
 export const DetailPaymentPackage = ({
   navigation,
@@ -217,6 +218,37 @@ export const DetailPaymentPackage = ({
           }}>
           {paymentPackage?.status}
         </Text>
+        <Gap height={16} />
+        <Text
+          style={{
+            fontSize: 12,
+            color: isDarkMode ? colors._grey4 : colors._grey3,
+            fontFamily: fonts.primary[400],
+          }}>
+          Receipt
+        </Text>
+        <Gap height={4} />
+        <TouchableOpacity
+          onPress={() => {
+            if (paymentPackage?.receipt)
+              Linking.openURL(paymentPackage?.receipt);
+          }}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}>
+          <ReceiptIcon size={16} color={colors._blue2} />
+          <Gap width={8} />
+          <Text
+            style={{
+              fontSize: 12,
+              fontFamily: fonts.primary[300],
+              color: colors._blue2,
+              lineHeight: 20,
+            }}>
+            Receipt Link
+          </Text>
+        </TouchableOpacity>
         <Gap height={16} />
       </View>
 
