@@ -420,6 +420,7 @@ export interface IPaymentPackage {
 
 export interface INotification {
   id: number;
+  has_detail: boolean;
   user_name: string;
   user_image: string;
   notifiable_type: string;

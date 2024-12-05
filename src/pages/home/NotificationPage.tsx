@@ -129,7 +129,9 @@ export const Notification = ({
             <ListNotification
               notification={item}
               onPress={() => {
-                navigation.navigate("DetailPaymentPackage", { id: item.notifiable_id });
+                navigation.navigate("DetailPaymentPackage", {
+                  id: item.notifiable_id,
+                });
               }}
             />
           )}
@@ -154,6 +156,7 @@ const ListNotification = ({
   return (
     <Fragment>
       <TouchableOpacity
+        disabled={!notification.has_detail}
         onPress={onPress}
         style={{
           flexDirection: "row",
