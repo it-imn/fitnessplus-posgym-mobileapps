@@ -25,7 +25,7 @@ import Gap from "../../components/ui/Gap";
 import { useDebounce } from "use-debounce";
 import { CancelToken } from "axios";
 import moment from "moment";
-import { Clock4Icon } from "lucide-react-native";
+import { Clock4Icon, ContactIcon, ContactRoundIcon, DumbbellIcon, UsersIcon } from "lucide-react-native";
 
 const width = Dimensions.get("window").width;
 
@@ -172,7 +172,12 @@ export const WOG = ({
             }}>
             {countWOG?.count_member}
           </Text>
-          <Gap height={5} />
+          <Gap height={4} />
+          <UsersIcon
+            size={16}
+            color={isDarkMode ? colors._white : colors._black2}
+          />
+          <Gap height={4} />
           <Text
             style={{
               fontFamily: fonts.primary[300],
@@ -211,7 +216,12 @@ export const WOG = ({
             }}>
             {countWOG?.count_personal_trainer}
           </Text>
-          <Gap height={5} />
+          <Gap height={4} />
+          <DumbbellIcon
+            size={16}
+            color={isDarkMode ? colors._white : colors._black2}
+          />
+          <Gap height={4} />
           <Text
             style={{
               fontFamily: fonts.primary[300],
@@ -250,7 +260,12 @@ export const WOG = ({
             }}>
             {countWOG?.count_instructor}
           </Text>
-          <Gap height={5} />
+          <Gap height={4} />
+          <ContactIcon
+            size={16}
+            color={isDarkMode ? colors._white : colors._black2}
+          />
+          <Gap height={4} />
           <Text
             style={{
               fontFamily: fonts.primary[300],
@@ -289,7 +304,12 @@ export const WOG = ({
             }}>
             {countWOG?.count_operational}
           </Text>
-          <Gap height={5} />
+          <Gap height={4} />
+          <ContactRoundIcon
+            size={16}
+            color={isDarkMode ? colors._white : colors._black2}
+          />
+          <Gap height={4} />
           <Text
             style={{
               fontFamily: fonts.primary[300],
