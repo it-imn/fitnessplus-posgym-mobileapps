@@ -15,7 +15,10 @@ import { ThemeContext } from "../../contexts/ThemeContext";
 import { RootStackParamList } from "../../lib/routes";
 import { colors, fonts } from "../../lib/utils";
 import { INotification } from "../../lib/definition";
-import { fetchNotifications } from "../../services/notification";
+import {
+  fetchNotifications,
+  readNotification,
+} from "../../services/notification";
 import { useIsFocused } from "@react-navigation/native";
 import { CancelToken } from "axios";
 import { useDebounce } from "use-debounce";
@@ -128,7 +131,9 @@ export const Notification = ({
           renderItem={({ item }) => (
             <ListNotification
               notification={item}
-              onPress={() => {
+              onPress={async () => {
+                await readNotification(item.id);
+
                 navigation.navigate("DetailPaymentPackage", {
                   id: item.notifiable_id,
                 });

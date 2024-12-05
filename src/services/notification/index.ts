@@ -29,3 +29,22 @@ export const fetchNotifications = async (
       throw new Error(err.response?.data.message);
     });
 };
+
+export const readNotification = async (
+  id: number,
+  config?: AxiosRequestConfig<any> | undefined,
+) => {
+  return api
+    .get(`/notification/read/${id}`, config)
+    .then(({ data }) => {
+      console.log(data);
+      return {
+        data: data.result as INotification,
+      };
+    })
+    .catch(err => {
+      console.error("error read notification");
+      throw new Error(err.response?.data.message);
+    });
+}
+
