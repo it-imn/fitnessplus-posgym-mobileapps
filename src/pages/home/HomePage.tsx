@@ -620,29 +620,30 @@ function HeaderSection({
           height: 25,
         }}
         onPress={() => navigation.navigate("Notification")}>
-        <View
-          style={{
-            backgroundColor: colors._red,
-            width: 30,
-            height: 30,
-            borderRadius: 50,
-            position: "absolute",
-            zIndex: 10,
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            top: -15,
-            right: -15,
-          }}>
-          <Text
+        {notifCount > 0 ? (
+          <View
             style={{
-              color:
-               colors._white,
-               fontSize: 12,
+              backgroundColor: colors._red,
+              width: 30,
+              height: 30,
+              borderRadius: 50,
+              position: "absolute",
+              zIndex: 10,
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              top: -15,
+              right: -15,
             }}>
-            {notifCount}
-          </Text>
-        </View>
+            <Text
+              style={{
+                color: colors._white,
+                fontSize: 12,
+              }}>
+              {notifCount}
+            </Text>
+          </View>
+        ) : null}
         <IconNotification width={24} height={24} />
       </TouchableOpacity>
     </View>
