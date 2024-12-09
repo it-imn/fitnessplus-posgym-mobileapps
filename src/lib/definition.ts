@@ -67,7 +67,8 @@ export type Membership = {
   payment_order: string;
   sales_id: number;
   sales: string;
-  started_date: string;
+  started_at: string;
+  expired_at: string;
   expired_at_local: string;
   price: number;
   discount?: number;

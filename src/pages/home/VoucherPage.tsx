@@ -32,6 +32,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import DateTimePicker, {
   DateTimePickerAndroid,
 } from "@react-native-community/datetimepicker";
+import { fetchProfile } from "../../services/profile";
 
 const membershipSchema = z.object({
   startDate: z.date().refine(value => value.getDate() >= new Date().getDate(), {
@@ -55,41 +56,23 @@ const Voucher = ({
     },
   });
 
+  const getProfile = async () => {
+    try {
+      const { data } = await fetchProfile();
+      if (data.membership.expired_at) {
+        const expiredAt = new Date(data.membership.expired_at);
+        // add one day
+        expiredAt.setDate(expiredAt.getDate() + 1);
+        form.setValue("startDate", expiredAt);
+      }
+    } catch (err: any) {
+      console.error(err);
+    }
+  };
+
   const claimVoucher = async (values: z.infer<typeof membershipSchema>) => {
-    // const data = {
-    //   voucher_code: code,
-    //   package_id: id,
-    //   signature: signature,
-    //   down_pay: down_pay,
-    // };
     if (transaction.type === TransactionType.MEMBERSHIP) {
       try {
-        // const response = await Api.membershipVoucherNews(data, token);
-        // const params = {
-        //   name: name,
-        //   email: email,
-        //   phone: phone,
-        //   id: id,
-        //   item_name: item_name,
-        //   package_price: response.data.data.package_price,
-        //   item_price: response.data.data.package_total_price,
-        //   item_price_fix: response.data.data.package_fix_price,
-        //   type: type,
-        //   item_count: item_count,
-        //   voucher_name: response.data.data.voucher_name,
-        //   discount: response.data.data.voucher_discount,
-        //   signature: signature,
-        //   sales_id: sales_id,
-        //   index: index,
-        //   down_pay: down_pay,
-        //   token: token,
-        //   isDarkMode: boolean,
-        //   voucher_id: response.data.data.voucher_id,
-        //   installments: response.data.data.installment_detail_total_price,
-        //   due_date: response.data.data.installment_detail_due_date,
-        //   exp_date: response.data.data.expired_at,
-        // };
-        // navigation.navigate('WillTransaction', params);
         if (voucherCode === "") {
           showMessage({
             message: "Voucher code is required",
@@ -405,7 +388,7 @@ const Voucher = ({
   // }
 
   useEffect(() => {
-    // getVouher();
+    getProfile();
   }, []);
 
   return (
