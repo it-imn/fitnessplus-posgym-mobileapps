@@ -647,7 +647,7 @@ export const Payment = ({
             borderRadius: 10,
             padding: 16,
           }}
-          onPress={() => {}}>
+          onPress={onPay}>
           <Text
             style={{
               fontSize: 12,
