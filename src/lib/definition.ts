@@ -322,6 +322,7 @@ export interface IInstallmentMembership {
   package_table: string;
   payment_id: number;
   payment_type: string;
+  installment_number: number;
   total: number;
 }
 

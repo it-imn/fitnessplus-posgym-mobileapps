@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import {
   FlatList,
   SafeAreaView,
@@ -22,6 +22,7 @@ import { fetchInstallmentsMembership } from "../../services/installment";
 import { showMessage } from "react-native-flash-message";
 import { useDebounce } from "use-debounce";
 import { CancelToken } from "axios";
+import { AlarmClockIcon } from "lucide-react-native";
 
 export const InstallmentPackage = ({
   navigation,
@@ -156,69 +157,94 @@ const PackageCard = ({
 }) => {
   const { isDarkMode } = useContext(ThemeContext);
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={{
-        backgroundColor: isDarkMode ? colors._black : colors._grey2,
-        flexDirection: "column",
-        gap: 8,
-        borderRadius: 16,
-        // borderColor:
-        //   cancelClassId === classHistory.id ? colors._green : colors._grey2,
-        borderWidth: 2,
-        padding: 16,
-        marginBottom: 8,
-      }}>
-      <View style={{ backgroundColor: colors._backBlue }}>
-        <Text
+    <Fragment>
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          padding: 12,
+          borderRadius: 12,
+          justifyContent: "space-between",
+          alignItems: "center",
+          flex: 1,
+        }}
+        onPress={onPress}>
+        <View
           style={{
-            color: colors._black2,
-            fontFamily: fonts.primary[600],
-            fontSize: 16,
+            flexDirection: "row",
+            alignItems: "center",
+            flexShrink: 1,
           }}>
-          {packageInstallment.package_name}
-        </Text>
-        <Gap height={4} />
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <View>
+          <View
+            style={{
+              flexDirection: "column",
+              flexShrink: 1,
+            }}>
             <Text
               style={{
-                color: colors._grey,
-                fontFamily: fonts.primary[400],
-                fontSize: 12,
-              }}>
-              Next Bill
-            </Text>
-            <Text
-              style={{
-                color: colors._black2,
                 fontFamily: fonts.primary[600],
                 fontSize: 14,
+                color: isDarkMode ? colors._white : colors._black,
+                flexShrink: 1,
               }}>
-              {convertToRupiah(packageInstallment.next_bill.toString())}
+              {packageInstallment.package_name}
             </Text>
-          </View>
-          <View>
+            <Gap height={4} />
             <Text
               style={{
-                color: colors._red,
-                fontFamily: fonts.primary[400],
-                fontSize: 12,
-                textAlign: "right",
-              }}>
-              Due Date
-            </Text>
-            <Text
-              style={{
-                color: colors._red,
-                fontFamily: fonts.primary[600],
+                fontFamily: fonts.primary[300],
                 fontSize: 14,
-              }}>
-              {packageInstallment.due_date}
+                color: isDarkMode ? colors._white : colors._black,
+              }}
+              numberOfLines={2}>
+              {convertToRupiah(packageInstallment.next_bill.toString() || "0")}
+            </Text>
+            <Gap height={4} />
+            <Text
+              style={{
+                fontFamily: fonts.primary[300],
+                fontSize: 8,
+                color: isDarkMode ? colors._white : colors._black,
+              }}
+              numberOfLines={2}>
+              {packageInstallment.order_code}
             </Text>
           </View>
         </View>
-      </View>
-    </TouchableOpacity>
+        <View
+          style={{
+            flexDirection: "column",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
+            alignSelf: "flex-end",
+            width: 120,
+          }}>
+          <View style={{ flexDirection: "row", justifyContent: "center" }}>
+            <AlarmClockIcon size={16} color={colors._gold3} />
+            <Gap width={4} />
+            <Text
+              style={{
+                fontFamily: fonts.primary[300],
+                fontSize: 14,
+                color: isDarkMode ? colors._white : colors._black,
+              }}
+              numberOfLines={2}>
+              Installment {packageInstallment.installment_number}
+            </Text>
+          </View>
+          <Gap height={4} />
+          <Text
+            style={{
+              fontFamily: fonts.primary[300],
+              fontSize: 14,
+              color: colors._red,
+            }}>
+            {packageInstallment.due_date}
+          </Text>
+        </View>
+      </TouchableOpacity>
+      <View
+        style={{ width: "100%", height: 1, backgroundColor: colors._grey3 }}
+      />
+    </Fragment>
   );
 };
