@@ -365,7 +365,7 @@ export const MembershipDetail = ({
               color: isDarkMode ? colors._grey4 : colors._grey3,
               fontFamily: fonts.primary[400],
             }}>
-            Member Consultant
+            Start Date
           </Text>
           <Gap height={4} />
           <TouchableOpacity

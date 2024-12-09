@@ -83,7 +83,7 @@ export const PaymentInstallment = ({
               fontFamily: fonts.primary[400],
               color: isDarkMode ? colors._grey2 : colors._black,
             }}>
-            Order Summary
+            Package Summary
           </Text>
           <Gap height={8} />
           <Text

@@ -163,7 +163,7 @@ export const Payment = ({
               fontFamily: fonts.primary[400],
               color: isDarkMode ? colors._grey2 : colors._black,
             }}>
-            Order Summary
+            Package Summary
           </Text>
           <Gap height={8} />
           <Text
@@ -265,7 +265,7 @@ export const Payment = ({
                 style={{
                   flex: 1,
                   padding: 12,
-                  fontSize: 12,
+                  fontSize: 14,
                   fontFamily: fonts.primary[400],
                   backgroundColor: isDarkMode ? colors._black : colors._grey2,
                   borderRadius: 10,
@@ -280,7 +280,7 @@ export const Payment = ({
                   justifyContent: "center",
                   alignItems: "center",
                   backgroundColor: isDarkMode ? colors._black : colors._grey2,
-                  padding: 16,
+                  padding: 12,
                   borderRadius: 10,
                   borderWidth: 0.5,
                   borderColor: isDarkMode ? colors._grey4 : colors._grey3,
