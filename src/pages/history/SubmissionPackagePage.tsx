@@ -232,7 +232,7 @@ const ListHistoryDetail = ({
           }}>
           <View
             style={{
-              backgroundColor: colors._blue2,
+              backgroundColor: submissionPackage.status === 'Installment' ? colors._gold4 : colors._blue2,
               borderRadius: 8,
             }}>
             <Text
