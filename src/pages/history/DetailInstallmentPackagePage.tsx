@@ -1,6 +1,13 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useContext, useEffect } from "react";
-import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import React, { Fragment, useContext, useEffect } from "react";
+import {
+  FlatList,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Header from "../../components/ui/Header";
 import Gap from "../../components/ui/Gap";
 import Loading from "../../components/ui/Loading";
@@ -12,6 +19,7 @@ import { RootStackParamList } from "../../lib/routes";
 import { colors, convertToRupiah, fonts } from "../../lib/utils";
 import { fetchInstallmentMembership } from "../../services/installment";
 import { showMessage } from "react-native-flash-message";
+import { useInstallmentStore } from "../../stores/useInstallmentStore";
 
 export const DetailInstallmentPackage = ({
   navigation,
@@ -23,6 +31,8 @@ export const DetailInstallmentPackage = ({
     IDetailInstallmentMembership[]
   >([]);
   const [bill, setBill] = React.useState<number>(0);
+
+  const { update } = useInstallmentStore();
 
   const getInstallment = async () => {
     setIsLoading(true);
@@ -90,15 +100,40 @@ export const DetailInstallmentPackage = ({
 
       <Gap height={16} />
 
-      {packageInstallment.length === 0 ? (
-        <NoData text="No Data Available" />
-      ) : (
-        <ScrollView>
-          {packageInstallment.map((data: IDetailInstallmentMembership) => {
-            return <DetailPackageInstallmentCard key={data.id} data={data} />;
-          })}
-        </ScrollView>
-      )}
+      <FlatList
+        style={{
+          flex: 1,
+          paddingHorizontal: 20,
+        }}
+        // refreshing={isLoading}
+        // onRefresh={() => {
+        //   console.log("refresh");
+        //   setPage(1);
+        //   setSubmissionPackages([]);
+
+        //   getSubmissionPackages(1, debouncedText);
+        // }}
+        // onEndReached={handleEndReached}
+        data={packageInstallment}
+        keyExtractor={(_, index) => index.toString()}
+        renderItem={({ item }) => (
+          <DetailPackageInstallmentCard
+            data={item}
+            onPress={() => {
+              update({
+                installmentNumber: item.installment_number,
+                mambershipName: item.membership_name,
+                memberName: item.member_name,
+                salesName: item.sales_name,
+                total: item.total,
+              });
+
+              navigation.navigate("PaymentInstallment", { id: item.id });
+            }}
+          />
+        )}
+        ListEmptyComponent={<NoData text="No Data Available" />}
+      />
 
       {isLoading && <Loading />}
     </SafeAreaView>
@@ -107,87 +142,117 @@ export const DetailInstallmentPackage = ({
 
 const DetailPackageInstallmentCard = ({
   data,
+  onPress,
 }: {
   data: IDetailInstallmentMembership;
+  onPress: () => void;
 }) => {
   const { isDarkMode } = useContext(ThemeContext);
 
   return (
-    <View
-      style={{
-        padding: 16,
-        backgroundColor: colors._backBlue,
-        marginHorizontal: 24,
-        borderRadius: 8,
-        elevation: 2,
-        marginBottom: 8,
-      }}>
-      <View
+    <Fragment>
+      <TouchableOpacity
         style={{
-          flex: 1,
           flexDirection: "row",
+          padding: 12,
+          borderRadius: 12,
           justifyContent: "space-between",
-          alignItems: "flex-end",
-        }}>
-        <Text
-          style={{
-            fontFamily: fonts.primary[600],
-            fontSize: 20,
-            color: isDarkMode ? colors._white : colors._black,
-          }}>
-          Installment {data.installment_number}
-        </Text>
-        <Text
-          style={{
-            fontFamily: fonts.primary[400],
-            fontSize: 24,
-            color: isDarkMode ? colors._white : colors._black,
-          }}>
-          {convertToRupiah(data.total.toString())}
-        </Text>
-      </View>
-      <Gap height={4} />
-      <View
-        style={{
+          alignItems: "center",
           flex: 1,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "flex-end",
-        }}>
-        <Text
+        }}
+        disabled={!data.is_pay}
+        onPress={onPress}>
+        <View
           style={{
-            fontFamily: fonts.primary[400],
-            fontSize: 14,
-            color: isDarkMode ? colors._white : colors._black,
+            flexDirection: "row",
+            alignItems: "center",
+            flexShrink: 1,
           }}>
-          Due: {data.due_date}
-        </Text>
-        <Text
+          <View
+            style={{
+              flexDirection: "column",
+              flexShrink: 1,
+            }}>
+            <Text
+              style={{
+                fontFamily: fonts.primary[600],
+                fontSize: 14,
+                color: isDarkMode ? colors._white : colors._black,
+                flexShrink: 1,
+              }}>
+              Installment {data.installment_number}
+            </Text>
+            <Gap height={8} />
+            <Text
+              style={{
+                fontFamily: fonts.primary[400],
+                fontSize: 12,
+                color: isDarkMode ? colors._white : colors._black,
+                flexShrink: 1,
+              }}
+              numberOfLines={2}>
+              {convertToRupiah(data.total.toString())}
+            </Text>
+            <Gap height={4} />
+            <Text
+              style={{
+                fontFamily: fonts.primary[300],
+                fontSize: 8,
+                color: isDarkMode ? colors._white : colors._black,
+              }}
+              numberOfLines={2}>
+              {data.order_code}
+            </Text>
+          </View>
+        </View>
+        <View
           style={{
-            fontFamily: fonts.primary[400],
-            fontSize: 14,
-            color: isDarkMode ? colors._white : colors._black,
+            flexDirection: "row",
+            alignItems: "flex-end",
+            justifyContent: "flex-end",
+            width: 120,
           }}>
-          {data.status}
-        </Text>
-      </View>
-      {/* <Text
-        style={{
-          fontFamily: fonts.primary[400],
-          fontSize: 14,
-          color: isDarkMode ? colors._white : colors._black,
-        }}>
-        {data.is_pay ? 'Paid' : 'Not Paid'}
-      </Text>
-      <Text
-        style={{
-          fontFamily: fonts.primary[400],
-          fontSize: 14,
-          color: isDarkMode ? colors._white : colors._black,
-        }}>
-        {data.is_reminder ? 'Reminder' : 'Not Reminder'}
-      </Text>
-       */}
-    </View>
+          <View
+            style={{
+              backgroundColor:
+                data.status === "success" ? colors._green : colors._gold3,
+              borderRadius: 8,
+            }}>
+            <Text
+              style={{
+                fontFamily: fonts.primary[400],
+                fontSize: 10,
+                color: colors._white,
+                padding: 4,
+              }}>
+              {data.status}
+            </Text>
+          </View>
+          {data.is_pay && (
+            <Fragment>
+              <Gap width={8} />
+              <View
+                style={{
+                  backgroundColor: colors._blue2,
+                  borderRadius: 8,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: fonts.primary[400],
+                    fontSize: 10,
+                    color: colors._white,
+                    padding: 4,
+                  }}>
+                  Pay now
+                </Text>
+              </View>
+            </Fragment>
+          )}
+        </View>
+      </TouchableOpacity>
+      <View
+        style={{ width: "100%", height: 1, backgroundColor: colors._grey3 }}
+      />
+    </Fragment>
   );
 };

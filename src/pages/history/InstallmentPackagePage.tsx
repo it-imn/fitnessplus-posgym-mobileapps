@@ -23,6 +23,7 @@ import { showMessage } from "react-native-flash-message";
 import { useDebounce } from "use-debounce";
 import { CancelToken } from "axios";
 import { AlarmClockIcon } from "lucide-react-native";
+import { useInstallmentStore } from "../../stores/useInstallmentStore";
 
 export const InstallmentPackage = ({
   navigation,
@@ -35,6 +36,8 @@ export const InstallmentPackage = ({
   const [page, setPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(true);
   const [debouncedText] = useDebounce(search, 500);
+
+  const { reset } = useInstallmentStore();
 
   const getInstallments = async (
     _page: number,
@@ -132,11 +135,13 @@ export const InstallmentPackage = ({
           renderItem={({ item }) => (
             <PackageCard
               packageInstallment={item}
-              onPress={() =>
+              onPress={() => {
+                reset();
+                
                 navigation.navigate("DetailInstallmentPackage", {
                   id: item.payment_id,
-                })
-              }
+                });
+              }}
             />
           )}
           ListEmptyComponent={<NoData text="No Data Available" />}

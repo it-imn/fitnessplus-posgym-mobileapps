@@ -111,4 +111,7 @@ export type RootStackParamList = {
     id: number;
   };
   Payment: undefined;
+  PaymentInstallment: {
+    id: number;
+  }
 };

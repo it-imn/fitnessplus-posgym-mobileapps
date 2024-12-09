@@ -339,6 +339,9 @@ export interface IDetailInstallmentMembership {
   payment_id: number;
   status: string;
   total: number;
+  membership_name: string;
+  member_name: string;
+  sales_name: string;
 }
 
 export interface IWOG {
@@ -370,7 +373,7 @@ export interface ICICO {
   checkout_image_thubmnail: string;
   id: number;
   status: string;
-  user: ICICOUser
+  user: ICICOUser;
 }
 
 export interface ICICOUser {

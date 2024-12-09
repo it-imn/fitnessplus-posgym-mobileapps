@@ -57,4 +57,25 @@ const fetchInstallmentMembership = async (id: number) => {
     });
 };
 
-export { fetchInstallmentsMembership, fetchInstallmentMembership };
+const payInstallment = async(req: {
+  id: number;
+}) => {
+  return api
+    .post(`/member/installment/pay`, req)
+    .then(({ data }) => {
+      console.log(data, "pay");
+      return {
+        data: data.response as IDetailInstallmentMembership[],
+        bill: data.bill as number,
+      };
+    })
+    .catch((err: any) => {
+      console.error(
+        "error fetch installment membership",
+        err.response?.data.message,
+      );
+      throw new Error(err.response?.data.message);
+    });
+}
+
+export { fetchInstallmentsMembership, fetchInstallmentMembership, payInstallment };

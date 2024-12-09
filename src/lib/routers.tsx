@@ -49,6 +49,7 @@ import { RequestLogout } from "../pages/auth/RequestLogout";
 import { DetailPaymentPackage } from "../pages/history/DetailPaymentPackagePage";
 import { DetailSubmissionPackage } from "../pages/history/DetailSubmissionPackagePage";
 import { Payment } from "../pages/home/PaymentPage";
+import { PaymentInstallment } from "../pages/history/PaymentInstallmentPage";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -125,6 +126,7 @@ export const Router = () => {
       <Stack.Screen name="MembershipDetail" component={MembershipDetail} />
       <Stack.Screen name="Agreement" component={Agreement} />
       <Stack.Screen name="PackagePTAgreement" component={PackagePTAgreement} />
+      <Stack.Screen name="PaymentInstallment" component={PaymentInstallment} />
       {/*
       <Stack.Screen name="UserSpec" component={UserSpec} />
       <Stack.Screen name="BodyMass" component={BodyMass} />
