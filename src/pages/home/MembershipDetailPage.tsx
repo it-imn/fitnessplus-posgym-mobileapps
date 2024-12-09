@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   Image,
   Modal,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleProp,
@@ -17,6 +18,7 @@ import SignatureScreen, {
 } from "react-native-signature-canvas";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import {
+  MembershipReq,
   TransactionType,
   useTransactionStore,
 } from "../../stores/useTransactionStore";
@@ -35,6 +37,12 @@ import { fetchSales } from "../../services/sales";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import SignatureView from "react-native-signature-canvas";
 import { useModalStore } from "../../stores/useModalStore";
+import DateTimePicker, {
+  DateTimePickerAndroid,
+} from "@react-native-community/datetimepicker";
+import { fetchProfile } from "../../services/profile";
+import { usePaymentStore } from "../../stores/usePaymentStore";
+import { CalendarCheckIcon, ChevronDownIcon } from "lucide-react-native";
 
 export const MembershipDetail = ({
   navigation,
@@ -42,24 +50,15 @@ export const MembershipDetail = ({
 }: NativeStackScreenProps<RootStackParamList, "MembershipDetail">) => {
   const { id } = route.params;
   const { isDarkMode } = useContext(ThemeContext);
-  const [toggleCheckBox, setToggleCheckBox] = useState(false);
-  const [modalSales, setModalSales] = useState(false);
-  // const [modalDp, setModalDp] = useState(false);
-  const [signature, setSignature] = useState<string>("");
-  const [sales_id, setSales_id] = useState(0);
-  // const [down_pay, setdown_pay] = useState('');
-  const [labels, setLabels] = useState("Select member consultant name");
-  const { openModal, closeModal } = useModalStore();
+  const [showDatePickerIOS, setShowDatePickerIOS] = useState(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [membershipPackage, setMembershipPackage] =
-    React.useState<IMembershipPackageDetail>({
-      installment_first_pay: {
-        total_price: 0,
-      },
-    } as IMembershipPackageDetail);
+    React.useState<IMembershipPackageDetail | null>(null);
   const [sales, setSales] = useState<ISales[]>([]);
 
-  const { update, reset } = useTransactionStore();
+  const { openModal, closeModal } = useModalStore();
+  // const { update, reset, transaction } = useTransactionStore();
+  const { update, reset, payment } = usePaymentStore();
 
   const getPackage = async () => {
     setIsLoading(true);
@@ -82,48 +81,52 @@ export const MembershipDetail = ({
   };
 
   const onNext = () => {
-    let error = [];
-    if (signature === "") {
-      error.push("Signature required");
-    }
-    if (sales_id === 0) {
-      error.push("Member Consultant required");
-    }
-    if (error.length > 0) {
-      // setLoading(false);
+    if (!payment.salesName) {
       showMessage({
+        message: "Member Consultant required",
+        type: "warning",
         icon: "warning",
-        message: error[0],
-        type: "default",
         backgroundColor: colors._red,
         color: colors._white,
       });
-    } else {
-      reset();
-
-      update({
-        transaction: {
-          sales_id: sales_id,
-          sales_name: sales.find(data => data.id === sales_id)?.name || "",
-          sales_email: sales.find(data => data.id === sales_id)?.email || "",
-          membership_id: id,
-          down_payment_membership: 0,
-          down_payment_label:
-            membershipPackage.down_payment_membership == 1
-              ? `${convertToRupiah(
-                  membershipPackage.installment_first_pay.total_price.toString(),
-                )} Dp Available`
-              : "",
-          startDate: new Date(),
-        },
-        type: TransactionType.MEMBERSHIP,
-        signature: signature,
-        normal_price: membershipPackage.total_price,
-        final_price: membershipPackage.total_price,
-        name: membershipPackage.name,
-      });
-      navigation.navigate("Voucher");
+      return;
     }
+
+    if (!payment.signature) {
+      showMessage({
+        message: "Signature required",
+        type: "warning",
+        icon: "warning",
+        backgroundColor: colors._red,
+        color: colors._white,
+      });
+      return;
+    }
+
+    update({
+      membershipId: membershipPackage?.id,
+      normalPrice: membershipPackage?.price,
+      totalPrice: membershipPackage?.total_price,
+      packageName: membershipPackage?.name,
+      isDpAvailable: membershipPackage?.down_payment_membership === 1,
+      firstPayment: membershipPackage?.installment_first_pay.total_price,
+    });
+
+    if (membershipPackage?.discount_percent !== 0) {
+      update({
+        discountPrice: membershipPackage?.discount_percent,
+        discountType: "percent",
+      });
+    }
+
+    if (membershipPackage?.discount_value !== 0) {
+      update({
+        discountPrice: membershipPackage?.discount_value,
+        discountType: "value",
+      });
+    }
+
+    navigation.navigate("Payment");
   };
 
   const getSales = async () => {
@@ -146,20 +149,25 @@ export const MembershipDetail = ({
     }
   };
 
-  const gotoTerm = () => {
-    navigation.navigate("Agreement");
-  };
-
-  const selectSales = (params: any) => {
-    setSales_id(params.id);
-    setLabels(params.label);
-    setModalSales(!modalSales);
+  const getProfile = async () => {
+    try {
+      const { data } = await fetchProfile();
+      if (data.membership.expired_at) {
+        const expiredAt = new Date(data.membership.expired_at);
+        // add one day
+        expiredAt.setDate(expiredAt.getDate() + 1);
+        update({
+          expiredDate: expiredAt,
+          startDate: new Date(),
+        });
+      }
+    } catch (err: any) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
-    getSales();
-    getPackage();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    Promise.all([getPackage(), getSales(), getProfile()]);
   }, []);
 
   return (
@@ -169,13 +177,13 @@ export const MembershipDetail = ({
         backgroundColor: isDarkMode ? colors._black2 : colors._white,
       }}>
       <Header
-        teks={membershipPackage.name}
+        teks={membershipPackage?.name || "Detail Membership"}
         onPress={() => navigation.goBack()}
       />
       <View style={styles.content}>
         <Image
           source={{
-            uri: membershipPackage.image,
+            uri: membershipPackage?.image,
           }}
           style={{
             width: 96,
@@ -205,7 +213,7 @@ export const MembershipDetail = ({
               color: isDarkMode ? colors._white : colors._black,
               lineHeight: 20,
             }}>
-            {membershipPackage.desc}
+            {membershipPackage?.desc}
           </Text>
           <Gap height={16} />
           <Text
@@ -223,9 +231,9 @@ export const MembershipDetail = ({
               fontFamily: fonts.primary[300],
               color: isDarkMode ? colors._white : colors._black,
               lineHeight: 20,
-            }}>{`${membershipPackage.periode}`}</Text>
+            }}>{`${membershipPackage?.periode}`}</Text>
           <Gap height={16} />
-          {membershipPackage.down_payment_membership === 1 && (
+          {membershipPackage?.down_payment_membership === 1 && (
             <>
               <Text
                 style={{
@@ -298,38 +306,175 @@ export const MembershipDetail = ({
             Member Consultant
           </Text>
           <Gap height={4} />
-          <View>
-            <TouchableOpacity
-              style={styles.button(isDarkMode)}
-              onPress={() => {
-                openModal({
-                  children: (
-                    <ScrollView>
-                      {sales.map((data: ISales) => {
-                        return (
-                          <TouchableOpacity
-                            key={data.id}
-                            style={styles.buttonDrop}
-                            onPress={() => {
-                              selectSales({ id: data.id, label: data.name });
-                              closeModal();
-                            }}>
-                            <Text style={styles.teks5(isDarkMode)}>
-                              {data.name}
-                            </Text>
-                          </TouchableOpacity>
-                        );
-                      })}
-                    </ScrollView>
-                  ),
-                });
+          <TouchableOpacity
+            style={{
+              padding: 12,
+              backgroundColor: isDarkMode ? colors._black : colors._grey2,
+              borderRadius: 10,
+              borderWidth: 0.5,
+              borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+            onPress={() => {
+              openModal({
+                children: (
+                  <ScrollView>
+                    {sales.map((data: ISales) => {
+                      return (
+                        <TouchableOpacity
+                          key={data.id}
+                          style={styles.buttonDrop}
+                          onPress={() => {
+                            update({
+                              salesId: data.id,
+                              salesName: data.name,
+                              salesEmail: data.email,
+                            });
+                            closeModal();
+                          }}>
+                          <Text style={styles.teks5(isDarkMode)}>
+                            {data.name}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </ScrollView>
+                ),
+              });
+            }}>
+            <Text
+              style={{
+                color: isDarkMode ? colors._white : colors._black,
+                fontSize: 14,
+                fontFamily: fonts.primary[400],
               }}>
-              <Text style={styles.teks5(isDarkMode)}>{labels}</Text>
-            </TouchableOpacity>
-            <View style={{ position: "absolute", right: 12, top: 12 }}>
-              <IconDown />
-            </View>
-          </View>
+              {payment.salesName || "Select Member Consultant"}
+            </Text>
+            <ChevronDownIcon
+              size={20}
+              color={isDarkMode ? colors._white : colors._black}
+            />
+          </TouchableOpacity>
+          <Gap height={16} />
+
+          <Text
+            style={{
+              fontSize: 12,
+              color: isDarkMode ? colors._grey4 : colors._grey3,
+              fontFamily: fonts.primary[400],
+            }}>
+            Member Consultant
+          </Text>
+          <Gap height={4} />
+          <TouchableOpacity
+            style={{
+              padding: 12,
+              backgroundColor: isDarkMode ? colors._black : colors._grey2,
+              borderRadius: 10,
+              borderWidth: 0.5,
+              borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+            onPress={() => {
+              if (Platform.OS === "android") {
+                DateTimePickerAndroid.open({
+                  value: payment.startDate || new Date(),
+                  mode: "date",
+                  onChange: (_, selectedDate) => {
+                    if (selectedDate) {
+                      if (
+                        payment.expiredDate &&
+                        selectedDate.getDay() < payment.expiredDate?.getDay()
+                      ) {
+                        showMessage({
+                          message:
+                            "Start date must be greater than expired date",
+                          type: "warning",
+                          icon: "warning",
+                          backgroundColor: colors._red,
+                          color: colors._white,
+                        });
+                        return;
+                      }
+
+                      if (selectedDate.getDay() < new Date().getDay()) {
+                        showMessage({
+                          message: "Start date must be greater than today",
+                          type: "warning",
+                          icon: "warning",
+                          backgroundColor: colors._red,
+                          color: colors._white,
+                        });
+                        return;
+                      }
+
+                      update({
+                        startDate: selectedDate,
+                      });
+                    }
+                  },
+                });
+              } else if (Platform.OS === "ios") {
+                setShowDatePickerIOS(true);
+              }
+            }}>
+            <Text
+              style={{
+                color: isDarkMode ? colors._white : colors._black,
+                fontSize: 14,
+                fontFamily: fonts.primary[400],
+              }}>
+              {payment.startDate?.toLocaleDateString("id-ID")}
+            </Text>
+            <CalendarCheckIcon
+              size={20}
+              color={isDarkMode ? colors._white : colors._black}
+            />
+          </TouchableOpacity>
+          {showDatePickerIOS && (
+            <DateTimePicker
+              value={payment.startDate || new Date()}
+              mode="date"
+              display="default"
+              onChange={(_, selectedDate) => {
+                setShowDatePickerIOS(false);
+                if (selectedDate) {
+                  if (
+                    payment.expiredDate &&
+                    selectedDate.getDay() < payment.expiredDate?.getDay()
+                  ) {
+                    showMessage({
+                      message: "Start date must be greater than expired date",
+                      type: "warning",
+                      icon: "warning",
+                      backgroundColor: colors._red,
+                      color: colors._white,
+                    });
+                    return;
+                  }
+
+                  if (selectedDate.getDay() < new Date().getDay()) {
+                    showMessage({
+                      message: "Start date must be greater than today",
+                      type: "warning",
+                      icon: "warning",
+                      backgroundColor: colors._red,
+                      color: colors._white,
+                    });
+                    return;
+                  }
+
+                  update({
+                    startDate: selectedDate,
+                  });
+                }
+              }}
+            />
+          )}
         </View>
         <Gap height={16} />
         <View style={{ flex: 1 }} />
@@ -340,15 +485,16 @@ export const MembershipDetail = ({
             alignContent: "center",
           }}>
           <BouncyCheckbox
-            isChecked={toggleCheckBox}
+            isChecked={payment.signature !== ""}
             onPress={() =>
               openModal({
                 children: (
                   <SignatureModal
-                    checkAgreement={() => setToggleCheckBox(true)}
                     closeModal={() => closeModal()}
                     setSignature={signature => {
-                      setSignature(signature);
+                      update({
+                        signature: signature,
+                      });
                     }}
                   />
                 ),
@@ -381,7 +527,7 @@ export const MembershipDetail = ({
         </View>
         <Gap height={16} />
         <ButtonColor
-          disabled={!toggleCheckBox}
+          disabled={!payment.signature || !payment.salesId}
           backColor={colors._blue2}
           textColor={colors._white}
           teks="Continue"
@@ -393,13 +539,11 @@ export const MembershipDetail = ({
   );
 };
 
-const SignatureModal = ({
+export const SignatureModal = ({
   setSignature,
-  checkAgreement,
   closeModal,
 }: {
   setSignature: (signature: string) => void;
-  checkAgreement: () => void;
   closeModal: () => void;
 }) => {
   const ref = useRef<SignatureViewRef | null>(null);
@@ -414,7 +558,6 @@ const SignatureModal = ({
         ref={ref}
         onOK={(signature: string) => {
           setSignature(signature);
-          checkAgreement();
           closeModal();
         }}
       />

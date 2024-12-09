@@ -23,6 +23,7 @@ import { useDebounce } from "use-debounce";
 import { CancelToken } from "axios";
 import NoData from "../../components/ui/NoData";
 import Loading from "../../components/ui/Loading";
+import { usePaymentStore } from "../../stores/usePaymentStore";
 
 const PackageTrainer = ({
   navigation,
@@ -37,6 +38,8 @@ const PackageTrainer = ({
   const [hasNextPage, setHasNextPage] = useState(true);
   const [debouncedText] = useDebounce(search, 500);
 
+  const { reset } = usePaymentStore();
+
   const [isLoading, setIsLoading] = useState(false);
 
   const getPackage = async (
@@ -44,6 +47,7 @@ const PackageTrainer = ({
     _search: string,
     token?: CancelToken,
   ) => {
+    setIsLoading(true);
     try {
       const { data, hasNext } = await fetchPersonalTrainerPackage(
         id,
@@ -63,6 +67,8 @@ const PackageTrainer = ({
         icon: "warning",
         backgroundColor: colors._red,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -112,12 +118,14 @@ const PackageTrainer = ({
             <CardPackageTrainer
               key={item.id}
               packagePT={item}
-              onPress={() =>
+              onPress={() => {
+                reset();
+
                 navigation.navigate("DetailPackageTrainer", {
                   id: item.id,
                   pt_id: id,
-                })
-              }
+                });
+              }}
             />
           )}
           ListEmptyComponent={<NoData text="No Data Available" />}

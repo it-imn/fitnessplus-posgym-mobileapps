@@ -28,78 +28,59 @@ import { fetchPersonalTrainerDetailPackage } from "../../services/personal_train
 import { showMessage } from "react-native-flash-message";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import Loading from "../../components/ui/Loading";
+import { usePaymentStore } from "../../stores/usePaymentStore";
+import { useModalStore } from "../../stores/useModalStore";
+import { SignatureModal } from "./MembershipDetailPage";
 
 const DetailPackageTrainer = ({
   navigation,
   route,
 }: NativeStackScreenProps<RootStackParamList, "DetailPackageTrainer">) => {
   const { id, pt_id } = route.params;
-
-  //   const [modalDp, setModalDp] = useState(false);
-  //   const [labelDp, setLabelDp] = useState('Select full payment');
-  //   const [down_pay, setdown_pay] = useState('');
   const { isDarkMode } = useContext(ThemeContext);
   const [isLoading, setIsLoading] = useState(false);
-  const [toggleCheckBox, setToggleCheckBox] = useState(false);
-  const [signature, setSignature] = useState("");
-  const [modalTtd, setModalTtd] = useState(false);
-  //   const ref = useRef();
-  const [packagePT, setPackagePT] = useState<IPTPackage>({
-    total: 0,
-    base_price: 0,
-    dp_discount: 0,
-    dp_price_disc: 0,
-    discount: 0,
-    price_disc: 0,
-  } as IPTPackage);
-  const { update, reset } = useTransactionStore();
   const [feature, setFeature] = useState("");
-
-  // Called after ref.current.readSignature() reads a non-empty base64 string
-  const handleOK = (sign: string) => {
-    setSignature(sign);
-    setModalTtd(false);
-    setToggleCheckBox(true);
-    // Callback from Component props
-  };
-
-  // Called after ref.current.readSignature() reads an empty string
-  const handleEmpty = () => {};
-
-  // Called after ref.current.clearSignature()
-  const handleClear = () => {};
-
-  // Called after end of stroke
-  const handleEnd = () => {
-    // ref.current.readSignature();
-  };
-
-  // Called after ref.current.getData()
-  const handleData = () => {};
-
-  const gotoTerm = () => {
-    navigation.navigate("Agreement");
-  };
-
+  const [packagePT, setPackagePT] = useState<IPTPackage | null>(null);
+  const { update, payment } = usePaymentStore();
+  const { openModal, closeModal } = useModalStore();
   const gotoVoucher = () => {
-    reset();
+    if (!payment.signature) {
+      showMessage({
+        message: "Please sign first",
+        type: "warning",
+        icon: "warning",
+        backgroundColor: colors._red,
+        color: colors._white,
+      });
+      return;
+    }
 
     update({
-      transaction: {
-        package_id: id,
-        package_pt_id: packagePT.package_personal_trainer_id,
-        pt_id: pt_id,
-        down_payment_membership: 0,
-        down_payment_label: feature,
-      },
-      signature: signature,
-      type: TransactionType.PT,
-      normal_price: packagePT.total,
-      final_price: packagePT.total,
-      name: packagePT.package_name,
+      packageName: packagePT?.package_name,
+      normalPrice: (packagePT?.base_price || 1) * (packagePT?.session || 1),
+      totalPrice: packagePT?.total,
+      packageId: packagePT?.id,
+      packagePTId: packagePT?.package_personal_trainer_id,
+      ptId: pt_id,
+      isDpAvailable: packagePT?.down_payment,
+      firstPayment: packagePT?.installment_first_pay.total_price,
     });
 
-    navigation.navigate("Voucher");
+    // if (packagePT?.price_disc !== 0) {
+    //   update({
+    //     discountPrice: packagePT?.price_disc,
+    //     discountType: "percent",
+    //   });
+    // }
+
+    if (packagePT?.discount !== 0) {
+      update({
+        discountPrice: packagePT?.discount,
+        discountType: "value",
+      });
+    }
+
+    navigation.navigate("Payment");
   };
 
   const getPackage = async () => {
@@ -124,13 +105,13 @@ const DetailPackageTrainer = ({
         }
 
         if (!data.down_payment) {
-          if (data.discount !== 0) {
-            setFeature(`Disc ${data.discount}%`);
-            return;
-          }
+          // if (data.price_disc !== 0) {
+          //   setFeature(`Disc ${data.price_disc}%`);
+          //   return;
+          // }
 
-          if (data.price_disc !== 0) {
-            setFeature(convertToRupiah(data.price_disc.toString()));
+          if (data.discount !== 0) {
+            setFeature(convertToRupiah(data.discount.toString()));
             return;
           }
         }
@@ -150,7 +131,6 @@ const DetailPackageTrainer = ({
 
   React.useEffect(() => {
     getPackage();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -160,7 +140,7 @@ const DetailPackageTrainer = ({
       <View style={{ padding: 24, flex: 1 }}>
         <Image
           source={{
-            uri: packagePT.image,
+            uri: packagePT?.image,
           }}
           style={{
             width: 96,
@@ -190,7 +170,7 @@ const DetailPackageTrainer = ({
               color: isDarkMode ? colors._white : colors._black,
               lineHeight: 20,
             }}>
-            {packagePT.package_name}
+            {packagePT?.package_name}
           </Text>
           <Gap height={16} />
           <Text
@@ -209,7 +189,7 @@ const DetailPackageTrainer = ({
               color: isDarkMode ? colors._white : colors._black,
               lineHeight: 20,
             }}>
-            {packagePT.period}
+            {packagePT?.period}
           </Text>
           <Gap height={16} />
           <Text
@@ -228,7 +208,7 @@ const DetailPackageTrainer = ({
               color: isDarkMode ? colors._white : colors._black,
               lineHeight: 20,
             }}>
-            {packagePT.session} Session
+            {packagePT?.session} Session
           </Text>
           <Gap height={16} />
           <Text
@@ -246,7 +226,7 @@ const DetailPackageTrainer = ({
               fontFamily: fonts.primary[400],
               color: isDarkMode ? colors._white : colors._black,
             }}>
-            {convertToRupiah(packagePT.total.toString())}
+            {convertToRupiah(packagePT?.total.toString() || "0")}
           </Text>
           <Gap height={16} />
           {feature !== "" && (
@@ -292,89 +272,45 @@ const DetailPackageTrainer = ({
             justifyContent: "flex-start",
           }}>
           <BouncyCheckbox
-            isChecked={toggleCheckBox}
-            onPress={() => setModalTtd(true)}
+            isChecked={payment.signature !== ""}
+            onPress={() =>
+              openModal({
+                children: (
+                  <SignatureModal
+                    closeModal={() => closeModal()}
+                    setSignature={signature => {
+                      update({
+                        signature: signature,
+                      });
+                    }}
+                  />
+                ),
+              })
+            }
             fillColor={colors._blue}
             unFillColor={isDarkMode ? colors._black : colors._white}
             iconImageStyle={{ tintColor: colors._black }}
           />
           <Gap width={8} />
           <Text style={styles.teks4(isDarkMode)}>I agree to </Text>
-          <TouchableOpacity onPress={gotoTerm}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Agreement");
+            }}>
             <Text style={styles.teks4(isDarkMode)}>
               Terms of Service and Privacy Policy
             </Text>
           </TouchableOpacity>
         </View>
         <Gap height={16} />
-        {/* <View style={{ flex: 1 }} /> */}
-        <Gap height={16} />
         <ButtonColor
-          disabled={!toggleCheckBox}
+          disabled={!payment.signature}
           backColor={colors._blue2}
           textColor={colors._white}
           teks="Continue"
           onPress={gotoVoucher}
         />
       </View>
-      {modalTtd && (
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalTtd}
-          onRequestClose={() => {
-            setModalTtd(false);
-          }}>
-          <View style={styles.mainModal}>
-            <View style={styles.subModal}>
-              <View
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  position: "relative",
-                }}>
-                <SignatureScreen
-                  // ref={ref}
-                  onEnd={handleEnd}
-                  onOK={handleOK}
-                  onEmpty={handleEmpty}
-                  onClear={handleClear}
-                  onGetData={handleData}
-                  autoClear={false}
-                />
-              </View>
-            </View>
-          </View>
-        </Modal>
-      )}
-      {/* <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalDp}
-        onRequestClose={() => {
-          setModalDp(!modalDp);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <ScrollView>
-              {dp.map(data => {
-                const params = {
-                  id: data.id,
-                  label: data.label,
-                };
-                return (
-                  <TouchableOpacity
-                    key={data.id}
-                    style={styles.buttonDrop}
-                    onPress={() => selectDp(params)}>
-                    <Text style={styles.teks2(isDarkMode)}>{data.label}</Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
-          </View>
-        </View>
-      </Modal> */}
       {isLoading && <Loading />}
     </SafeAreaView>
   );

@@ -110,4 +110,5 @@ export type RootStackParamList = {
   DetailSubmissionPackage: {
     id: number;
   };
+  Payment: undefined;
 };

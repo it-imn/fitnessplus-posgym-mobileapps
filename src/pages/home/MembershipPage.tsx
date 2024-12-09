@@ -28,6 +28,7 @@ import { Button } from "../../components/ui/Button";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import StatusBarComp from "../../components/ui/StatusBarComp";
 import NoData from "../../components/ui/NoData";
+import { usePaymentStore } from "../../stores/usePaymentStore";
 
 const Membership = ({ navigation }: any) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -37,6 +38,7 @@ const Membership = ({ navigation }: any) => {
   const [page, setPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(true);
   const { isDarkMode } = useContext(ThemeContext);
+  const { reset } = usePaymentStore();
 
   const getPackage = async (
     _page: number,
@@ -133,6 +135,7 @@ const Membership = ({ navigation }: any) => {
             <MembershipCard
               {...membership}
               onPress={() => {
+                reset();
                 navigation.navigate("MembershipDetail", {
                   id: membership.id,
                 });

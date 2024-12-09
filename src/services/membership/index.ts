@@ -97,6 +97,7 @@ const fetchMembershipPackageDetail = async (id: number) => {
 
 const checkVoucher = async (voucher_code: string, package_id: number) => {
   console.log(voucher_code, "voucher_code");
+  console.log(package_id, "package_id");
   return api
     .post("/voucher", {
       voucher_code: voucher_code,
