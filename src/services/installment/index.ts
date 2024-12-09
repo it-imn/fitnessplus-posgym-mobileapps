@@ -23,6 +23,7 @@ const fetchInstallmentsMembership = async (
       config,
     )
     .then(({ data }) => {
+      console.log(data, "data");
       return {
         data: data.response as IInstallmentMembership[],
         hasNext: data.hasNext,
