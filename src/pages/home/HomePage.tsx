@@ -624,16 +624,16 @@ function HeaderSection({
           <View
             style={{
               backgroundColor: colors._red,
-              width: 30,
-              height: 30,
+              width: 20,
+              height: 20,
               borderRadius: 50,
               position: "absolute",
               zIndex: 10,
               flex: 1,
               justifyContent: "center",
               alignItems: "center",
-              top: -15,
-              right: -15,
+              top: -5,
+              right: -5,
             }}>
             <Text
               style={{
