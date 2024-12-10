@@ -20,6 +20,7 @@ import { colors, convertToRupiah, fonts } from "../../lib/utils";
 import { fetchInstallmentMembership } from "../../services/installment";
 import { showMessage } from "react-native-flash-message";
 import { useInstallmentStore } from "../../stores/useInstallmentStore";
+import { AlarmClockIcon } from "lucide-react-native";
 
 export const DetailInstallmentPackage = ({
   navigation,
@@ -207,47 +208,74 @@ const DetailPackageInstallmentCard = ({
         </View>
         <View
           style={{
-            flexDirection: "row",
+            flexDirection: "column",
             alignItems: "flex-end",
-            justifyContent: "flex-end",
-            width: 120,
+            justifyContent: "space-between",
+            alignSelf: "flex-end",
           }}>
           <View
             style={{
-              backgroundColor:
-                data.status === "success" ? colors._green : colors._gold3,
-              borderRadius: 8,
+              flexDirection: "row",
+              alignItems: "flex-end",
+              justifyContent: "flex-end",
             }}>
+            <AlarmClockIcon size={16} color={colors._gold3} />
+            <Gap width={4} />
             <Text
               style={{
-                fontFamily: fonts.primary[400],
-                fontSize: 10,
-                color: colors._white,
-                padding: 4,
+                fontFamily: fonts.primary[300],
+                fontSize: 14,
+                color: colors._red,
               }}>
-              {data.status}
+              {data.due_date}
             </Text>
           </View>
-          {data.is_pay && (
-            <Fragment>
-              <Gap width={8} />
-              <View
+
+          <Gap height={4} />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "flex-end",
+              justifyContent: "flex-end",
+              width: 120,
+            }}>
+            <View
+              style={{
+                backgroundColor:
+                  data.status === "success" ? colors._green : colors._gold3,
+                borderRadius: 8,
+              }}>
+              <Text
                 style={{
-                  backgroundColor: colors._blue2,
-                  borderRadius: 8,
+                  fontFamily: fonts.primary[400],
+                  fontSize: 10,
+                  color: colors._white,
+                  padding: 4,
                 }}>
-                <Text
+                {data.status}
+              </Text>
+            </View>
+            {data.is_pay && (
+              <Fragment>
+                <Gap width={8} />
+                <View
                   style={{
-                    fontFamily: fonts.primary[400],
-                    fontSize: 10,
-                    color: colors._white,
-                    padding: 4,
+                    backgroundColor: colors._blue2,
+                    borderRadius: 8,
                   }}>
-                  Pay now
-                </Text>
-              </View>
-            </Fragment>
-          )}
+                  <Text
+                    style={{
+                      fontFamily: fonts.primary[400],
+                      fontSize: 10,
+                      color: colors._white,
+                      padding: 4,
+                    }}>
+                    Pay now
+                  </Text>
+                </View>
+              </Fragment>
+            )}
+          </View>
         </View>
       </TouchableOpacity>
       <View
