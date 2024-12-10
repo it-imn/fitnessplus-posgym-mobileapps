@@ -345,7 +345,7 @@ export const Payment = ({
                     isChecked={payment.paymentType === 0}
                     size={16}
                     disableText
-                    onPress={() => {}}
+                    disabled
                     fillColor={colors._blue}
                     unFillColor={isDarkMode ? colors._black : colors._white}
                     iconImageStyle={{ tintColor: colors._blue }}
@@ -380,7 +380,7 @@ export const Payment = ({
                     isChecked={payment.paymentType === 1}
                     size={16}
                     disableText
-                    onPress={() => {}}
+                    disabled
                     fillColor={colors._blue}
                     unFillColor={isDarkMode ? colors._black : colors._white}
                     iconImageStyle={{ tintColor: colors._blue }}
@@ -558,7 +558,7 @@ export const Payment = ({
                 isChecked={true}
                 size={16}
                 disableText
-                onPress={() => {}}
+                disabled
                 fillColor={colors._blue}
                 unFillColor={isDarkMode ? colors._black : colors._white}
                 iconImageStyle={{ tintColor: colors._blue }}

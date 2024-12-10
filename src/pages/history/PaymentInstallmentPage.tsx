@@ -352,6 +352,7 @@ export const PaymentInstallment = ({
                 isChecked={true}
                 size={16}
                 disableText
+                disabled
                 onPress={() => {}}
                 fillColor={colors._blue}
                 unFillColor={isDarkMode ? colors._black : colors._white}
