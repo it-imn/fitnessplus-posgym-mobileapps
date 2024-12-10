@@ -156,6 +156,16 @@ export const MembershipDetail = ({
         const expiredAt = new Date(data.membership.expired_at);
         // add one day
         expiredAt.setDate(expiredAt.getDate() + 1);
+
+        // if expired date is less than today
+        if (expiredAt.getDay() < new Date().getDay()) {
+          update({
+            startDate: new Date(),
+            expiredDate: new Date(),
+          });
+          return;
+        }
+
         update({
           expiredDate: expiredAt,
           startDate: expiredAt,
