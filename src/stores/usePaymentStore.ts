@@ -8,7 +8,7 @@ export interface PaymentReq {
   signature: string;
 
   // payment page
-  paymentType: 0 | 1; // 0 = Full Payment, 1 = Down Payment
+  isDp: boolean;
   paymentMethod: "cash";
 
   // optional
@@ -43,7 +43,7 @@ const initialState: PaymentReq = {
   packageName: "",
   normalPrice: 0,
   totalPrice: 0,
-  paymentType: 0,
+  isDp: false,
   paymentMethod: "cash",
   signature: "",
 };

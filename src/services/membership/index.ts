@@ -121,7 +121,7 @@ const buyMembership = async (
   payment_method: string,
   signature: string,
   voucher_code: string | null,
-  down_payment_membership: 0 | 1,
+  down_payment_membership: boolean,
   started_at: string,
 ) => {
   return api

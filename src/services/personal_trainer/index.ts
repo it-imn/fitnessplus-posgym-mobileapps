@@ -114,14 +114,14 @@ const buyPersonalTrainerPackage = async (
   pt_id: number,
   signature: string,
   voucher_code: string | null,
-  down_payment_membership: 1 | 0,
+  down_payment: boolean,
 ) => {
   console.log({
     package_personal_trainer_id: package_pt_id,
     personal_trainer_id: pt_id,
     payment_method: "cash",
     voucher_code: voucher_code === "" ? null : voucher_code,
-    down_payment_membership: down_payment_membership === 1,
+    down_payment: down_payment,
   });
   return api
     .post("/personal_trainer/package/buy", {
@@ -129,7 +129,7 @@ const buyPersonalTrainerPackage = async (
       personal_trainer_id: pt_id,
       payment_method: "cash",
       voucher_code: voucher_code === "" ? null : voucher_code,
-      down_payment_membership: down_payment_membership === 1 ? "true" : "else",
+      down_payment: down_payment,
       signature: signature,
     })
     .then(({ data }) => {

@@ -88,7 +88,7 @@ export const Payment = ({
           payment.paymentMethod,
           payment.signature,
           payment.voucherCode || "",
-          payment.paymentType,
+          payment.isDp,
           (payment?.startDate || new Date()).toISOString().slice(0, 10),
         );
 
@@ -109,7 +109,7 @@ export const Payment = ({
           payment.ptId || 0,
           payment.signature,
           payment.voucherCode || "",
-          payment.paymentType,
+          payment.isDp,
         );
 
         showMessage({
@@ -330,7 +330,7 @@ export const Payment = ({
                   }}
                   onPress={() => {
                     update({
-                      paymentType: 0,
+                      isDp: false,
                     });
                   }}>
                   <Text
@@ -342,7 +342,7 @@ export const Payment = ({
                     Full Payment
                   </Text>
                   <BouncyCheckbox
-                    isChecked={payment.paymentType === 0}
+                    isChecked={!payment.isDp}
                     size={16}
                     disableText
                     disabled
@@ -365,7 +365,7 @@ export const Payment = ({
                   }}
                   onPress={() => {
                     update({
-                      paymentType: 1,
+                      isDp: true,
                     });
                   }}>
                   <Text
@@ -377,7 +377,7 @@ export const Payment = ({
                     Down Payment
                   </Text>
                   <BouncyCheckbox
-                    isChecked={payment.paymentType === 1}
+                    isChecked={payment.isDp}
                     size={16}
                     disableText
                     disabled
@@ -505,7 +505,7 @@ export const Payment = ({
               {convertToRupiah(
                 (payment.voucherDiscount
                   ? payment.normalPrice - payment.voucherDiscount
-                  : payment.isDpAvailable && payment.paymentType === 1
+                  : payment.isDpAvailable && payment.isDp
                   ? payment.firstPayment
                   : payment.totalPrice
                 )?.toString() || "0",
@@ -631,7 +631,7 @@ export const Payment = ({
             {convertToRupiah(
               (payment.voucherDiscount
                 ? payment.normalPrice - payment.voucherDiscount
-                : payment.isDpAvailable && payment.paymentType === 1
+                : payment.isDpAvailable && payment.isDp
                 ? payment.firstPayment
                 : payment.totalPrice
               )?.toString() || "0",
