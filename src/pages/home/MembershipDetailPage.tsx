@@ -81,7 +81,7 @@ export const MembershipDetail = ({
   };
 
   const onNext = () => {
-    if (!payment.salesName) {
+    if (!payment.salesName || !payment.salesId || !payment.salesEmail) {
       showMessage({
         message: "Member Consultant required",
         type: "warning",
@@ -158,6 +158,10 @@ export const MembershipDetail = ({
         expiredAt.setDate(expiredAt.getDate() + 1);
         update({
           expiredDate: expiredAt,
+          startDate: expiredAt,
+        });
+      } else {
+        update({
           startDate: new Date(),
         });
       }
@@ -527,7 +531,6 @@ export const MembershipDetail = ({
         </View>
         <Gap height={16} />
         <ButtonColor
-          disabled={!payment.signature || !payment.salesId}
           backColor={colors._blue2}
           textColor={colors._white}
           teks="Continue"
