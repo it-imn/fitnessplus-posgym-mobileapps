@@ -611,7 +611,9 @@ function HeaderSection({
         {membership.status === "active" || membership.status === "warning" ? (
           <Text
             numberOfLines={2}
-            style={styles.teksPaket(membership.status === "active")}>
+            style={styles.teksPaket(
+              membership.status === "active" || membership.status === "warning",
+            )}>
             {`${membership.membership} (${membership.periode})`}
           </Text>
         ) : (
@@ -948,9 +950,7 @@ const CardInfo = ({
     <TouchableOpacity
       style={styles.containerCardInfo(isDarkMode)}
       onPress={onPress}
-      disabled={
-        status !== 'not_buy_package' && status !== 'warning'
-      }>
+      disabled={status !== "not_buy_package" && status !== "warning"}>
       <View style={styles.cardTopCardInfo}>
         <Text style={styles.teksCardInfo(status)}>{message}</Text>
         {status === "not_buy_package" && (
