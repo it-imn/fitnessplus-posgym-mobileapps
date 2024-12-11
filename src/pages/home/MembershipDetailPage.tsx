@@ -158,7 +158,7 @@ export const MembershipDetail = ({
         expiredAt.setDate(expiredAt.getDate() + 1);
 
         // if expired date is less than today
-        if (expiredAt.getDay() < new Date().getDay()) {
+        if (expiredAt.getDate() < new Date().getDate()) {
           update({
             startDate: new Date(),
             expiredDate: new Date(),
@@ -402,7 +402,7 @@ export const MembershipDetail = ({
                     if (selectedDate) {
                       if (
                         payment.expiredDate &&
-                        selectedDate.getDay() < payment.expiredDate?.getDay()
+                        selectedDate.getDate() < payment.expiredDate?.getDate()
                       ) {
                         showMessage({
                           message:
@@ -415,7 +415,7 @@ export const MembershipDetail = ({
                         return;
                       }
 
-                      if (selectedDate.getDay() < new Date().getDay()) {
+                      if (selectedDate.getDate() < new Date().getDate()) {
                         showMessage({
                           message: "Start date must be greater than today",
                           type: "warning",
@@ -459,7 +459,7 @@ export const MembershipDetail = ({
                 if (selectedDate) {
                   if (
                     payment.expiredDate &&
-                    selectedDate.getDay() < payment.expiredDate?.getDay()
+                    selectedDate.getDate() < payment.expiredDate?.getDate()
                   ) {
                     showMessage({
                       message: "Start date must be greater than expired date",
@@ -471,7 +471,7 @@ export const MembershipDetail = ({
                     return;
                   }
 
-                  if (selectedDate.getDay() < new Date().getDay()) {
+                  if (selectedDate.getDate() < new Date().getDate()) {
                     showMessage({
                       message: "Start date must be greater than today",
                       type: "warning",
