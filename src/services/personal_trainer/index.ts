@@ -115,6 +115,7 @@ const buyPersonalTrainerPackage = async (
   signature: string,
   voucher_code: string | null,
   down_payment: boolean,
+  started_at: string,
 ) => {
   console.log({
     package_personal_trainer_id: package_pt_id,
@@ -131,6 +132,7 @@ const buyPersonalTrainerPackage = async (
       voucher_code: voucher_code === "" ? null : voucher_code,
       down_payment: down_payment,
       signature: signature,
+      started_at: started_at,
     })
     .then(({ data }) => {
       return {

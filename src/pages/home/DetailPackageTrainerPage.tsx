@@ -3,6 +3,7 @@ import React, { useContext, useState } from "react";
 import {
   Image,
   Modal,
+  Platform,
   SafeAreaView,
   StyleProp,
   Text,
@@ -31,6 +32,10 @@ import Loading from "../../components/ui/Loading";
 import { usePaymentStore } from "../../stores/usePaymentStore";
 import { useModalStore } from "../../stores/useModalStore";
 import { SignatureModal } from "./MembershipDetailPage";
+import DateTimePicker, {
+  DateTimePickerAndroid,
+} from "@react-native-community/datetimepicker";
+import { CalendarCheckIcon } from "lucide-react-native";
 
 const DetailPackageTrainer = ({
   navigation,
@@ -41,6 +46,7 @@ const DetailPackageTrainer = ({
   const [isLoading, setIsLoading] = useState(false);
   const [feature, setFeature] = useState("");
   const [packagePT, setPackagePT] = useState<IPTPackage | null>(null);
+  const [showDatePickerIOS, setShowDatePickerIOS] = useState(false);
   const { update, payment } = usePaymentStore();
   const { openModal, closeModal } = useModalStore();
   const gotoVoucher = () => {
@@ -262,6 +268,93 @@ const DetailPackageTrainer = ({
                 <Gap width={4} />
               </View>
             </>
+          )}
+          <Text
+            style={{
+              fontSize: 12,
+              color: isDarkMode ? colors._grey4 : colors._grey3,
+              fontFamily: fonts.primary[400],
+            }}>
+            Start Date
+          </Text>
+          <Gap height={4} />
+          <TouchableOpacity
+            style={{
+              padding: 12,
+              backgroundColor: isDarkMode ? colors._black : colors._grey2,
+              borderRadius: 10,
+              borderWidth: 0.5,
+              borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+            onPress={() => {
+              if (Platform.OS === "android") {
+                DateTimePickerAndroid.open({
+                  value: payment.startDate || new Date(),
+                  mode: "date",
+                  onChange: (_, selectedDate) => {
+                    if (selectedDate) {
+                      if (selectedDate.getDate() < new Date().getDate()) {
+                        showMessage({
+                          message: "Start date must be greater than today",
+                          type: "warning",
+                          icon: "warning",
+                          backgroundColor: colors._red,
+                          color: colors._white,
+                        });
+                        return;
+                      }
+
+                      update({
+                        startDate: selectedDate,
+                      });
+                    }
+                  },
+                });
+              } else if (Platform.OS === "ios") {
+                setShowDatePickerIOS(true);
+              }
+            }}>
+            <Text
+              style={{
+                color: isDarkMode ? colors._white : colors._black,
+                fontSize: 14,
+                fontFamily: fonts.primary[400],
+              }}>
+              {payment.startDate?.toLocaleDateString("id-ID")}
+            </Text>
+            <CalendarCheckIcon
+              size={20}
+              color={isDarkMode ? colors._white : colors._black}
+            />
+          </TouchableOpacity>
+          {showDatePickerIOS && (
+            <DateTimePicker
+              value={payment.startDate || new Date()}
+              mode="date"
+              display="default"
+              onChange={(_, selectedDate) => {
+                setShowDatePickerIOS(false);
+                if (selectedDate) {
+                  if (selectedDate.getDate() < new Date().getDate()) {
+                    showMessage({
+                      message: "Start date must be greater than today",
+                      type: "warning",
+                      icon: "warning",
+                      backgroundColor: colors._red,
+                      color: colors._white,
+                    });
+                    return;
+                  }
+
+                  update({
+                    startDate: selectedDate,
+                  });
+                }
+              }}
+            />
           )}
         </View>
         <View style={{ flex: 1 }} />

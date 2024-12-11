@@ -159,20 +159,12 @@ export const MembershipDetail = ({
 
         // if expired date is less than today
         if (expiredAt.getDate() < new Date().getDate()) {
-          update({
-            startDate: new Date(),
-            expiredDate: new Date(),
-          });
           return;
         }
 
         update({
           expiredDate: expiredAt,
           startDate: expiredAt,
-        });
-      } else {
-        update({
-          startDate: new Date(),
         });
       }
     } catch (err: any) {

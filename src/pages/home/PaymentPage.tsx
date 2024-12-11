@@ -110,6 +110,7 @@ export const Payment = ({
           payment.signature,
           payment.voucherCode || "",
           payment.isDp,
+          (payment?.startDate || new Date()).toISOString().slice(0, 10),
         );
 
         showMessage({

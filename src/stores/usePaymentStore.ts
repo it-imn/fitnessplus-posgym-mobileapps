@@ -18,13 +18,13 @@ export interface PaymentReq {
   discountPrice?: number;
   isDpAvailable?: boolean;
   firstPayment?: number;
+  startDate: Date;
+  expiredDate?: Date;
 
   // Membership
   salesId?: number;
   salesName?: string;
   salesEmail?: string;
-  startDate?: Date;
-  expiredDate?: Date;
   membershipId?: number;
 
   // PT
@@ -41,6 +41,7 @@ export interface PaymentState {
 
 const initialState: PaymentReq = {
   packageName: "",
+  startDate: new Date(),
   normalPrice: 0,
   totalPrice: 0,
   isDp: false,
