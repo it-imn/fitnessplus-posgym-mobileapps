@@ -21,6 +21,7 @@ import { fetchInstallmentMembership } from "../../services/installment";
 import { showMessage } from "react-native-flash-message";
 import { useInstallmentStore } from "../../stores/useInstallmentStore";
 import { AlarmClockIcon } from "lucide-react-native";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 export const DetailInstallmentPackage = ({
   navigation,
@@ -33,7 +34,7 @@ export const DetailInstallmentPackage = ({
   >([]);
   const [bill, setBill] = React.useState<number>(0);
 
-  const { update } = useInstallmentStore();
+  const { installment, update } = useInstallmentStore();
 
   const getInstallment = async () => {
     setIsLoading(true);
@@ -120,21 +121,95 @@ export const DetailInstallmentPackage = ({
         renderItem={({ item }) => (
           <DetailPackageInstallmentCard
             data={item}
+            isSelected={installment.installmentIds.includes(item.id)}
             onPress={() => {
-              update({
-                installmentNumber: item.installment_number,
-                mambershipName: item.membership_name,
-                memberName: item.member_name,
-                salesName: item.sales_name,
-                total: item.total,
-              });
-
-              navigation.navigate("PaymentInstallment", { id: item.id });
+              if (item.is_pay) {
+                if (installment.installmentIds.includes(item.id)) {
+                  const filtered = installment.installmentIds.filter(
+                    id => id !== item.id,
+                  );
+                  const total = installment.total - item.total;
+                  update({
+                    installmentIds: filtered,
+                    total: total,
+                  });
+                } else {
+                  const total = installment.total + item.total;
+                  update({
+                    installmentIds: [...installment.installmentIds, item.id],
+                    total: total,
+                  });
+                }
+              }
             }}
           />
         )}
         ListEmptyComponent={<NoData text="No Data Available" />}
       />
+
+      {installment.installmentIds.length > 0 && (
+        <View
+          style={{
+            paddingHorizontal: 24,
+            paddingVertical: 12,
+            flexDirection: "row",
+            borderTopColor: colors._grey3,
+            borderTopWidth: 0.5,
+          }}>
+          <View
+            style={{
+              flex: 1,
+              alignItems: "flex-end",
+              justifyContent: "center",
+            }}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: fonts.primary[400],
+                color: isDarkMode ? colors._white : colors._black,
+              }}>
+              Total
+            </Text>
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: fonts.primary[400],
+                color: isDarkMode ? colors._white : colors._black,
+              }}>
+              {convertToRupiah(installment.total?.toString())}
+            </Text>
+          </View>
+          <Gap width={16} />
+          <TouchableOpacity
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: colors._blue2,
+              borderRadius: 10,
+              padding: 16,
+            }}
+            onPress={() => {
+              console.log(packageInstallment[0]);
+              update({
+                mambershipName: packageInstallment[0].membership_name,
+                memberName: packageInstallment[0].member_name,
+                salesName: packageInstallment[0].sales_name,
+              });
+              navigation.navigate("PaymentInstallment", {
+                id: route.params.id,
+              });
+            }}>
+            <Text
+              style={{
+                fontSize: 12,
+                color: colors._white,
+                fontFamily: fonts.primary[400],
+              }}>
+              Pay
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {isLoading && <Loading />}
     </SafeAreaView>
@@ -143,9 +218,11 @@ export const DetailInstallmentPackage = ({
 
 const DetailPackageInstallmentCard = ({
   data,
+  isSelected,
   onPress,
 }: {
   data: IDetailInstallmentMembership;
+  isSelected: boolean;
   onPress: () => void;
 }) => {
   const { isDarkMode } = useContext(ThemeContext);
@@ -169,6 +246,23 @@ const DetailPackageInstallmentCard = ({
             alignItems: "center",
             flexShrink: 1,
           }}>
+          {data.is_pay && (
+            <>
+              <BouncyCheckbox
+                isChecked={isSelected}
+                size={16}
+                disableText
+                disabled
+                fillColor={colors._blue}
+                unFillColor={isDarkMode ? colors._black : colors._white}
+                iconImageStyle={{ tintColor: colors._blue, borderRadius: 0 }}
+                innerIconStyle={{ borderRadius: 0 }}
+                style={{ borderRadius: 0 }}
+                iconStyle={{ borderRadius: 0 }}
+              />
+              <Gap width={16} />
+            </>
+          )}
           <View
             style={{
               flexDirection: "column",
@@ -255,26 +349,6 @@ const DetailPackageInstallmentCard = ({
                 {data.status}
               </Text>
             </View>
-            {data.is_pay && (
-              <Fragment>
-                <Gap width={8} />
-                <View
-                  style={{
-                    backgroundColor: colors._blue2,
-                    borderRadius: 8,
-                  }}>
-                  <Text
-                    style={{
-                      fontFamily: fonts.primary[400],
-                      fontSize: 10,
-                      color: colors._white,
-                      padding: 4,
-                    }}>
-                    Pay now
-                  </Text>
-                </View>
-              </Fragment>
-            )}
           </View>
         </View>
       </TouchableOpacity>

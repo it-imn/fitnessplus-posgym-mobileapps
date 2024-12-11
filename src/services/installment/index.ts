@@ -58,7 +58,9 @@ const fetchInstallmentMembership = async (id: number) => {
 };
 
 const payInstallment = async(req: {
-  id: number;
+  payment_id: number;
+  installment_id: number[];
+  total_pay: number;
 }) => {
   return api
     .post(`/member/installment/pay`, req)

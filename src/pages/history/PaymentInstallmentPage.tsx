@@ -18,6 +18,7 @@ import moment from "moment";
 import Header from "../../components/ui/Header";
 import { showMessage } from "react-native-flash-message";
 import { payInstallment } from "../../services/installment";
+import Loading from "../../components/ui/Loading";
 
 export const PaymentInstallment = ({
   navigation,
@@ -33,7 +34,11 @@ export const PaymentInstallment = ({
     setIsLoading(true);
 
     try {
-      await payInstallment({ id });
+      await payInstallment({
+        payment_id: id,
+        installment_id: installment.installmentIds,
+        total_pay: installment.total,
+      });
 
       showMessage({
         message: "Payment installment success",
@@ -108,7 +113,7 @@ export const PaymentInstallment = ({
                 color: isDarkMode ? colors._grey4 : colors._grey3,
                 flexShrink: 1,
               }}>
-              {installment.mambershipName} x 1
+              {installment.mambershipName} x {installment.installmentIds.length}
             </Text>
             <Text
               style={{
@@ -435,6 +440,7 @@ export const PaymentInstallment = ({
             borderRadius: 10,
             padding: 16,
           }}
+          disabled={isLoading}
           onPress={onPay}>
           <Text
             style={{
@@ -446,6 +452,8 @@ export const PaymentInstallment = ({
           </Text>
         </TouchableOpacity>
       </View>
+
+      {isLoading && <Loading />}
     </SafeAreaView>
   );
 };

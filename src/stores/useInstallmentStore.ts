@@ -4,8 +4,9 @@ export interface InstallmentReq {
   mambershipName: string;
   salesName: string;
   memberName: string;
-  installmentNumber: number;
+  installmentIds: number[];
   total: number;
+  paymentId: number;
 }
 
 export interface InstallmentState {
@@ -19,7 +20,8 @@ const initialState: InstallmentReq = {
   salesName: "",
   total: 0,
   memberName: "",
-  installmentNumber: 0,
+  installmentIds: [],
+  paymentId: 0,
 };
 
 export const useInstallmentStore = create<InstallmentState>(set => ({
