@@ -949,8 +949,7 @@ const CardInfo = ({
       style={styles.containerCardInfo(isDarkMode)}
       onPress={onPress}
       disabled={
-        status !== "not_buy_package" && // udah beli
-        (status === "freeze_membership" || status === "pending")
+        status !== 'not_buy_package' && status !== 'warning'
       }>
       <View style={styles.cardTopCardInfo}>
         <Text style={styles.teksCardInfo(status)}>{message}</Text>
