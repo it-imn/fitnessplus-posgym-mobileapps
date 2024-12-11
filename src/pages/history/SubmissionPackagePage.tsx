@@ -209,7 +209,9 @@ const ListHistoryDetail = ({
                 flexShrink: 1,
               }}
               numberOfLines={2}>
-              {convertToRupiah(submissionPackage.total_price.toString())}
+              {submissionPackage.package_table === "membership"
+                ? "Membership"
+                : "Personal Trainer"}
             </Text>
             <Gap height={4} />
             <Text
@@ -232,7 +234,10 @@ const ListHistoryDetail = ({
           }}>
           <View
             style={{
-              backgroundColor: submissionPackage.status === 'Installment' ? colors._gold4 : colors._blue2,
+              backgroundColor:
+                submissionPackage.status.toLowerCase() === "installment"
+                  ? colors._gold4
+                  : colors._blue2,
               borderRadius: 8,
             }}>
             <Text
