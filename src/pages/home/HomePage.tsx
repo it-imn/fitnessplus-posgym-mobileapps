@@ -486,11 +486,15 @@ function CheckCardSection({
       <TouchableOpacity
         onPress={goToCheckin}
         style={styles.btnCheck(isDarkMode)}
-        disabled={membership.status !== "active"}>
+        disabled={
+          membership.status !== "active" && membership.status !== "warning"
+        }>
         <TouchableOpacity
           style={styles.UserPhoto}
           onPress={goToCheckin}
-          disabled={membership.status !== "active"}>
+          disabled={
+            membership.status !== "active" && membership.status !== "warning"
+          }>
           <IconQrWhite width={24} height={24} />
           <Gap width={10} />
           <Text
@@ -604,7 +608,7 @@ function HeaderSection({
             color: colors._white,
           }}>{`Welcome to ${branch_name}`}</Text>
         <Gap height={10} />
-        {membership.status === "active" ? (
+        {membership.status === "active" || membership.status === "warning" ? (
           <Text
             numberOfLines={2}
             style={styles.teksPaket(membership.status === "active")}>
@@ -791,7 +795,10 @@ export const HomePage = ({ navigation }: any) => {
               isDarkMode={isDarkMode}
               personalTrainers={personalTrainers}
               navigation={navigation}
-              haveMembership={membership.status === "active"}
+              haveMembership={
+                membership.status === "active" ||
+                membership.status === "warning"
+              }
             />
           )}
         </ScrollView>
