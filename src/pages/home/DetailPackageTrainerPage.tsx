@@ -269,6 +269,7 @@ const DetailPackageTrainer = ({
               </View>
             </>
           )}
+          <Gap height={16} />
           <Text
             style={{
               fontSize: 12,
