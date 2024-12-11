@@ -87,9 +87,19 @@ export const ClassHistory = ({
     try {
       const { data } = await cancelBooking(cancelClass.id!, reason);
       if (data) {
+        setReason("");
         setCancelClass({ id: null, name: null });
         setIsViewModal(false);
+        setBookingHistory([]);
         getBookingHistory(1, debouncedText);
+
+        showMessage({
+          message: "Class has been cancelled",
+          type: "success",
+          icon: "success",
+          backgroundColor: colors._green,
+          color: colors._white,
+        });
       }
     } catch (err: any) {
       errorModal(err.message || "An error occured", isDarkMode);
@@ -139,33 +149,42 @@ export const ClassHistory = ({
       />
       <Gap height={16} />
 
-      <FlatList
-        refreshing={isLoading}
-        onRefresh={() => {
-          console.log("refresh");
-          setPage(1);
-          setBookingHistory([]);
-
-          getBookingHistory(1, debouncedText);
-        }}
-        onEndReached={handleEndReached}
-        data={bookingHistory}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={({ item }) => (
-          <ClassHistoryCard
-            key={item.id}
-            classHistory={item}
-            cancelClassId={cancelClass.id}
-            onCancel={() => {
-              setCancelClass({
-                id: item.id,
-                name: item.class_name,
-              });
-            }}
-          />
-        )}
-        ListEmptyComponent={<NoData text="No Data Available" />}
-      />
+      <View
+        style={{
+          flex: 2,
+          paddingHorizontal: 16,
+        }}>
+        <FlatList
+          style={{}}
+          numColumns={2}
+          refreshing={isLoading}
+          onRefresh={() => {
+            console.log("refresh");
+            setPage(1);
+            setBookingHistory([]);
+            getBookingHistory(1, debouncedText);
+          }}
+          onEndReached={handleEndReached}
+          data={bookingHistory}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({ item }) => (
+            <ClassHistoryCard
+              key={item.id}
+              classHistory={item}
+              cancelClassId={cancelClass.id}
+              onCancel={() => {
+                setCancelClass({
+                  id: item.id,
+                  name: item.class_name,
+                });
+              }}
+            />
+          )}
+          ListEmptyComponent={<NoData text="No Data Available" />}
+          columnWrapperStyle={{ justifyContent: "space-between" }} // Optional: Adds spacing between columns
+          contentContainerStyle={{ rowGap: 16 }} // Adds gap between rows
+        />
+      </View>
       <Gap height={16} />
       <View
         style={{
