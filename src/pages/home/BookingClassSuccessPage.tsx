@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useContext } from "react";
-import { SafeAreaView, Text } from "react-native";
+import { SafeAreaView, Text, View } from "react-native";
 import { IconSuccess } from "../../assets";
 import Gap from "../../components/ui/Gap";
 import { ThemeContext } from "../../contexts/ThemeContext";
@@ -44,12 +44,14 @@ export const BookingSuccess = ({
         Your booking was successful. You're all set for your upcoming class!
       </Text>
       <Gap height={24} />
-      <ButtonColor
-        backColor={colors._blue2}
-        textColor={colors._white}
-        teks="View Classes"
-        onPress={() => navigation.replace("ClassHistory")}
-      />
+      <View style={{}}>
+        <ButtonColor
+          backColor={colors._blue2}
+          textColor={colors._white}
+          teks="View Classes"
+          onPress={() => navigation.replace("ClassHistory")}
+        />
+      </View>
     </SafeAreaView>
   );
 };
