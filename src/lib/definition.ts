@@ -192,7 +192,9 @@ export interface IMembershipPackage {
   price: number;
   total_price: number;
   down_payment_membership: number | boolean;
-  dp_discount: number;
+  dp_discount: string | number;
+  discount: string | number;
+  installment: number;
   image: string;
   created_at: string;
   installment_first_pay: InstallmentFirstPay;

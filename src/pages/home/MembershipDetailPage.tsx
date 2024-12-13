@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  Fragment,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   Image,
   Modal,
@@ -225,41 +231,97 @@ export const MembershipDetail = ({
               lineHeight: 20,
             }}>{`${membershipPackage?.periode}`}</Text>
           <Gap height={16} />
-          {membershipPackage?.down_payment_membership === 1 ||
-            (membershipPackage?.down_payment_membership && (
-              <>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: isDarkMode ? colors._grey4 : colors._grey3,
-                    fontFamily: fonts.primary[400],
-                  }}>
-                  Feature
-                </Text>
-                <Gap height={4} />
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <View
-                    style={{
-                      backgroundColor: colors._blue,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: 4,
-                      borderRadius: 4,
-                    }}>
-                    <Text
+          {(membershipPackage?.down_payment_membership === 1 ||
+            membershipPackage?.down_payment_membership ||
+            membershipPackage?.discount !== 0) && (
+            <>
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: isDarkMode ? colors._grey4 : colors._grey3,
+                  fontFamily: fonts.primary[400],
+                }}>
+                Feature
+              </Text>
+              <Gap height={4} />
+              <View
+                style={{
+                  flexDirection: "row",
+                }}>
+                {membershipPackage?.dp_discount !== 0 && (
+                  <Fragment>
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center" }}>
+                      <View
+                        style={{
+                          backgroundColor: colors._blue,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          padding: 4,
+                          borderRadius: 4,
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontFamily: fonts.primary[400],
+                            color: isDarkMode ? colors._white : colors._black,
+                            lineHeight: 20,
+                          }}>
+                          {membershipPackage?.dp_discount} Dp Available
+                        </Text>
+                      </View>
+                      <Gap width={4} />
+                    </View>
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center" }}>
+                      <View
+                        style={{
+                          backgroundColor: colors._blue,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          padding: 4,
+                          borderRadius: 4,
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontFamily: fonts.primary[400],
+                            color: isDarkMode ? colors._white : colors._black,
+                            lineHeight: 20,
+                          }}>
+                          {membershipPackage?.installment} Installment
+                        </Text>
+                      </View>
+                      <Gap width={4} />
+                    </View>
+                  </Fragment>
+                )}
+                {membershipPackage?.discount !== 0 && (
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <View
                       style={{
-                        fontSize: 12,
-                        fontFamily: fonts.primary[400],
-                        color: isDarkMode ? colors._white : colors._black,
-                        lineHeight: 20,
+                        backgroundColor: colors._blue,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: 4,
+                        borderRadius: 4,
                       }}>
-                      {membershipPackage.dp_discount} Dp Available
-                    </Text>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          fontFamily: fonts.primary[400],
+                          color: isDarkMode ? colors._white : colors._black,
+                          lineHeight: 20,
+                        }}>
+                        {membershipPackage?.discount} Discount
+                      </Text>
+                    </View>
+                    <Gap width={4} />
                   </View>
-                  <Gap width={4} />
-                </View>
-              </>
-            ))}
+                )}
+              </View>
+            </>
+          )}
           <Gap height={16} />
           <Text
             style={{
@@ -278,9 +340,7 @@ export const MembershipDetail = ({
                 color: isDarkMode ? colors._white : colors._black,
               }}>
               {convertToRupiah(
-                membershipPackage?.total_price !== undefined
-                  ? membershipPackage.total_price.toString()
-                  : "0",
+                membershipPackage?.total_price.toString() || "0",
               )}
             </Text>
           </View>
