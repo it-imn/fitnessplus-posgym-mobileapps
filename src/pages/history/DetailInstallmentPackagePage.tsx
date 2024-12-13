@@ -118,20 +118,36 @@ export const DetailInstallmentPackage = ({
         // onEndReached={handleEndReached}
         data={packageInstallment}
         keyExtractor={(_, index) => index.toString()}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <DetailPackageInstallmentCard
             data={item}
             isSelected={installment.installmentIds.includes(item.id)}
+            disabled={
+              installment.installmentIds.length !== index - 1 &&
+              !installment.installmentIds.includes(item.id)
+            }
             onPress={() => {
               if (item.is_pay) {
                 if (installment.installmentIds.includes(item.id)) {
-                  const filtered = installment.installmentIds.filter(
-                    id => id !== item.id,
-                  );
-                  const total = installment.total - item.total;
+                  const idx = installment.installmentIds.indexOf(item.id);
+
+                  const res = [];
+                  let sum = 0;
+
+                  for (let i = 0; i < idx; i++) {
+                    const id = installment.installmentIds[i];
+
+                    const x = packageInstallment.find(item => item.id === id);
+
+                    if (x) {
+                      res.push(x.id);
+                      sum += x.total;
+                    }
+                  }
+
                   update({
-                    installmentIds: filtered,
-                    total: total,
+                    installmentIds: res,
+                    total: sum,
                   });
                 } else {
                   const total = installment.total + item.total;
@@ -219,10 +235,12 @@ export const DetailInstallmentPackage = ({
 const DetailPackageInstallmentCard = ({
   data,
   isSelected,
+  disabled,
   onPress,
 }: {
   data: IDetailInstallmentMembership;
   isSelected: boolean;
+  disabled: boolean;
   onPress: () => void;
 }) => {
   const { isDarkMode } = useContext(ThemeContext);
@@ -238,7 +256,7 @@ const DetailPackageInstallmentCard = ({
           alignItems: "center",
           flex: 1,
         }}
-        disabled={!data.is_pay}
+        disabled={!data.is_pay || disabled}
         onPress={onPress}>
         <View
           style={{
