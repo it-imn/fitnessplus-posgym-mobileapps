@@ -154,24 +154,20 @@ const Membership = ({ navigation }: any) => {
 const MembershipCard = ({
   name,
   image,
-  discount_value,
-  discount_percent,
   price,
   total_price,
   periode,
-  dp_price_disc,
   dp_discount,
+  down_payment_membership,
   onPress,
 }: {
   name: string;
   image: string;
-  discount_value: number;
-  discount_percent: number;
   price: number;
   total_price: number;
   periode: string;
-  dp_price_disc: number;
   dp_discount: number;
+  down_payment_membership: boolean | number;
   onPress: () => void;
 }) => {
   const { isDarkMode } = useContext(ThemeContext);
@@ -246,9 +242,7 @@ const MembershipCard = ({
           </Text>
           <Gap height={8} />
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            {dp_price_disc === 0 && dp_discount === 0 ? (
-              <></>
-            ) : (
+            {down_payment_membership || down_payment_membership === 1 ? (
               <View
                 style={{
                   backgroundColor: colors._blue2,
@@ -261,13 +255,10 @@ const MembershipCard = ({
                     fontSize: 12,
                     color: isDarkMode ? colors._white : colors._black,
                   }}>
-                  {dp_price_disc === 0
-                    ? `${dp_discount}%`
-                    : convertToRupiah(dp_price_disc.toString())}{" "}
-                  Dp Available
+                  {dp_discount} Dp Available
                 </Text>
               </View>
-            )}
+            ) : null}
           </View>
         </View>
       </View>

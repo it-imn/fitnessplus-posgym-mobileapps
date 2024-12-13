@@ -2,7 +2,6 @@ import { AxiosRequestConfig, CancelToken } from "axios";
 import { api } from "../../lib/axios";
 import {
   IMembershipPackage,
-  IMembershipPackageDetail,
   IPaymentPackage,
   ISubmissionPackage,
   IVoucher,
@@ -68,7 +67,7 @@ const fetchMembershipPackages = async (
       config,
     )
     .then(({ data }) => {
-      console.log(query, "query");
+      console.log(data.result[0], "data");
       return {
         data: data.result as IMembershipPackage[],
         hasNext: data.hasNext,
@@ -84,9 +83,9 @@ const fetchMembershipPackageDetail = async (id: number) => {
   return api
     .get(`/membership/package/${id}`)
     .then(({ data }) => {
-      console.log(data);
+      console.log(data, 'data');
       return {
-        data: data.result as IMembershipPackageDetail,
+        data: data.result as IMembershipPackage,
       };
     })
     .catch((err: any) => {

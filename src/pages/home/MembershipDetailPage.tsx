@@ -29,7 +29,7 @@ import { IconDown } from "../../assets";
 import { ButtonColor } from "../../components/ui/Button";
 import Gap from "../../components/ui/Gap";
 import Loading from "../../components/ui/Loading";
-import { IMembershipPackageDetail, ISales } from "../../lib/definition";
+import { IMembershipPackage, ISales } from "../../lib/definition";
 import { RootStackParamList } from "../../lib/routes";
 import { colors, convertToRupiah, fonts } from "../../lib/utils";
 import { fetchMembershipPackageDetail } from "../../services/membership";
@@ -53,7 +53,7 @@ export const MembershipDetail = ({
   const [showDatePickerIOS, setShowDatePickerIOS] = useState(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [membershipPackage, setMembershipPackage] =
-    React.useState<IMembershipPackageDetail | null>(null);
+    React.useState<IMembershipPackage | null>(null);
   const [sales, setSales] = useState<ISales[]>([]);
 
   const { openModal, closeModal } = useModalStore();
@@ -105,26 +105,10 @@ export const MembershipDetail = ({
 
     update({
       membershipId: membershipPackage?.id,
-      normalPrice: membershipPackage?.price,
-      totalPrice: membershipPackage?.total_price,
+      packagePrice: membershipPackage?.price,
       packageName: membershipPackage?.name,
       isDpAvailable: membershipPackage?.down_payment_membership === 1,
-      firstPayment: membershipPackage?.installment_first_pay.total_price,
     });
-
-    if (membershipPackage?.discount_percent !== 0) {
-      update({
-        discountPrice: membershipPackage?.discount_percent,
-        discountType: "percent",
-      });
-    }
-
-    if (membershipPackage?.discount_value !== 0) {
-      update({
-        discountPrice: membershipPackage?.discount_value,
-        discountType: "value",
-      });
-    }
 
     navigation.navigate("Payment");
   };
@@ -239,45 +223,41 @@ export const MembershipDetail = ({
               lineHeight: 20,
             }}>{`${membershipPackage?.periode}`}</Text>
           <Gap height={16} />
-          {membershipPackage?.down_payment_membership === 1 && (
-            <>
-              <Text
-                style={{
-                  fontSize: 12,
-                  color: isDarkMode ? colors._grey4 : colors._grey3,
-                  fontFamily: fonts.primary[400],
-                }}>
-                Feature
-              </Text>
-              <Gap height={4} />
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <View
+          {membershipPackage?.down_payment_membership === 1 ||
+            (membershipPackage?.down_payment_membership && (
+              <>
+                <Text
                   style={{
-                    backgroundColor: colors._blue,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: 4,
-                    borderRadius: 4,
+                    fontSize: 12,
+                    color: isDarkMode ? colors._grey4 : colors._grey3,
+                    fontFamily: fonts.primary[400],
                   }}>
-                  <Text
+                  Feature
+                </Text>
+                <Gap height={4} />
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <View
                     style={{
-                      fontSize: 12,
-                      fontFamily: fonts.primary[400],
-                      color: isDarkMode ? colors._white : colors._black,
-                      lineHeight: 20,
+                      backgroundColor: colors._blue,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: 4,
+                      borderRadius: 4,
                     }}>
-                    {membershipPackage.installment_first_pay?.total_price &&
-                      convertToRupiah(
-                        membershipPackage.installment_first_pay.total_price.toString() ||
-                          "0",
-                      )}{" "}
-                    Dp Available
-                  </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        fontFamily: fonts.primary[400],
+                        color: isDarkMode ? colors._white : colors._black,
+                        lineHeight: 20,
+                      }}>
+                      {membershipPackage.dp_discount} Dp Available
+                    </Text>
+                  </View>
+                  <Gap width={4} />
                 </View>
-                <Gap width={4} />
-              </View>
-            </>
-          )}
+              </>
+            ))}
           <Gap height={16} />
           <Text
             style={{
