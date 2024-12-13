@@ -186,28 +186,14 @@ export interface IPersonalTrainer {
 
 export interface IMembershipPackage {
   id: number;
-  admin_id?: number;
-  branch_id?: number;
   name: string;
   periode: string;
   desc?: string;
-  discount_percent: number;
-  discount_value: number;
   price: number;
   total_price: number;
-  down_payment_membership: number;
+  down_payment_membership: number | boolean;
   dp_discount: number;
-  dp_price_disc: number;
-  dp_total: number;
-  due_date?: string;
   image: string;
-  installment_count?: number;
-  additional_feature: number;
-  personal_trainer_id?: number;
-  session?: string;
-  buy_one_get_one: string;
-  is_buyable: number;
-  is_all_branch: number;
   created_at: string;
   installment_first_pay: InstallmentFirstPay;
 }
@@ -223,14 +209,6 @@ export interface IPackageInstallment {
   dp_percentage: number;
   dp_fixed_price: number;
   plan: any[];
-}
-
-export interface IMembershipPackageDetail extends IMembershipPackage {
-  tax: string;
-  package_personal_trainer_id?: number;
-  updated_at: string;
-  deleted_at?: string;
-  image_thumbnail: string;
 }
 
 export interface ISales {
@@ -434,4 +412,12 @@ export interface INotification {
   notifiable_id: number;
   message: string;
   created_at: string;
+}
+
+export interface IPaymentSummary {
+  sub_total: number;
+  discount: number;
+  voucher_id?: number;
+  voucher: number;
+  total_pay: number;
 }

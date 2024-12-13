@@ -3,8 +3,7 @@ import { create } from "zustand";
 export interface PaymentReq {
   // change on detail package
   packageName: string;
-  normalPrice: number;
-  totalPrice: number;
+  packagePrice: number;
   signature: string;
 
   // payment page
@@ -13,11 +12,6 @@ export interface PaymentReq {
 
   // optional
   voucherCode?: string;
-  voucherDiscount?: number;
-  discountType?: "percent" | "value";
-  discountPrice?: number;
-  isDpAvailable?: boolean;
-  firstPayment?: number;
   startDate: Date;
   expiredDate?: Date;
 
@@ -26,6 +20,7 @@ export interface PaymentReq {
   salesName?: string;
   salesEmail?: string;
   membershipId?: number;
+  isDpAvailable?: boolean;
 
   // PT
   packageId?: number;
@@ -42,8 +37,7 @@ export interface PaymentState {
 const initialState: PaymentReq = {
   packageName: "",
   startDate: new Date(),
-  normalPrice: 0,
-  totalPrice: 0,
+  packagePrice: 0,
   isDp: false,
   paymentMethod: "cash",
   signature: "",

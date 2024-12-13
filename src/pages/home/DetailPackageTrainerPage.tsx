@@ -63,29 +63,12 @@ const DetailPackageTrainer = ({
 
     update({
       packageName: packagePT?.package_name,
-      normalPrice: (packagePT?.base_price || 1) * (packagePT?.session || 1),
-      totalPrice: packagePT?.total,
+      packagePrice: (packagePT?.base_price || 1) * (packagePT?.session || 1),
       packageId: packagePT?.id,
       packagePTId: packagePT?.package_personal_trainer_id,
       ptId: pt_id,
       isDpAvailable: packagePT?.down_payment,
-      firstPayment: packagePT?.installment_first_pay.total_price,
     });
-
-    // if (packagePT?.price_disc !== 0) {
-    //   update({
-    //     discountPrice: packagePT?.price_disc,
-    //     discountType: "percent",
-    //   });
-    // }
-
-    if (packagePT?.discount !== 0) {
-      update({
-        discountPrice: packagePT?.discount,
-        discountType: "value",
-      });
-    }
-
     navigation.navigate("Payment");
   };
 

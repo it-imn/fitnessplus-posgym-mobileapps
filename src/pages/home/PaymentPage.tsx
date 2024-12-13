@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Fragment, useContext, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -20,6 +20,11 @@ import { showMessage } from "react-native-flash-message";
 import { buyMembership, checkVoucher } from "../../services/membership";
 import Loading from "../../components/ui/Loading";
 import { buyPersonalTrainerPackage } from "../../services/personal_trainer";
+import { IPaymentSummary } from "../../lib/definition";
+import {
+  fetchPaymentSummary,
+  fetchPaymentSummaryPt,
+} from "../../services/payment";
 
 export const Payment = ({
   navigation,
@@ -29,6 +34,9 @@ export const Payment = ({
 
   const [isLoading, setIsLoading] = useState(false);
   const [voucher, setVoucher] = useState<string>("");
+  const [paymentSummary, setPaymentSummary] = useState<IPaymentSummary | null>(
+    null,
+  );
 
   const onApplyVoucher = async () => {
     if (voucher === "") {
@@ -45,26 +53,14 @@ export const Payment = ({
     setIsLoading(true);
     try {
       if (payment.membershipId) {
-        const { data } = await checkVoucher(voucher, payment.membershipId);
-        if (data.package_id) {
-          update({
-            voucherCode: voucher,
-            voucherDiscount: data.discount,
-          });
-        } else {
-          update({
-            voucherCode: voucher,
-            voucherDiscount: payment.normalPrice - data.discount,
-          });
-        }
+        await checkVoucher(voucher, payment.membershipId);
       } else if (payment.packagePTId) {
-        const { data } = await checkVoucher(voucher, payment.packagePTId);
-
-        update({
-          voucherCode: voucher,
-          voucherDiscount: payment.normalPrice - data.discount,
-        });
+        await checkVoucher(voucher, payment.packagePTId);
       }
+
+      update({
+        voucherCode: voucher,
+      });
     } catch (error: any) {
       showMessage({
         message: error.message || "An error occurred",
@@ -138,6 +134,47 @@ export const Payment = ({
     }
   };
 
+  const getPaymentSummary = async () => {
+    setIsLoading(true);
+    try {
+      if (payment.membershipId) {
+        const { data } = await fetchPaymentSummary({
+          membership_id: payment.membershipId || 0,
+          sales_id: payment.salesId || 0,
+          voucher_code: payment.voucherCode || null,
+          payment_method: payment.paymentMethod,
+          down_payment_membership: payment.isDp,
+        });
+
+        setPaymentSummary(data);
+      } else if (payment.packageId) {
+        const { data } = await fetchPaymentSummaryPt({
+          package_personal_trainer_id: payment.packagePTId || 0,
+          sales_id: payment.salesId || 0,
+          voucher_code: payment.voucherCode || null,
+          payment_method: payment.paymentMethod,
+          down_payment: payment.isDp,
+        });
+
+        setPaymentSummary(data);
+      }
+    } catch (error: any) {
+      showMessage({
+        message: error.message || "An error occurred",
+        type: "warning",
+        icon: "warning",
+        backgroundColor: colors._red,
+        color: colors._white,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getPaymentSummary();
+  }, [payment.isDp, payment.voucherCode, payment.paymentMethod]);
+
   return (
     <SafeAreaView
       style={{
@@ -199,7 +236,7 @@ export const Payment = ({
                 textAlign: "right",
                 width: 90,
               }}>
-              {convertToRupiah(payment.normalPrice?.toString())}
+              {convertToRupiah(payment.packagePrice.toString())}
             </Text>
           </View>
           {payment.salesId && (
@@ -428,10 +465,10 @@ export const Payment = ({
                 fontFamily: fonts.primary[400],
                 color: isDarkMode ? colors._grey4 : colors._grey3,
               }}>
-              {convertToRupiah(payment.normalPrice?.toString())}
+              {convertToRupiah(paymentSummary?.sub_total.toString() || "0")}
             </Text>
           </View>
-          {payment.discountPrice && (
+          {paymentSummary?.discount !== 0 && (
             <View
               style={{
                 flexDirection: "row",
@@ -452,13 +489,11 @@ export const Payment = ({
                   fontFamily: fonts.primary[400],
                   color: isDarkMode ? colors._grey4 : colors._grey3,
                 }}>
-                {payment.discountType === "percent"
-                  ? payment.discountPrice + "%"
-                  : convertToRupiah(payment.discountPrice?.toString())}
+                {convertToRupiah(paymentSummary?.discount.toString() || "0")}
               </Text>
             </View>
           )}
-          {payment.voucherDiscount && (
+          {paymentSummary?.voucher_id && (
             <View
               style={{
                 flexDirection: "row",
@@ -479,7 +514,7 @@ export const Payment = ({
                   fontFamily: fonts.primary[400],
                   color: isDarkMode ? colors._grey4 : colors._grey3,
                 }}>
-                {convertToRupiah(payment.voucherDiscount?.toString())}
+                {convertToRupiah(paymentSummary?.voucher.toString() || "0")}
               </Text>
             </View>
           )}
@@ -503,14 +538,7 @@ export const Payment = ({
                 fontFamily: fonts.primary[400],
                 color: isDarkMode ? colors._white : colors._black,
               }}>
-              {convertToRupiah(
-                (payment.voucherDiscount
-                  ? payment.normalPrice - payment.voucherDiscount
-                  : payment.isDpAvailable && payment.isDp
-                  ? payment.firstPayment
-                  : payment.totalPrice
-                )?.toString() || "0",
-              )}
+              {convertToRupiah(paymentSummary?.total_pay.toString() || "0")}
             </Text>
           </View>
         </View>
@@ -629,14 +657,7 @@ export const Payment = ({
               fontFamily: fonts.primary[400],
               color: isDarkMode ? colors._white : colors._black,
             }}>
-            {convertToRupiah(
-              (payment.voucherDiscount
-                ? payment.normalPrice - payment.voucherDiscount
-                : payment.isDpAvailable && payment.isDp
-                ? payment.firstPayment
-                : payment.totalPrice
-              )?.toString() || "0",
-            )}
+            {convertToRupiah(paymentSummary?.total_pay.toString() || "0")}
           </Text>
         </View>
         <Gap width={16} />
