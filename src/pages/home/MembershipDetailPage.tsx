@@ -247,6 +247,8 @@ export const MembershipDetail = ({
               <View
                 style={{
                   flexDirection: "row",
+                  flexWrap: "wrap",
+                  rowGap: 4,
                 }}>
                 {membershipPackage?.dp_discount !== 0 && (
                   <Fragment>
