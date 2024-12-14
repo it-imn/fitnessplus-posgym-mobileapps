@@ -317,17 +317,15 @@ export const Payment = ({
                 style={{
                   justifyContent: "center",
                   alignItems: "center",
-                  backgroundColor: isDarkMode ? colors._black : colors._grey2,
-                  padding: 12,
+                  backgroundColor: colors._blue2,
                   borderRadius: 10,
-                  borderWidth: 0.5,
-                  borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+                  padding: 16,
                 }}
                 onPress={onApplyVoucher}>
                 <Text
                   style={{
                     fontSize: 12,
-                    color: isDarkMode ? colors._white : colors._black,
+                    color: colors._white,
                     fontFamily: fonts.primary[400],
                   }}>
                   Apply
