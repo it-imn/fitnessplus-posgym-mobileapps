@@ -591,7 +591,7 @@ export const Payment = ({
                 iconImageStyle={{ tintColor: colors._blue }}
               />
             </TouchableOpacity>
-            {/* <Gap height={8} />
+            <Gap height={8} />
             <TouchableOpacity
               style={{
                 backgroundColor: isDarkMode ? colors._black : colors._grey2,
@@ -603,6 +603,7 @@ export const Payment = ({
                 alignItems: "center",
                 justifyContent: "space-between",
               }}
+              disabled
               onPress={() => {}}>
               <Text
                 style={{
@@ -615,13 +616,14 @@ export const Payment = ({
               <BouncyCheckbox
                 size={16}
                 disableText
+                disabled
                 isChecked={false}
                 onPress={() => {}}
                 fillColor={colors._blue}
                 unFillColor={isDarkMode ? colors._black : colors._white}
                 iconImageStyle={{ tintColor: colors._blue }}
               />
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </View>
           <Gap height={16} />
         </View>
