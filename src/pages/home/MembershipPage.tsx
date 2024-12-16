@@ -166,7 +166,7 @@ const MembershipCard = ({
   price: number;
   total_price: number;
   periode: string;
-  dp_discount: number;
+  dp_discount: string | number;
   down_payment_membership: boolean | number;
   onPress: () => void;
 }) => {

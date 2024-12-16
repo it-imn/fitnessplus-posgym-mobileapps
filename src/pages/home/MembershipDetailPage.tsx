@@ -347,67 +347,71 @@ export const MembershipDetail = ({
             </Text>
           </View>
           <Gap height={16} />
-          <Text
-            style={{
-              fontSize: 12,
-              color: isDarkMode ? colors._grey4 : colors._grey3,
-              fontFamily: fonts.primary[400],
-            }}>
-            Member Consultant
-          </Text>
-          <Gap height={4} />
-          <TouchableOpacity
-            style={{
-              padding: 12,
-              backgroundColor: isDarkMode ? colors._black : colors._grey2,
-              borderRadius: 10,
-              borderWidth: 0.5,
-              borderColor: isDarkMode ? colors._grey4 : colors._grey3,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-            onPress={() => {
-              openModal({
-                children: (
-                  <ScrollView>
-                    {sales.map((data: ISales) => {
-                      return (
-                        <TouchableOpacity
-                          key={data.id}
-                          style={styles.buttonDrop}
-                          onPress={() => {
-                            update({
-                              salesId: data.id,
-                              salesName: data.name,
-                              salesEmail: data.email,
-                            });
-                            closeModal();
-                          }}>
-                          <Text style={styles.teks5(isDarkMode)}>
-                            {data.name}
-                          </Text>
-                        </TouchableOpacity>
-                      );
-                    })}
-                  </ScrollView>
-                ),
-              });
-            }}>
-            <Text
-              style={{
-                color: isDarkMode ? colors._white : colors._black,
-                fontSize: 14,
-                fontFamily: fonts.primary[400],
-              }}>
-              {payment.salesName || "Select Member Consultant"}
-            </Text>
-            <ChevronDownIcon
-              size={20}
-              color={isDarkMode ? colors._white : colors._black}
-            />
-          </TouchableOpacity>
-          <Gap height={16} />
+          {sales.length > 0 && (
+            <>
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: isDarkMode ? colors._grey4 : colors._grey3,
+                  fontFamily: fonts.primary[400],
+                }}>
+                Member Consultant
+              </Text>
+              <Gap height={4} />
+              <TouchableOpacity
+                style={{
+                  padding: 12,
+                  backgroundColor: isDarkMode ? colors._black : colors._grey2,
+                  borderRadius: 10,
+                  borderWidth: 0.5,
+                  borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  openModal({
+                    children: (
+                      <ScrollView>
+                        {sales.map((data: ISales) => {
+                          return (
+                            <TouchableOpacity
+                              key={data.id}
+                              style={styles.buttonDrop}
+                              onPress={() => {
+                                update({
+                                  salesId: data.id,
+                                  salesName: data.name,
+                                  salesEmail: data.email,
+                                });
+                                closeModal();
+                              }}>
+                              <Text style={styles.teks5(isDarkMode)}>
+                                {data.name}
+                              </Text>
+                            </TouchableOpacity>
+                          );
+                        })}
+                      </ScrollView>
+                    ),
+                  });
+                }}>
+                <Text
+                  style={{
+                    color: isDarkMode ? colors._white : colors._black,
+                    fontSize: 14,
+                    fontFamily: fonts.primary[400],
+                  }}>
+                  {payment.salesName || "Select Member Consultant"}
+                </Text>
+                <ChevronDownIcon
+                  size={20}
+                  color={isDarkMode ? colors._white : colors._black}
+                />
+              </TouchableOpacity>
+              <Gap height={16} />
+            </>
+          )}
 
           <Text
             style={{
