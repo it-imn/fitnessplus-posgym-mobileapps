@@ -83,7 +83,7 @@ const fetchMembershipPackageDetail = async (id: number) => {
   return api
     .get(`/membership/package/${id}`)
     .then(({ data }) => {
-      console.log(data, 'data');
+      console.log(data, "data");
       return {
         data: data.result as IMembershipPackage,
       };
@@ -94,13 +94,18 @@ const fetchMembershipPackageDetail = async (id: number) => {
     });
 };
 
-const checkVoucher = async (voucher_code: string, package_id: number) => {
+const checkVoucher = async (
+  voucher_code: string,
+  package_id: number,
+  sales_id: number,
+) => {
   console.log(voucher_code, "voucher_code");
   console.log(package_id, "package_id");
   return api
     .post("/voucher", {
       voucher_code: voucher_code,
       package_id: package_id,
+      sales_id: sales_id,
     })
     .then(({ data }) => {
       console.log(data);
