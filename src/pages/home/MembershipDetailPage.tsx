@@ -1,11 +1,13 @@
 import React, {
   Fragment,
+  useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
 import {
+  Dimensions,
   Image,
   Modal,
   Platform,
@@ -14,6 +16,7 @@ import {
   StyleProp,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
   ViewStyle,
@@ -49,6 +52,11 @@ import DateTimePicker, {
 import { fetchProfile } from "../../services/profile";
 import { usePaymentStore } from "../../stores/usePaymentStore";
 import { CalendarCheckIcon, ChevronDownIcon } from "lucide-react-native";
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
 
 export const MembershipDetail = ({
   navigation,
@@ -63,8 +71,16 @@ export const MembershipDetail = ({
   const [sales, setSales] = useState<ISales[]>([]);
 
   const { openModal, closeModal } = useModalStore();
-  // const { update, reset, transaction } = useTransactionStore();
-  const { update, reset, payment } = usePaymentStore();
+  const { update, payment } = usePaymentStore();
+
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+
+  const [search, setSearch] = React.useState("");
+  const [filteredSales, setFilteredSales] = React.useState<ISales[]>([]);
 
   const getPackage = async () => {
     setIsLoading(true);
@@ -127,6 +143,7 @@ export const MembershipDetail = ({
       const { data } = await fetchSales();
       if (data) {
         setSales(data);
+        setFilteredSales(data);
       }
     } catch (err: any) {
       showMessage({
@@ -167,6 +184,14 @@ export const MembershipDetail = ({
   useEffect(() => {
     Promise.all([getPackage(), getSales(), getProfile()]);
   }, []);
+
+  useEffect(() => {
+    setFilteredSales(
+      sales.filter(data => {
+        return data.name.toLowerCase().startsWith(search.toLowerCase());
+      }),
+    );
+  }, [search]);
 
   return (
     <SafeAreaView
@@ -369,33 +394,34 @@ export const MembershipDetail = ({
                   justifyContent: "space-between",
                   alignItems: "center",
                 }}
-                onPress={() => {
-                  openModal({
-                    children: (
-                      <ScrollView>
-                        {sales.map((data: ISales) => {
-                          return (
-                            <TouchableOpacity
-                              key={data.id}
-                              style={styles.buttonDrop}
-                              onPress={() => {
-                                update({
-                                  salesId: data.id,
-                                  salesName: data.name,
-                                  salesEmail: data.email,
-                                });
-                                closeModal();
-                              }}>
-                              <Text style={styles.teks5(isDarkMode)}>
-                                {data.name}
-                              </Text>
-                            </TouchableOpacity>
-                          );
-                        })}
-                      </ScrollView>
-                    ),
-                  });
-                }}>
+                // onPress={() => {
+                //   openModal({
+                //     children: (
+                //       <ScrollView>
+                //         {sales.map((data: ISales) => {
+                //           return (
+                //             <TouchableOpacity
+                //               key={data.id}
+                //               style={styles.buttonDrop}
+                //               onPress={() => {
+                //                 update({
+                //                   salesId: data.id,
+                //                   salesName: data.name,
+                //                   salesEmail: data.email,
+                //                 });
+                //                 closeModal();
+                //               }}>
+                //               <Text style={styles.teks5(isDarkMode)}>
+                //                 {data.name}
+                //               </Text>
+                //             </TouchableOpacity>
+                //           );
+                //         })}
+                //       </ScrollView>
+                //     ),
+                //   });
+                // }}
+                onPress={handlePresentModalPress}>
                 <Text
                   style={{
                     color: isDarkMode ? colors._white : colors._black,
@@ -587,6 +613,70 @@ export const MembershipDetail = ({
           onPress={onNext}
         />
       </View>
+      <BottomSheetModalProvider>
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          backgroundStyle={{
+            backgroundColor: isDarkMode ? colors._black : colors._white,
+          }}
+          style={{
+            paddingHorizontal: 24,
+            borderColor: isDarkMode ? colors._black : colors._grey3,
+            borderWidth: 0.5,
+          }}>
+          <BottomSheetView
+            style={{
+              height: Dimensions.get("window").height / 3,
+            }}>
+            <TextInput
+              onChangeText={setSearch}
+              value={search}
+              placeholder={"Search sales"}
+              placeholderTextColor={colors._grey4}
+              style={{
+                padding: 12,
+                fontSize: 13,
+                fontFamily: fonts.primary[300],
+                backgroundColor: isDarkMode ? colors._black : colors._grey2,
+                borderRadius: 10,
+                color: isDarkMode ? colors._white : colors._black,
+                borderWidth: 0.5,
+                borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+              }}
+            />
+            <Gap height={16} />
+            <ScrollView>
+              {filteredSales.map(data => {
+                return (
+                  <>
+                    <TouchableOpacity
+                      key={data.id}
+                      style={styles.buttonDrop}
+                      onPress={() => {
+                        update({
+                          salesId: data.id,
+                          salesName: data.name,
+                          salesEmail: data.email,
+                        });
+                        bottomSheetModalRef.current?.dismiss();
+                      }}>
+                      <Text style={styles.teks5(isDarkMode)}>{data.name}</Text>
+                    </TouchableOpacity>
+                    <Gap height={8} />
+                    <View
+                      style={{
+                        width: "100%",
+                        height: 1,
+                        backgroundColor: colors._grey3,
+                      }}
+                    />
+                  </>
+                );
+              })}
+            </ScrollView>
+          </BottomSheetView>
+        </BottomSheetModal>
+      </BottomSheetModalProvider>
       {isLoading && <Loading />}
     </SafeAreaView>
   );
