@@ -11,10 +11,10 @@ import GlobalModal from "./components/Modal";
 import Router from "./lib/routers";
 import { RootStackParamList } from "./lib/routes";
 import { unauthorizedInterceptor } from "./lib/axios";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function App(): React.JSX.Element {
-  const navigationRef = useNavigationContainerRef()
-
+  const navigationRef = useNavigationContainerRef();
 
   useEffect(() => {
     unauthorizedInterceptor(navigationRef);
@@ -23,17 +23,19 @@ export default function App(): React.JSX.Element {
   return (
     <NavigationContainer ref={navigationRef}>
       <ThemeProvider>
-        <Router />
-        <FlashMessage
-          position="top"
-          floating={true}
-          animated={true}
-          duration={3000}
-          style={{
-            marginTop: Platform.OS === "ios" ? 16 : StatusBar.currentHeight,
-          }}
-        />
-        <GlobalModal />
+        <GestureHandlerRootView>
+          <Router />
+          <FlashMessage
+            position="top"
+            floating={true}
+            animated={true}
+            duration={3000}
+            style={{
+              marginTop: Platform.OS === "ios" ? 16 : StatusBar.currentHeight,
+            }}
+          />
+          <GlobalModal />
+        </GestureHandlerRootView>
       </ThemeProvider>
     </NavigationContainer>
   );
