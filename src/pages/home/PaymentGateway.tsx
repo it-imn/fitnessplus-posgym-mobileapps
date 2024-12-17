@@ -1,0 +1,47 @@
+import { Theme } from "@react-navigation/native";
+import React, { useContext } from "react";
+import { SafeAreaView } from "react-native";
+import { WebView } from "react-native-webview";
+
+import StatusBarComp from "../../components/ui/StatusBarComp";
+import { ThemeContext } from "../../contexts/ThemeContext";
+import { ThemeType } from "../../lib/definition";
+import { colors } from "../../lib/utils";
+import Header from "../../components/ui/Header";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../lib/routes";
+
+const PaymentGateway = ({
+  route,
+  navigation,
+}: NativeStackScreenProps<RootStackParamList, "PaymentGateway">) => {
+  const { id, url } = route.params;
+  const { isDarkMode } = useContext(ThemeContext);
+  return (
+    <SafeAreaView style={styles.container(isDarkMode)}>
+      <StatusBarComp />
+      <Header
+        teks=""
+        onPress={() =>
+          navigation.replace("DetailPaymentPackage", {
+            id,
+          })
+        }
+      />
+      <WebView
+        source={{
+          uri: url,
+        }}
+      />
+    </SafeAreaView>
+  );
+};
+
+const styles = {
+  container: (isDarkMode: boolean) => ({
+    flex: 1,
+    backgroundColor: isDarkMode ? colors._black2 : colors._white,
+  }),
+};
+
+export default PaymentGateway;

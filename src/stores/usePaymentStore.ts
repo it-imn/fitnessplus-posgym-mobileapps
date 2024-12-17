@@ -8,7 +8,7 @@ export interface PaymentReq {
 
   // payment page
   isDp: boolean;
-  paymentMethod: "cash";
+  paymentMethod: "cash" | "non-cash";
 
   // optional
   voucherCode?: string;

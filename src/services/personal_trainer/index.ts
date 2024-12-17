@@ -1,6 +1,10 @@
 import { AxiosRequestConfig, CancelToken } from "axios";
 import { api } from "../../lib/axios";
-import { IPersonalTrainer, IPTPackage } from "../../lib/definition";
+import {
+  IPaymentResult,
+  IPersonalTrainer,
+  IPTPackage,
+} from "../../lib/definition";
 
 const fetchPersonalTrainers = async () => {
   return api
@@ -112,23 +116,17 @@ const fetchPersonalTrainerDetailPackage = async (id: number) => {
 const buyPersonalTrainerPackage = async (
   package_pt_id: number,
   pt_id: number,
+  payment_method: string,
   signature: string,
   voucher_code: string | null,
   down_payment: boolean,
   started_at: string,
 ) => {
-  console.log({
-    package_personal_trainer_id: package_pt_id,
-    personal_trainer_id: pt_id,
-    payment_method: "cash",
-    voucher_code: voucher_code === "" ? null : voucher_code,
-    down_payment: down_payment,
-  });
   return api
     .post("/personal_trainer/package/buy", {
       package_personal_trainer_id: package_pt_id,
       personal_trainer_id: pt_id,
-      payment_method: "cash",
+      payment_method: payment_method,
       voucher_code: voucher_code === "" ? null : voucher_code,
       down_payment: down_payment,
       signature: signature,
@@ -136,7 +134,8 @@ const buyPersonalTrainerPackage = async (
     })
     .then(({ data }) => {
       return {
-        data: data,
+        message: data.message,
+        data: data.data as IPaymentResult,
       };
     })
     .catch(err => {

@@ -7,6 +7,7 @@ export interface InstallmentReq {
   installmentIds: number[];
   total: number;
   paymentId: number;
+  paymentMethod: "cash" | "non-cash";
 }
 
 export interface InstallmentState {
@@ -22,6 +23,7 @@ const initialState: InstallmentReq = {
   memberName: "",
   installmentIds: [],
   paymentId: 0,
+  paymentMethod: "cash",
 };
 
 export const useInstallmentStore = create<InstallmentState>(set => ({

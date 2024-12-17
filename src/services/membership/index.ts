@@ -3,6 +3,7 @@ import { api } from "../../lib/axios";
 import {
   IMembershipPackage,
   IPaymentPackage,
+  IPaymentResult,
   ISubmissionPackage,
   IVoucher,
 } from "../../lib/definition";
@@ -139,8 +140,10 @@ const buyMembership = async (
       started_at: started_at,
     })
     .then(({ data }) => {
+      console.log(data);
       return {
-        data: data,
+        message: data.message,
+        data: data.data as IPaymentResult,
       };
     })
     .catch((err: any) => {

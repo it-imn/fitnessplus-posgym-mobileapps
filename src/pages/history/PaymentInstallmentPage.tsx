@@ -27,8 +27,7 @@ export const PaymentInstallment = ({
   const { id } = route.params;
   const { isDarkMode } = useContext(ThemeContext);
   const [isLoading, setIsLoading] = useState(false);
-  const { installment } = useInstallmentStore();
-  const { reset } = useInstallmentStore();
+  const { installment, reset, update } = useInstallmentStore();
 
   const onPay = async () => {
     setIsLoading(true);
@@ -38,6 +37,7 @@ export const PaymentInstallment = ({
         payment_id: id,
         installment_id: installment.installmentIds,
         total_pay: installment.total,
+        payment_method: installment.paymentMethod,
       });
 
       showMessage({
@@ -341,9 +341,9 @@ export const PaymentInstallment = ({
                 justifyContent: "space-between",
               }}
               onPress={() => {
-                // update({
-                //   paymentMethod: "cash",
-                // });
+                update({
+                  paymentMethod: "cash",
+                });
               }}>
               <Text
                 style={{
@@ -354,7 +354,7 @@ export const PaymentInstallment = ({
                 Cash
               </Text>
               <BouncyCheckbox
-                isChecked={true}
+                isChecked={installment.paymentMethod === "cash"}
                 size={16}
                 disableText
                 disabled
@@ -364,7 +364,7 @@ export const PaymentInstallment = ({
                 iconImageStyle={{ tintColor: colors._blue }}
               />
             </TouchableOpacity>
-            {/* <Gap height={8} />
+            <Gap height={8} />
             <TouchableOpacity
               style={{
                 backgroundColor: isDarkMode ? colors._black : colors._grey2,
@@ -376,7 +376,11 @@ export const PaymentInstallment = ({
                 alignItems: "center",
                 justifyContent: "space-between",
               }}
-              onPress={() => {}}>
+              onPress={() => {
+                update({
+                  paymentMethod: "non-cash",
+                });
+              }}>
               <Text
                 style={{
                   fontSize: 14,
@@ -388,13 +392,13 @@ export const PaymentInstallment = ({
               <BouncyCheckbox
                 size={16}
                 disableText
-                isChecked={false}
+                isChecked={installment.paymentMethod === "non-cash"}
                 onPress={() => {}}
                 fillColor={colors._blue}
                 unFillColor={isDarkMode ? colors._black : colors._white}
                 iconImageStyle={{ tintColor: colors._blue }}
               />
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </View>
           <Gap height={16} />
         </View>

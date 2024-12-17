@@ -78,7 +78,7 @@ export const Payment = ({
     setIsLoading(true);
     try {
       if (payment.membershipId) {
-        const { data } = await buyMembership(
+        const { data, message } = await buyMembership(
           payment.salesId || 0,
           payment.membershipId,
           payment.paymentMethod,
@@ -89,7 +89,7 @@ export const Payment = ({
         );
 
         showMessage({
-          message: data.message,
+          message: message,
           type: "success",
           icon: "success",
           backgroundColor: colors._green,
@@ -98,11 +98,20 @@ export const Payment = ({
 
         reset();
 
+        if (data.payment_url) {
+          navigation.replace("PaymentGateway", {
+            id: data.id,
+            url: data.payment_url,
+          });
+          return;
+        }
+
         navigation.replace("MainApp");
       } else if (payment.packagePTId) {
-        const { data } = await buyPersonalTrainerPackage(
+        const { data, message } = await buyPersonalTrainerPackage(
           payment.packagePTId,
           payment.ptId || 0,
+          payment.paymentMethod,
           payment.signature,
           payment.voucherCode || "",
           payment.isDp,
@@ -110,7 +119,7 @@ export const Payment = ({
         );
 
         showMessage({
-          message: data.message,
+          message: message,
           type: "success",
           icon: "success",
           backgroundColor: colors._green,
@@ -118,6 +127,14 @@ export const Payment = ({
         });
 
         reset();
+
+        if (data.payment_url) {
+          navigation.replace("PaymentGateway", {
+            id: data.id,
+            url: data.payment_url,
+          });
+          return;
+        }
 
         navigation.replace("MainApp");
       }
@@ -582,7 +599,7 @@ export const Payment = ({
                 Cash
               </Text>
               <BouncyCheckbox
-                isChecked={true}
+                isChecked={payment.paymentMethod === "cash"}
                 size={16}
                 disableText
                 disabled
@@ -603,8 +620,11 @@ export const Payment = ({
                 alignItems: "center",
                 justifyContent: "space-between",
               }}
-              disabled
-              onPress={() => {}}>
+              onPress={() => {
+                update({
+                  paymentMethod: "non-cash",
+                });
+              }}>
               <Text
                 style={{
                   fontSize: 14,
@@ -614,11 +634,10 @@ export const Payment = ({
                 Non Cash
               </Text>
               <BouncyCheckbox
+                isChecked={payment.paymentMethod === "non-cash"}
                 size={16}
                 disableText
                 disabled
-                isChecked={false}
-                onPress={() => {}}
                 fillColor={colors._blue}
                 unFillColor={isDarkMode ? colors._black : colors._white}
                 iconImageStyle={{ tintColor: colors._blue }}

@@ -423,3 +423,8 @@ export interface IPaymentSummary {
   voucher: number;
   total_pay: number;
 }
+
+export interface IPaymentResult {
+  id: number;
+  payment_url?: string;
+}

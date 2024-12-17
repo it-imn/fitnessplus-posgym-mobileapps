@@ -60,6 +60,7 @@ const fetchInstallmentMembership = async (id: number) => {
 const payInstallment = async(req: {
   payment_id: number;
   installment_id: number[];
+  payment_method: string;
   total_pay: number;
 }) => {
   return api

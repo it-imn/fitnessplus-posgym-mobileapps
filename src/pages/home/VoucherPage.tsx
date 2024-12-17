@@ -87,7 +87,7 @@ const Voucher = ({
         const { membership_id } = transaction.transaction as MembershipReq;
         const { final_price } = transaction;
 
-        const { data } = await checkVoucher(voucherCode, membership_id);
+        const { data } = await checkVoucher(voucherCode, membership_id, 0);
 
         update({
           voucher_code: voucherCode,
@@ -127,7 +127,7 @@ const Voucher = ({
         const { package_pt_id } = transaction.transaction as PTReq;
         const { final_price } = transaction;
 
-        const { data } = await checkVoucher(voucherCode, package_pt_id);
+        const { data } = await checkVoucher(voucherCode, package_pt_id, 0);
 
         update({
           voucher_code: voucherCode,
