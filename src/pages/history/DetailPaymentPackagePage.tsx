@@ -2,7 +2,13 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useEffect, useState } from "react";
-import { Linking, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Linking,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import NoData from "../../components/ui/NoData";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import { IPaymentPackage, ThemeType } from "../../lib/definition";
@@ -20,7 +26,7 @@ export const DetailPaymentPackage = ({
   navigation,
   route,
 }: NativeStackScreenProps<RootStackParamList, "DetailPaymentPackage">) => {
-  const { id } = route.params;
+  const { id, afterPayment } = route.params;
   const { isDarkMode } = useContext(ThemeContext);
   const [isLoading, setIsLoading] = useState(false);
   const [paymentPackage, setPaymentPackage] = useState<IPaymentPackage | null>(
@@ -61,7 +67,13 @@ export const DetailPaymentPackage = ({
       <StatusBarComp />
       <Header
         teks="Detail Payment Package"
-        onPress={() => navigation.goBack()}
+        onPress={() => {
+          if (afterPayment) {
+            navigation.replace("MainApp");
+          } else {
+            navigation.goBack();
+          }
+        }}
       />
 
       <View style={{ flex: 1, padding: 24 }}>

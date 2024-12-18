@@ -106,6 +106,7 @@ export type RootStackParamList = {
   RequestLogout: undefined;
   DetailPaymentPackage: {
     id: number;
+    afterPayment?: boolean;
   };
   DetailSubmissionPackage: {
     id: number;
