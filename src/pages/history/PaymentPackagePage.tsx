@@ -87,7 +87,7 @@ export const PaymentPackage = ({
     setPaymentPackages([]);
 
     getPaymentPackages(1, debouncedText);
-  }, [debouncedText]);
+  }, [debouncedText, isFocused]);
 
   return (
     <SafeAreaView

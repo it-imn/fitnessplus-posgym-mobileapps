@@ -24,6 +24,7 @@ import { useDebounce } from "use-debounce";
 import { CancelToken } from "axios";
 import { AlarmClockIcon } from "lucide-react-native";
 import { useInstallmentStore } from "../../stores/useInstallmentStore";
+import { useIsFocused } from "@react-navigation/native";
 
 export const InstallmentPackage = ({
   navigation,
@@ -31,6 +32,7 @@ export const InstallmentPackage = ({
   const { isDarkMode } = useContext(ThemeContext);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [packages, setPackages] = React.useState<IInstallmentMembership[]>([]);
+  const isFocused = useIsFocused();
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -91,7 +93,7 @@ export const InstallmentPackage = ({
     setPackages([]);
 
     getInstallments(1, debouncedText);
-  }, [debouncedText]);
+  }, [debouncedText, isFocused]);
 
   return (
     <SafeAreaView

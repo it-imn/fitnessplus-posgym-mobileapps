@@ -82,7 +82,7 @@ export const SubmissionPackage = ({
     setSubmissionPackages([]);
 
     getSubmissionPackages(1, debouncedText);
-  }, [debouncedText]);
+  }, [debouncedText, isFocused]);
 
   return (
     <SafeAreaView
