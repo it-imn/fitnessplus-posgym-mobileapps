@@ -27,6 +27,7 @@ import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import messaging from "@react-native-firebase/messaging";
+import { setNotificationsHandler } from "../../lib/notification";
 
 const loginSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -50,6 +51,7 @@ export const LoginPage = ({
   const onLogin = async (values: z.infer<typeof loginSchema>) => {
     setIsLoading(true);
     try {
+      setNotificationsHandler();
       const { data } = await login(values.username, values.password);
 
       await storeToken(data.token);
