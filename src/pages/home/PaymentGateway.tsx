@@ -25,6 +25,7 @@ const PaymentGateway = ({
         onPress={() =>
           navigation.replace("DetailPaymentPackage", {
             id,
+            afterPayment: true,
           })
         }
       />
