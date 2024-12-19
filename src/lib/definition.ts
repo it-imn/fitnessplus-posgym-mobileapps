@@ -402,7 +402,8 @@ export interface IPaymentPackage {
   payment_method: string;
   status: string;
   total_price: number;
-  receipt: string;
+  receipt?: string;
+  payment_url?: string;
 }
 
 export interface INotification {

@@ -240,6 +240,8 @@ const ListHistoryDetail = ({
               backgroundColor:
                 paymentPackage.status === "success"
                   ? colors._green
+                  : paymentPackage.status === "pending"
+                  ? colors._gold3
                   : colors._blue2,
               borderRadius: 8,
             }}>
