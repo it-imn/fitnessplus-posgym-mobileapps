@@ -46,5 +46,22 @@ export const readNotification = async (
       console.error("error read notification");
       throw new Error(err.response?.data.message);
     });
-}
+};
 
+export const refreshFCMToken = async (fcmToken: string) => {
+  console.log('refresh fcm token')
+  return api
+    .post("/refresh-fcm-token", { fcm_token: fcmToken })
+    .then(({ data }) => {
+      console.log(data, 'refresh success')
+      return {
+        data: data,
+      };
+    })
+    .catch(err => {
+      console.error("error refresh fcm token", err.response?.data.message);
+      throw new Error(err.response?.data.message);
+    }).finally(()=> {
+      console.log('refresh fcm token ended')
+    })
+};

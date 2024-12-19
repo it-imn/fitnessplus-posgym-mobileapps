@@ -50,9 +50,7 @@ export const LoginPage = ({
   const onLogin = async (values: z.infer<typeof loginSchema>) => {
     setIsLoading(true);
     try {
-      // if 
-      const fcmToken = await messaging().getToken();
-      const { data } = await login(values.username, values.password, fcmToken);
+      const { data } = await login(values.username, values.password);
 
       await storeToken(data.token);
       await storeUser(data.user);

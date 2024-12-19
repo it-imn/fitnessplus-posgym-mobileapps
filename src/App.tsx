@@ -3,7 +3,7 @@ import {
   NavigationContainerRef,
   useNavigationContainerRef,
 } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Platform, StatusBar, View } from "react-native";
 import ThemeProvider from "./contexts/ThemeContext";
 import FlashMessage from "react-native-flash-message";
@@ -12,17 +12,33 @@ import Router from "./lib/routers";
 import { RootStackParamList } from "./lib/routes";
 import { unauthorizedInterceptor } from "./lib/axios";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { requestUserPermissionFCM } from "./lib/notification";
+import {
+  setNotificationsHandler,
+} from "./lib/notification";
+import messaging from "@react-native-firebase/messaging";
 
-export default function App(): React.JSX.Element {
+setNotificationsHandler();
+
+export default function App() {
+  const [headLess, setIsHeadless] = useState(
+    Platform.OS === "ios" ? true : false,
+  );
+
   const navigationRef = useNavigationContainerRef();
 
   useEffect(() => {
     unauthorizedInterceptor(navigationRef);
-    requestUserPermissionFCM();
+
+    if (Platform.OS === "ios") {
+      messaging()
+        .getIsHeadless()
+        .then(isHeadless => {
+          setIsHeadless(isHeadless);
+        });
+    }
   }, []);
 
-  return (
+  return headLess ? null : (
     <NavigationContainer ref={navigationRef}>
       <ThemeProvider>
         <GestureHandlerRootView>

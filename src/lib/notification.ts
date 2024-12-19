@@ -1,41 +1,50 @@
 import messaging from "@react-native-firebase/messaging";
 import { PermissionsAndroid, Platform } from "react-native";
-import { storeFCMToken } from "./local-storage";
+import { refreshFCMToken } from "../services/notification";
+import { showMessage } from "react-native-flash-message";
 
-export async function requestUserPermissionFCM() {
-  const os = Platform.OS;
-  try {
-    if (os === "ios") {
-      await messaging().registerDeviceForRemoteMessages();
-      const authStatus = await messaging().requestPermission({
-        // provisional: true,
-      });
-      const enabled =
-        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+export async function setNotificationsHandler() {
+  let granted = await checkNotificationPermissionStatus();
+  if (!granted) return;
 
-      console.log(enabled);
+  await messaging().registerDeviceForRemoteMessages();
+  const token = await messaging().getToken();
+  console.log("FCM token:", token);
+  await refreshFCMToken(token);
 
-      if (!enabled) {
-        console.log("Authorization status:", authStatus);
-        return;
-      }
+  messaging().onMessage(async remoteMessage => {
+    console.log("A new FCM message arrived!", remoteMessage);
+    showMessage({
+      message: remoteMessage.notification?.title || "New Notification",
+      description: remoteMessage.notification?.body,
+      type: "info",
+      icon: "info",
+      backgroundColor: "#000",
+      color: "#fff",
+    });
+  });
 
-      console.log("Permission granted");
-    }
+  messaging().setBackgroundMessageHandler(async remoteMessage => {
+    console.log("Message handled in the background!", remoteMessage);
+  });
 
-    if (os === "android") {
-      const res = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-      );
+  messaging().onNotificationOpenedApp(remoteMessage => {
+    console.log(
+      "Notification caused app to open from background state:",
+      remoteMessage,
+    );
+  });
 
-      if (res !== PermissionsAndroid.RESULTS.GRANTED) {
-        return;
-      }
+  messaging().onTokenRefresh(async fcmToken => {
+    console.log("FCM token refreshed");
+    await refreshFCMToken(fcmToken);
+  });
+}
 
-      console.log("Permission granted");
-    }
-  } catch (err: any) {
-    console.error(err);
-  }
+export async function checkNotificationPermissionStatus() {
+  const enabled = await messaging().hasPermission();
+  return (
+    enabled === messaging.AuthorizationStatus.AUTHORIZED ||
+    enabled === messaging.AuthorizationStatus.PROVISIONAL
+  );
 }

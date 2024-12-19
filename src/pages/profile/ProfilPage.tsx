@@ -39,6 +39,7 @@ import {
   ButtonColor,
   ButtonIconTeks,
 } from "../../components/ui/Button";
+import messaging from "@react-native-firebase/messaging";
 
 const width = Dimensions.get("window").width;
 
@@ -127,6 +128,7 @@ const Profil = ({
         color: colors._white,
       });
     } finally {
+      await messaging().deleteToken();
       setIsLoading(false);
       navigation.replace("LoginPage");
     }
@@ -228,7 +230,9 @@ const Profil = ({
             </TouchableOpacity>
           </View>
           <View style={{ alignItems: "center", marginTop: 10 }}>
-            <Text style={styles.cardBio(isDarkMode)}>{dataProfile.name} ({dataProfile.member_id})</Text>
+            <Text style={styles.cardBio(isDarkMode)}>
+              {dataProfile.name} ({dataProfile.member_id})
+            </Text>
             <Gap height={5} />
             <Text style={styles.cardBio(isDarkMode)}>{dataProfile.email}</Text>
           </View>
