@@ -1,12 +1,29 @@
 import { api } from "../../lib/axios";
 import { getUser } from "../../lib/local-storage";
 
-const login = async (username: string, password: string) => {
+const login = async (
+  username: string,
+  password: string,
+  fcmToken: string | null,
+) => {
+  let headers = {};
+  if (fcmToken) {
+    console.log("fcmToken", fcmToken);
+    headers = {
+      "Fcm-Token": fcmToken,
+    };
+  }
   return api
-    .post("/login", {
-      username: username,
-      password: password,
-    })
+    .post(
+      "/login",
+      {
+        username: username,
+        password: password,
+      },
+      {
+        headers,
+      },
+    )
     .then(({ data }) => {
       return {
         data: data,

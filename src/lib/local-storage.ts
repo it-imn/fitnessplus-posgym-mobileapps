@@ -126,3 +126,32 @@ export const removeTheme = async () => {
     console.error(err, "error remove theme");
   }
 };
+
+export const storeFCMToken = async (value: string) => {
+  try {
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem("fcmToken", jsonValue);
+  } catch (err) {
+    console.error(err, "error store fcm token");
+  }
+};
+
+export const getFCMToken = async (): Promise<string | null> => {
+  try {
+    const jsonValue = await AsyncStorage.getItem("fcmToken");
+    const fcmToken = jsonValue != null ? JSON.parse(jsonValue) : null;
+
+    return fcmToken;
+  } catch (err) {
+    console.error(err, "error get fcm token");
+    return null;
+  }
+};
+
+export const removeFCMToken = async () => {
+  try {
+    await AsyncStorage.removeItem("fcmToken");
+  } catch (err) {
+    console.error(err, "error remove fcm token");
+  }
+};

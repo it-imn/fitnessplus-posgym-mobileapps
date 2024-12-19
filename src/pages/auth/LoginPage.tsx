@@ -15,7 +15,7 @@ import {
 import { showMessage } from "react-native-flash-message";
 import { LogoP, ImageSign } from "../../assets";
 import Gap from "../../components/ui/Gap";
-import { storeToken, storeUser } from "../../lib/local-storage";
+import { getFCMToken, storeToken, storeUser } from "../../lib/local-storage";
 import { RootStackParamList } from "../../lib/routes";
 import { colors, fonts } from "../../lib/utils";
 import { login } from "../../services/auth";
@@ -26,6 +26,7 @@ import { useSignUpStore } from "../../stores/useSignUpStore";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import messaging from "@react-native-firebase/messaging";
 
 const loginSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -49,7 +50,9 @@ export const LoginPage = ({
   const onLogin = async (values: z.infer<typeof loginSchema>) => {
     setIsLoading(true);
     try {
-      const { data } = await login(values.username, values.password);
+      // if 
+      const fcmToken = await messaging().getToken();
+      const { data } = await login(values.username, values.password, fcmToken);
 
       await storeToken(data.token);
       await storeUser(data.user);
@@ -77,7 +80,7 @@ export const LoginPage = ({
 
   const gotoSign = () => {
     reset();
-    navigation.navigate("SignUp"); 
+    navigation.navigate("SignUp");
   };
 
   // const gotoForgotPassword = () => {

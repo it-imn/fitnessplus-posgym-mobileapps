@@ -12,12 +12,14 @@ import Router from "./lib/routers";
 import { RootStackParamList } from "./lib/routes";
 import { unauthorizedInterceptor } from "./lib/axios";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { requestUserPermissionFCM } from "./lib/notification";
 
 export default function App(): React.JSX.Element {
   const navigationRef = useNavigationContainerRef();
 
   useEffect(() => {
     unauthorizedInterceptor(navigationRef);
+    requestUserPermissionFCM();
   }, []);
 
   return (
