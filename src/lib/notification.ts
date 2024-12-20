@@ -1,7 +1,7 @@
 import messaging from "@react-native-firebase/messaging";
 import { PermissionsAndroid, Platform } from "react-native";
 import { refreshFCMToken } from "../services/notification";
-import { showMessage } from "react-native-flash-message";
+import notifee, { AndroidImportance } from "@notifee/react-native";
 
 export async function setNotificationsHandler() {
   let granted = await checkNotificationPermissionStatus();
@@ -12,20 +12,32 @@ export async function setNotificationsHandler() {
   console.log("FCM token:", token);
   await refreshFCMToken(token);
 
-  messaging().onMessage(async remoteMessage => {
-    console.log("A new FCM message arrived!", remoteMessage);
-    showMessage({
-      message: remoteMessage.notification?.title || "New Notification",
-      description: remoteMessage.notification?.body,
-      type: "info",
-      icon: "info",
-      backgroundColor: "#000",
-      color: "#fff",
-    });
+  notifee.isChannelCreated("default").then(isCreated => {
+    if (!isCreated) {
+      notifee.createChannel({
+        id: "default",
+        name: "default",
+        sound: "default",
+      });
+    }
   });
 
-  messaging().setBackgroundMessageHandler(async remoteMessage => {
-    console.log("Message handled in the background!", remoteMessage);
+  messaging().onMessage(async remoteMessage => {
+    console.log("A new FCM message arrived!", remoteMessage);
+    notifee.displayNotification({
+      title: remoteMessage.notification?.title,
+      body: remoteMessage.notification?.body,
+      android: {
+        smallIcon: "logo",
+        largeIcon: remoteMessage.notification?.android?.imageUrl,
+        channelId: "default",
+        importance: AndroidImportance.DEFAULT,
+        pressAction: {
+          id: "default",
+          launchActivity: "default",
+        },
+      },
+    });
   });
 
   messaging().onNotificationOpenedApp(remoteMessage => {
@@ -43,6 +55,22 @@ export async function setNotificationsHandler() {
 
 export async function checkNotificationPermissionStatus() {
   const enabled = await messaging().hasPermission();
+  console.log("Notification permission status:", enabled);
+
+  if (!enabled) {
+    if (Platform.OS === "android") {
+      const res = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+      );
+
+      if (res === PermissionsAndroid.RESULTS.GRANTED) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
   return (
     enabled === messaging.AuthorizationStatus.AUTHORIZED ||
     enabled === messaging.AuthorizationStatus.PROVISIONAL

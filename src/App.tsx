@@ -12,10 +12,9 @@ import Router from "./lib/routers";
 import { RootStackParamList } from "./lib/routes";
 import { unauthorizedInterceptor } from "./lib/axios";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import {
-  setNotificationsHandler,
-} from "./lib/notification";
+import { setNotificationsHandler } from "./lib/notification";
 import messaging from "@react-native-firebase/messaging";
+import notifee from "@notifee/react-native";
 
 setNotificationsHandler();
 
@@ -36,6 +35,8 @@ export default function App() {
           setIsHeadless(isHeadless);
         });
     }
+
+    notifee.setBadgeCount(0).then(() => console.log("Badge count removed"));
   }, []);
 
   return headLess ? null : (
