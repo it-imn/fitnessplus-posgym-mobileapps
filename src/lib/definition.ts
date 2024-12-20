@@ -81,8 +81,23 @@ export type Membership = {
 };
 
 export type PersonalTrainerPackage = {
+  id: number;
+  membership_id: string;
+  membership: string;
+  payment_id: number;
+  payment_order: string;
+  sales_id: number;
+  sales: string;
+  started_at: string;
+  expired_at: string;
+  last_expired_at: string;
+  expired_at_local: string;
+  price: number;
+  discount?: number;
+  total_price: number;
   status: string;
   message: string;
+  periode: string;
 };
 
 export type VisitGym = {

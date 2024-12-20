@@ -36,6 +36,7 @@ import DateTimePicker, {
   DateTimePickerAndroid,
 } from "@react-native-community/datetimepicker";
 import { CalendarCheckIcon } from "lucide-react-native";
+import { fetchProfile } from "../../services/profile";
 
 const DetailPackageTrainer = ({
   navigation,
@@ -119,8 +120,31 @@ const DetailPackageTrainer = ({
     }
   };
 
+  const getProfile = async () => {
+    try {
+      const { data } = await fetchProfile();
+      if (data.pt.last_expired_at) {
+        const expiredAt = new Date(data.pt.last_expired_at);
+        // add one day
+        expiredAt.setDate(expiredAt.getDate() + 1);
+
+        // if expired is less than today
+        if (expiredAt < new Date()) {
+          return;
+        }
+
+        update({
+          expiredDate: expiredAt,
+          startDate: expiredAt,
+        });
+      }
+    } catch (err: any) {
+      console.error(err);
+    }
+  };
+
   React.useEffect(() => {
-    getPackage();
+    Promise.all([getPackage(), getProfile()]);
   }, []);
 
   return (
@@ -281,7 +305,22 @@ const DetailPackageTrainer = ({
                   mode: "date",
                   onChange: (_, selectedDate) => {
                     if (selectedDate) {
-                      if (selectedDate.getDate() < new Date().getDate()) {
+                      if (
+                        payment.expiredDate &&
+                        selectedDate < payment.expiredDate
+                      ) {
+                        showMessage({
+                          message:
+                            "Start date must be greater than expired date",
+                          type: "warning",
+                          icon: "warning",
+                          backgroundColor: colors._red,
+                          color: colors._white,
+                        });
+                        return;
+                      }
+
+                      if (selectedDate < new Date()) {
                         showMessage({
                           message: "Start date must be greater than today",
                           type: "warning",
@@ -323,7 +362,21 @@ const DetailPackageTrainer = ({
               onChange={(_, selectedDate) => {
                 setShowDatePickerIOS(false);
                 if (selectedDate) {
-                  if (selectedDate.getDate() < new Date().getDate()) {
+                  if (
+                    payment.expiredDate &&
+                    selectedDate < payment.expiredDate
+                  ) {
+                    showMessage({
+                      message: "Start date must be greater than expired date",
+                      type: "warning",
+                      icon: "warning",
+                      backgroundColor: colors._red,
+                      color: colors._white,
+                    });
+                    return;
+                  }
+
+                  if (selectedDate < new Date()) {
                     showMessage({
                       message: "Start date must be greater than today",
                       type: "warning",

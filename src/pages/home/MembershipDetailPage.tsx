@@ -168,7 +168,7 @@ export const MembershipDetail = ({
         expiredAt.setDate(expiredAt.getDate() + 1);
 
         // if expired date is less than today
-        if (expiredAt.getDate() < new Date().getDate()) {
+        if (expiredAt < new Date()) {
           return;
         }
 
@@ -469,7 +469,7 @@ export const MembershipDetail = ({
                     if (selectedDate) {
                       if (
                         payment.expiredDate &&
-                        selectedDate.getDate() < payment.expiredDate?.getDate()
+                        selectedDate < payment.expiredDate
                       ) {
                         showMessage({
                           message:
@@ -482,7 +482,7 @@ export const MembershipDetail = ({
                         return;
                       }
 
-                      if (selectedDate.getDate() < new Date().getDate()) {
+                      if (selectedDate < new Date()) {
                         showMessage({
                           message: "Start date must be greater than today",
                           type: "warning",
@@ -526,7 +526,7 @@ export const MembershipDetail = ({
                 if (selectedDate) {
                   if (
                     payment.expiredDate &&
-                    selectedDate.getDate() < payment.expiredDate?.getDate()
+                    selectedDate < payment.expiredDate
                   ) {
                     showMessage({
                       message: "Start date must be greater than expired date",
@@ -538,7 +538,7 @@ export const MembershipDetail = ({
                     return;
                   }
 
-                  if (selectedDate.getDate() < new Date().getDate()) {
+                  if (selectedDate < new Date()) {
                     showMessage({
                       message: "Start date must be greater than today",
                       type: "warning",
