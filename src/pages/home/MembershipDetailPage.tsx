@@ -161,8 +161,8 @@ export const MembershipDetail = ({
   const getProfile = async () => {
     try {
       const { data } = await fetchProfile();
-      if (data.membership.expired_at) {
-        const expiredAt = new Date(data.membership.expired_at);
+      if (data.membership.last_expired_at) {
+        const expiredAt = new Date(data.membership.last_expired_at);
         // add one day
         expiredAt.setDate(expiredAt.getDate() + 1);
 
