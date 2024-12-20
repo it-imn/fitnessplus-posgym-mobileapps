@@ -25,6 +25,7 @@ import {
   fetchPaymentSummary,
   fetchPaymentSummaryPt,
 } from "../../services/payment";
+import moment from "moment";
 
 export const Payment = ({
   navigation,
@@ -293,6 +294,39 @@ export const Payment = ({
               </View>
             </Fragment>
           )}
+          <Gap height={12} />
+          <View
+            style={{
+              width: "100%",
+              height: 1,
+              backgroundColor: colors._grey3,
+            }}
+          />
+          <Gap height={12} />
+          <Text
+            style={{
+              fontSize: 12,
+              fontFamily: fonts.primary[400],
+              color: isDarkMode ? colors._white : colors._black,
+            }}>
+            Started At
+          </Text>
+          <Gap height={2} />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: fonts.primary[400],
+                color: isDarkMode ? colors._grey4 : colors._grey3,
+              }}>
+              {moment(payment.startDate).format("dddd, DD MMMM yyyy")}
+            </Text>
+          </View>
         </View>
         <Gap height={16} />
         <View
