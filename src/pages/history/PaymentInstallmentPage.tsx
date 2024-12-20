@@ -33,7 +33,7 @@ export const PaymentInstallment = ({
     setIsLoading(true);
 
     try {
-      await payInstallment({
+      const { data, message } = await payInstallment({
         payment_id: id,
         installment_id: installment.installmentIds,
         total_pay: installment.total,
@@ -41,13 +41,23 @@ export const PaymentInstallment = ({
       });
 
       showMessage({
-        message: "Payment installment success",
+        message: message,
         type: "success",
         icon: "success",
         backgroundColor: colors._green,
         color: colors._white,
       });
+
       reset();
+
+      if (data.payment_url) {
+        navigation.replace("PaymentGateway", {
+          id: data.id,
+          url: data.payment_url,
+        });
+        return;
+      }
+      
       navigation.replace("MainApp");
     } catch (error: any) {
       showMessage({

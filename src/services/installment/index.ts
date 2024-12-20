@@ -3,6 +3,7 @@ import { api } from "../../lib/axios";
 import {
   IInstallmentMembership,
   IDetailInstallmentMembership,
+  IPaymentResult,
 } from "../../lib/definition";
 
 const fetchInstallmentsMembership = async (
@@ -57,7 +58,7 @@ const fetchInstallmentMembership = async (id: number) => {
     });
 };
 
-const payInstallment = async(req: {
+const payInstallment = async (req: {
   payment_id: number;
   installment_id: number[];
   payment_method: string;
@@ -68,8 +69,8 @@ const payInstallment = async(req: {
     .then(({ data }) => {
       console.log(data, "pay");
       return {
-        data: data.response as IDetailInstallmentMembership[],
-        bill: data.bill as number,
+        message: data.message,
+        data: data.response as IPaymentResult,
       };
     })
     .catch((err: any) => {
@@ -79,6 +80,10 @@ const payInstallment = async(req: {
       );
       throw new Error(err.response?.data.message);
     });
-}
+};
 
-export { fetchInstallmentsMembership, fetchInstallmentMembership, payInstallment };
+export {
+  fetchInstallmentsMembership,
+  fetchInstallmentMembership,
+  payInstallment,
+};
