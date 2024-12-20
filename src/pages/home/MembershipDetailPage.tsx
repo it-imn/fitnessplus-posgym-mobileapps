@@ -129,6 +129,7 @@ export const MembershipDetail = ({
       membershipId: membershipPackage?.id,
       packagePrice: membershipPackage?.price,
       packageName: membershipPackage?.name,
+      packagePeriod: membershipPackage?.periode_number,
       isDpAvailable:
         membershipPackage?.down_payment_membership === 1 ||
         membershipPackage?.down_payment_membership === true,

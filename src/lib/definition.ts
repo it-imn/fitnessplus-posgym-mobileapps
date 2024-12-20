@@ -195,6 +195,7 @@ export interface IMembershipPackage {
   id: number;
   name: string;
   periode: string;
+  periode_number: number;
   desc?: string;
   price: number;
   total_price: number;
@@ -267,7 +268,8 @@ export interface IPTPackage {
   id: number;
   installment_count?: number;
   package_name: string;
-  period: number;
+  period: string;
+  period_number: number;
   personal_trainer_id: number;
   price_disc: number;
   session: number;

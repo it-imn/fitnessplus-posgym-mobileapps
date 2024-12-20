@@ -64,6 +64,7 @@ const DetailPackageTrainer = ({
     update({
       packageName: packagePT?.package_name,
       packagePrice: (packagePT?.base_price || 1) * (packagePT?.session || 1),
+      packagePeriod: packagePT?.period_number,
       packageId: packagePT?.id,
       packagePTId: packagePT?.package_personal_trainer_id,
       ptId: pt_id,

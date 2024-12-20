@@ -309,7 +309,7 @@ export const Payment = ({
               fontFamily: fonts.primary[400],
               color: isDarkMode ? colors._white : colors._black,
             }}>
-            Started At
+            Periode
           </Text>
           <Gap height={2} />
           <View
@@ -324,7 +324,10 @@ export const Payment = ({
                 fontFamily: fonts.primary[400],
                 color: isDarkMode ? colors._grey4 : colors._grey3,
               }}>
-              {moment(payment.startDate).format("dddd, DD MMMM yyyy")}
+              {moment(payment.startDate).format("dddd, DD MMMM yyyy")} -{" "}
+              {moment(
+                moment(payment.startDate).add(payment.packagePeriod, "d"),
+              ).format("dddd, DD MMMM yyyy")}
             </Text>
           </View>
         </View>

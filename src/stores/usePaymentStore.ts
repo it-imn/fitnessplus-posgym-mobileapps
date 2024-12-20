@@ -4,6 +4,7 @@ export interface PaymentReq {
   // change on detail package
   packageName: string;
   packagePrice: number;
+  packagePeriod: number;
   signature: string;
 
   // payment page
@@ -36,6 +37,7 @@ export interface PaymentState {
 
 const initialState: PaymentReq = {
   packageName: "",
+  packagePeriod: 0,
   startDate: new Date(),
   packagePrice: 0,
   isDp: false,
