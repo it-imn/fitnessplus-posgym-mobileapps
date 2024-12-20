@@ -239,6 +239,8 @@ const ListHistoryDetail = ({
                   ? colors._gold4
                   : submissionPackage.status.toLowerCase() === "expired"
                   ? colors._red
+                  : submissionPackage.status.toLowerCase() === "active"
+                  ? colors._green
                   : colors._blue2,
               borderRadius: 8,
             }}>
