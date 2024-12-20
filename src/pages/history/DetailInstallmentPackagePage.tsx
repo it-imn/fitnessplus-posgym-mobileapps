@@ -33,6 +33,7 @@ export const DetailInstallmentPackage = ({
     IDetailInstallmentMembership[]
   >([]);
   const [bill, setBill] = React.useState<number>(0);
+  const [canPayIds, setCanPayIds] = React.useState<number[]>([]);
 
   const { installment, update } = useInstallmentStore();
 
@@ -45,6 +46,10 @@ export const DetailInstallmentPackage = ({
       if (data) {
         setPackage(data);
         setBill(billRes);
+
+        const canPay = data.filter(item => item.is_pay);
+        setCanPayIds(canPay.map(item => item.id));
+        console.log(canPayIds);
       }
     } catch (error: any) {
       showMessage({
@@ -123,31 +128,29 @@ export const DetailInstallmentPackage = ({
             data={item}
             isSelected={installment.installmentIds.includes(item.id)}
             disabled={
-              installment.installmentIds.length !== index - 1 &&
-              !installment.installmentIds.includes(item.id)
+              !canPayIds.includes(item.id) || // Disable if not in canPayIds
+              (canPayIds.indexOf(item.id) !== 0 && // Disable if not the first item
+                !installment.installmentIds.includes(
+                  canPayIds[canPayIds.indexOf(item.id) - 1],
+                )) // Disable if the previous item is not selected
             }
             onPress={() => {
               if (item.is_pay) {
-                if (installment.installmentIds.includes(item.id)) {
+                const isChecked = installment.installmentIds.includes(item.id);
+                if (isChecked) {
                   const idx = installment.installmentIds.indexOf(item.id);
+                  const remainingIds = installment.installmentIds.slice(0, idx);
 
-                  const res = [];
-                  let sum = 0;
-
-                  for (let i = 0; i < idx; i++) {
-                    const id = installment.installmentIds[i];
-
-                    const x = packageInstallment.find(item => item.id === id);
-
-                    if (x) {
-                      res.push(x.id);
-                      sum += x.total;
-                    }
-                  }
+                  const newTotal = remainingIds.reduce((sum, id) => {
+                    const installmentItem = packageInstallment.find(
+                      pkg => pkg.id === id,
+                    );
+                    return sum + (installmentItem?.total || 0);
+                  }, 0);
 
                   update({
-                    installmentIds: res,
-                    total: sum,
+                    installmentIds: remainingIds,
+                    total: newTotal,
                   });
                 } else {
                   const total = installment.total + item.total;
@@ -157,6 +160,8 @@ export const DetailInstallmentPackage = ({
                   });
                 }
               }
+
+              console.log(installment);
             }}
           />
         )}
