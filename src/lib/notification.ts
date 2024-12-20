@@ -28,7 +28,7 @@ export async function setNotificationsHandler() {
       title: remoteMessage.notification?.title,
       body: remoteMessage.notification?.body,
       android: {
-        smallIcon: "logo",
+        smallIcon: "ic_stat_name",
         largeIcon: remoteMessage.notification?.android?.imageUrl,
         channelId: "default",
         importance: AndroidImportance.DEFAULT,
