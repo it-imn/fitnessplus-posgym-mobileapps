@@ -58,6 +58,7 @@ import {
   UserDetail,
   Branch,
   Membership,
+  PersonalTrainerPackage,
 } from "../../lib/definition";
 import { colors, fonts } from "../../lib/utils";
 import { showMessage } from "react-native-flash-message";
@@ -672,6 +673,8 @@ export const HomePage = ({ navigation }: any) => {
   const [personalTrainers, setPersonalTrainers] = useState<IPersonalTrainer[]>(
     [],
   );
+  const [personalTrainerPackage, setPersonalTrainerPackage] =
+    useState<PersonalTrainerPackage | null>(null);
 
   const getProfile = async () => {
     try {
@@ -682,6 +685,7 @@ export const HomePage = ({ navigation }: any) => {
         setDataProfile(data);
         setMembership(data.membership);
         setVisitGym(data.visit_gym);
+        setPersonalTrainerPackage(data.pt);
       }
 
       setIsLoading(false);
@@ -782,6 +786,21 @@ export const HomePage = ({ navigation }: any) => {
             }}
             message={membership.message}
             status={membership.status}
+          />
+          <Gap height={10} />
+          <CardInfo
+            onPress={() => {
+              // if (membership.status === "expired" && membership.membership_id) {
+              //   navigation.navigate("MembershipDetail", {
+              //     id: membership.membership_id,
+              //   });
+              //   return;
+              // }
+
+              navigation.navigate("PackageTrainer");
+            }}
+            message={personalTrainerPackage?.message || ""}
+            status={personalTrainerPackage?.status || ""}
           />
           <Gap height={20} />
           <CarouselSection />
@@ -947,17 +966,23 @@ const CardInfo = ({
 }) => {
   const { isDarkMode } = useContext(ThemeContext);
   return (
-    <TouchableOpacity
-      style={styles.containerCardInfo(isDarkMode)}
-      onPress={onPress}
-      disabled={status !== "not_buy_package" && status !== "warning"}>
-      <View style={styles.cardTopCardInfo}>
-        <Text style={styles.teksCardInfo(status)}>{message}</Text>
-        {status === "not_buy_package" && (
-          <Text style={styles.teksCardInfo(status)}>Buy Now</Text>
-        )}
-      </View>
-    </TouchableOpacity>
+    <View
+      style={{
+        flexDirection: "column",
+        gap: 20,
+      }}>
+      <TouchableOpacity
+        style={styles.containerCardInfo(isDarkMode)}
+        onPress={onPress}
+        disabled={status !== "not_buy_package" && status !== "warning"}>
+        <View style={styles.cardTopCardInfo}>
+          <Text style={styles.teksCardInfo(status)}>{message}</Text>
+          {status === "not_buy_package" && (
+            <Text style={styles.teksCardInfo(status)}>Buy Now</Text>
+          )}
+        </View>
+      </TouchableOpacity>
+    </View>
   );
 };
 

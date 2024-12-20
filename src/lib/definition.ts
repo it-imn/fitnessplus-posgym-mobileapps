@@ -38,6 +38,7 @@ export type UserDetail = {
   role: Role;
   branch: Branch;
   membership: Membership;
+  pt: PersonalTrainerPackage;
   visit_gym: VisitGym;
   notif_count: number;
 };
@@ -77,6 +78,11 @@ export type Membership = {
   status: string;
   message: string;
   periode: string;
+};
+
+export type PersonalTrainerPackage = {
+  status: string;
+  message: string;
 };
 
 export type VisitGym = {
