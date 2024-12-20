@@ -57,7 +57,7 @@ export const PaymentInstallment = ({
         });
         return;
       }
-      
+
       navigation.replace("MainApp");
     } catch (error: any) {
       showMessage({
@@ -368,7 +368,6 @@ export const PaymentInstallment = ({
                 size={16}
                 disableText
                 disabled
-                onPress={() => {}}
                 fillColor={colors._blue}
                 unFillColor={isDarkMode ? colors._black : colors._white}
                 iconImageStyle={{ tintColor: colors._blue }}
@@ -402,8 +401,8 @@ export const PaymentInstallment = ({
               <BouncyCheckbox
                 size={16}
                 disableText
+                disabled
                 isChecked={installment.paymentMethod === "non-cash"}
-                onPress={() => {}}
                 fillColor={colors._blue}
                 unFillColor={isDarkMode ? colors._black : colors._white}
                 iconImageStyle={{ tintColor: colors._blue }}
