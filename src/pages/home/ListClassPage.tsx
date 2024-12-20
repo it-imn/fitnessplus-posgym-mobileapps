@@ -106,7 +106,7 @@ const Class = ({
     setClassStd([]);
 
     getAllClasses(1, debouncedText);
-  }, [debouncedText]);
+  }, [debouncedText, isFocused]);
 
   return (
     <>
@@ -177,7 +177,7 @@ const Class = ({
                   children: (
                     <Fragment>
                       <Image
-                        src={ImageNotFound}
+                        source={ImageNotFound}
                         style={{
                           width: 150,
                           height: 150,
