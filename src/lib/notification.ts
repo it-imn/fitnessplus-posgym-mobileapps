@@ -65,9 +65,28 @@ export async function checkNotificationPermissionStatus() {
 
       if (res === PermissionsAndroid.RESULTS.GRANTED) {
         return true;
-      } else {
+      }
+
+      return false;
+    }
+
+    if (Platform.OS === "ios") {
+      const authStatus = await messaging().requestPermission({
+        provisional: true,
+      });
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+      console.log(enabled);
+
+      if (!enabled) {
+        console.log("Authorization status:", authStatus);
         return false;
       }
+
+      console.log("Permission granted");
+      return true;
     }
   }
 
