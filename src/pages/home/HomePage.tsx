@@ -797,7 +797,7 @@ export const HomePage = ({ navigation }: any) => {
               //   return;
               // }
 
-              navigation.navigate("PackageTrainer");
+              navigation.navigate("ListPT");
             }}
             message={personalTrainerPackage?.message || ""}
             status={personalTrainerPackage?.status || ""}
@@ -970,15 +970,48 @@ const CardInfo = ({
       style={{
         flexDirection: "column",
         gap: 20,
+        flex: 1,
       }}>
       <TouchableOpacity
-        style={styles.containerCardInfo(isDarkMode)}
+        style={{
+          shadowColor: colors._black,
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5,
+          padding: 14,
+          backgroundColor: isDarkMode ? colors._black : colors._grey2,
+          borderRadius: 8,
+          flex: 1,
+        }}
         onPress={onPress}
         disabled={status !== "not_buy_package" && status !== "warning"}>
-        <View style={styles.cardTopCardInfo}>
-          <Text style={styles.teksCardInfo(status)}>{message}</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+          }}>
+          <Text
+            style={{
+              fontSize: 12,
+              fontFamily: fonts.primary[400],
+              color: status === "active" ? colors._green2 : colors._red,
+            }}>
+            {message}
+          </Text>
           {status === "not_buy_package" && (
-            <Text style={styles.teksCardInfo(status)}>Buy Now</Text>
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: fonts.primary[400],
+                color: colors._red,
+              }}>
+              Buy Now
+            </Text>
           )}
         </View>
       </TouchableOpacity>
@@ -987,29 +1020,6 @@ const CardInfo = ({
 };
 
 const styles = {
-  containerCardInfo: (isDarkMode: boolean) => ({
-    shadowColor: colors._black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    padding: 14,
-    backgroundColor: isDarkMode ? colors._black : colors._grey2,
-    borderRadius: 8,
-  }),
-  teksCardInfo: (status: string) => ({
-    fontSize: 12,
-    fontFamily: fonts.primary[400],
-    color: status === "active" ? colors._green2 : colors._red,
-  }),
-  cardTopCardInfo: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-  } as StyleProp<ViewStyle>,
   teksCardMenu: (isDarkMode: boolean) =>
     ({
       color: isDarkMode ? colors._white : colors._black,
