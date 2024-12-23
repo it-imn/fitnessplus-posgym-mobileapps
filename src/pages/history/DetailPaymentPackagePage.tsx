@@ -1,7 +1,7 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import {
   Linking,
   SafeAreaView,
@@ -265,38 +265,101 @@ export const DetailPaymentPackage = ({
           {paymentPackage?.payment_date}
         </Text>
         <Gap height={16} />
-        <Text
-          style={{
-            fontSize: 12,
-            color: isDarkMode ? colors._grey4 : colors._grey3,
-            fontFamily: fonts.primary[400],
-          }}>
-          Receipt
-        </Text>
-        <Gap height={4} />
-        <TouchableOpacity
-          onPress={() => {
-            if (paymentPackage?.receipt)
-              Linking.openURL(paymentPackage?.receipt);
-          }}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}>
-          <ReceiptIcon size={16} color={colors._blue2} />
-          <Gap width={8} />
-          <Text
-            style={{
-              fontSize: 12,
-              fontFamily: fonts.primary[300],
-              color: colors._blue2,
-              lineHeight: 20,
-            }}>
-            Receipt Link
-          </Text>
-        </TouchableOpacity>
-        <Gap height={16} />
+        {paymentPackage?.receipt && (
+          <Fragment>
+            <Text
+              style={{
+                fontSize: 12,
+                color: isDarkMode ? colors._grey4 : colors._grey3,
+                fontFamily: fonts.primary[400],
+              }}>
+              Receipt
+            </Text>
+            <Gap height={4} />
+            <TouchableOpacity
+              onPress={() => {
+                if (paymentPackage?.receipt)
+                  Linking.openURL(paymentPackage?.receipt);
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}>
+              <ReceiptIcon size={16} color={colors._blue2} />
+              <Gap width={8} />
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: fonts.primary[300],
+                  color: colors._blue2,
+                  lineHeight: 20,
+                }}>
+                Receipt Link
+              </Text>
+            </TouchableOpacity>
+            <Gap height={16} />
+          </Fragment>
+        )}
       </View>
+      {paymentPackage?.payment_url && (
+        <View
+          style={{
+            paddingHorizontal: 24,
+            paddingVertical: 12,
+            flexDirection: "row",
+            borderTopColor: colors._grey3,
+            borderTopWidth: 0.5,
+          }}>
+          <View
+            style={{
+              flex: 1,
+              alignItems: "flex-end",
+              justifyContent: "center",
+            }}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: fonts.primary[400],
+                color: isDarkMode ? colors._white : colors._black,
+              }}>
+              Total
+            </Text>
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: fonts.primary[400],
+                color: isDarkMode ? colors._white : colors._black,
+              }}>
+              {convertToRupiah(paymentPackage.total_price.toString())}
+            </Text>
+          </View>
+          <Gap width={16} />
+          <TouchableOpacity
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: colors._blue2,
+              borderRadius: 10,
+              padding: 16,
+            }}
+            onPress={() => {
+              navigation.replace("PaymentGateway", {
+                id: id,
+                url: paymentPackage.payment_url || "",
+              });
+              return;
+            }}>
+            <Text
+              style={{
+                fontSize: 12,
+                color: colors._white,
+                fontFamily: fonts.primary[400],
+              }}>
+              Pay
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {isLoading && <Loading />}
     </SafeAreaView>
