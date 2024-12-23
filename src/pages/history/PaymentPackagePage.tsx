@@ -29,6 +29,7 @@ import {
   fetchSubmissionPackages,
 } from "../../services/membership";
 import Loading from "../../components/ui/Loading";
+import { BanknoteIcon, CreditCardIcon } from "lucide-react-native";
 
 export const PaymentPackage = ({
   navigation,
@@ -257,6 +258,42 @@ const ListHistoryDetail = ({
               {paymentPackage.status}
             </Text>
           </View>
+          <Gap height={8} />
+          {paymentPackage.payment_method === "cash" ? (
+            <View style={{ flexDirection: "row" }}>
+              <BanknoteIcon
+                size={16}
+                color={isDarkMode ? colors._white : colors._black}
+              />
+              <Gap width={4} />
+              <Text
+                style={{
+                  fontFamily: fonts.primary[400],
+                  fontSize: 12,
+                  color: isDarkMode ? colors._white : colors._black,
+                }}
+                numberOfLines={2}>
+                {paymentPackage.payment_method}
+              </Text>
+            </View>
+          ) : (
+            <View style={{ flexDirection: "row" }}>
+              <CreditCardIcon
+                size={16}
+                color={isDarkMode ? colors._white : colors._black}
+              />
+              <Gap width={4} />
+              <Text
+                style={{
+                  fontFamily: fonts.primary[400],
+                  fontSize: 12,
+                  color: isDarkMode ? colors._white : colors._black,
+                }}
+                numberOfLines={2}>
+                {paymentPackage.payment_method}
+              </Text>
+            </View>
+          )}
           <Gap height={8} />
           <Text
             style={{

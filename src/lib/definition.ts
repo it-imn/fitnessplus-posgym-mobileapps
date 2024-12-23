@@ -424,6 +424,7 @@ export interface IPaymentPackage {
   package: string;
   payment_date: string;
   payment_method: string;
+  bank_name?: string;
   status: string;
   total_price: number;
   receipt?: string;

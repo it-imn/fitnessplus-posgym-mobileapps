@@ -1,7 +1,7 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Linking,
   SafeAreaView,
@@ -11,16 +11,22 @@ import {
 } from "react-native";
 import NoData from "../../components/ui/NoData";
 import { ThemeContext } from "../../contexts/ThemeContext";
-import { IPaymentPackage, ThemeType } from "../../lib/definition";
-import { TabParamList, RootStackParamList } from "../../lib/routes";
+import { RootStackParamList } from "../../lib/routes";
 import { colors, convertToRupiah, fonts } from "../../lib/utils";
-import { fetchPaymentPackage } from "../../services/membership";
 import { showMessage } from "react-native-flash-message";
 import StatusBarComp from "../../components/ui/StatusBarComp";
 import Header from "../../components/ui/Header";
 import Loading from "../../components/ui/Loading";
 import Gap from "../../components/ui/Gap";
-import { ReceiptIcon } from "lucide-react-native";
+import {
+  CircleCheckIcon,
+  CircleXIcon,
+  LoaderCircleIcon,
+  ReceiptIcon,
+} from "lucide-react-native";
+import { IconSuccess } from "../../assets";
+import { fetchPaymentPackage } from "../../services/membership";
+import { IPaymentPackage } from "../../lib/definition";
 
 export const DetailPaymentPackage = ({
   navigation,
@@ -66,7 +72,7 @@ export const DetailPaymentPackage = ({
       }}>
       <StatusBarComp />
       <Header
-        teks="Detail Payment Package"
+        teks="Detail History Payment"
         onPress={() => {
           if (afterPayment) {
             navigation.replace("MainApp");
@@ -76,7 +82,35 @@ export const DetailPaymentPackage = ({
         }}
       />
 
-      <View style={{ flex: 1, padding: 24 }}>
+      <View style={{ flex: 1, paddingHorizontal: 24 }}>
+        <View
+          style={{
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: 16,
+            marginBottom: 30,
+          }}>
+          {paymentPackage?.status === "success" ? (
+            <CircleCheckIcon size={80} color={colors._green} />
+          ) : paymentPackage?.status === "failed" ||
+            paymentPackage?.status === "cancel" ||
+            paymentPackage?.status === "reject" ? (
+            <CircleXIcon size={80} color={colors._red} />
+          ) : (
+            <LoaderCircleIcon size={80} color={colors._gold} />
+          )}
+          <Gap height={4} />
+          <Text
+            style={{
+              fontFamily: fonts.primary[400],
+              fontSize: 16,
+              color: isDarkMode ? colors._white : colors._black,
+              padding: 8,
+            }}>
+            Your payment is {paymentPackage?.status}
+          </Text>
+        </View>
         <Text
           style={{
             fontSize: 12,
@@ -199,6 +233,25 @@ export const DetailPaymentPackage = ({
             color: isDarkMode ? colors._grey4 : colors._grey3,
             fontFamily: fonts.primary[400],
           }}>
+          Bank Name
+        </Text>
+        <Gap height={4} />
+        <Text
+          style={{
+            fontSize: 12,
+            fontFamily: fonts.primary[300],
+            color: isDarkMode ? colors._white : colors._black,
+            lineHeight: 20,
+          }}>
+          {paymentPackage?.bank_name || "-"}
+        </Text>
+        <Gap height={16} />
+        <Text
+          style={{
+            fontSize: 12,
+            color: isDarkMode ? colors._grey4 : colors._grey3,
+            fontFamily: fonts.primary[400],
+          }}>
           Payment Date
         </Text>
         <Gap height={4} />
@@ -218,114 +271,32 @@ export const DetailPaymentPackage = ({
             color: isDarkMode ? colors._grey4 : colors._grey3,
             fontFamily: fonts.primary[400],
           }}>
-          Status
+          Receipt
         </Text>
         <Gap height={4} />
-        <Text
+        <TouchableOpacity
+          onPress={() => {
+            if (paymentPackage?.receipt)
+              Linking.openURL(paymentPackage?.receipt);
+          }}
           style={{
-            fontSize: 12,
-            fontFamily: fonts.primary[300],
-            color: isDarkMode ? colors._white : colors._black,
-            lineHeight: 20,
-          }}>
-          {paymentPackage?.status}
-        </Text>
-        <Gap height={16} />
-        {paymentPackage?.receipt && (
-          <Fragment>
-            <Text
-              style={{
-                fontSize: 12,
-                color: isDarkMode ? colors._grey4 : colors._grey3,
-                fontFamily: fonts.primary[400],
-              }}>
-              Receipt
-            </Text>
-            <Gap height={4} />
-            <TouchableOpacity
-              onPress={() => {
-                if (paymentPackage?.receipt)
-                  Linking.openURL(paymentPackage?.receipt);
-              }}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}>
-              <ReceiptIcon size={16} color={colors._blue2} />
-              <Gap width={8} />
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontFamily: fonts.primary[300],
-                  color: colors._blue2,
-                  lineHeight: 20,
-                }}>
-                Receipt Link
-              </Text>
-            </TouchableOpacity>
-            <Gap height={16} />
-          </Fragment>
-        )}
-      </View>
-      {paymentPackage?.payment_url && (
-        <View
-          style={{
-            paddingHorizontal: 24,
-            paddingVertical: 12,
             flexDirection: "row",
-            borderTopColor: colors._grey3,
-            borderTopWidth: 0.5,
+            alignItems: "center",
           }}>
-          <View
+          <ReceiptIcon size={16} color={colors._blue2} />
+          <Gap width={8} />
+          <Text
             style={{
-              flex: 1,
-              alignItems: "flex-end",
-              justifyContent: "center",
+              fontSize: 12,
+              fontFamily: fonts.primary[300],
+              color: colors._blue2,
+              lineHeight: 20,
             }}>
-            <Text
-              style={{
-                fontSize: 12,
-                fontFamily: fonts.primary[400],
-                color: isDarkMode ? colors._white : colors._black,
-              }}>
-              Total
-            </Text>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: fonts.primary[400],
-                color: isDarkMode ? colors._white : colors._black,
-              }}>
-              {convertToRupiah(paymentPackage.total_price.toString())}
-            </Text>
-          </View>
-          <Gap width={16} />
-          <TouchableOpacity
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: colors._blue2,
-              borderRadius: 10,
-              padding: 16,
-            }}
-            onPress={() => {
-              navigation.replace("PaymentGateway", {
-                id: id,
-                url: paymentPackage.payment_url || "",
-              });
-              return;
-            }}>
-            <Text
-              style={{
-                fontSize: 12,
-                color: colors._white,
-                fontFamily: fonts.primary[400],
-              }}>
-              Pay
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
+            Receipt Link
+          </Text>
+        </TouchableOpacity>
+        <Gap height={16} />
+      </View>
 
       {isLoading && <Loading />}
     </SafeAreaView>
