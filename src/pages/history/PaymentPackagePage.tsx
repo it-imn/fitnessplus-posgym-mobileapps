@@ -241,9 +241,9 @@ const ListHistoryDetail = ({
               backgroundColor:
                 paymentPackage.status === "success"
                   ? colors._green
-                  : paymentPackage.status === "pending"
+                  : paymentPackage.status === "pending" || paymentPackage.status === "installment"
                   ? colors._gold3
-                  : paymentPackage.status === "rejected"
+                  : paymentPackage.status === "rejected" || paymentPackage.status === "reject"
                   ? colors._red
                   : colors._blue2,
               borderRadius: 8,
