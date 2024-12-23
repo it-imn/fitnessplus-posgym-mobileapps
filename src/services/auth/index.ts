@@ -64,4 +64,21 @@ const deleteAccount = async () => {
     });
 };
 
-export { login, logout, offline, deleteAccount };
+const forgotPassword = async (email: string) => {
+  return api
+    .post("/forget_password", {
+      email: email,
+    })
+    .then(({ data }) => {
+      return {
+        data: data,
+        message: data.message,
+      };
+    })
+    .catch(err => {
+      console.error("error forgot password", err.response?.data.message);
+      throw new Error(err.response?.data.message);
+    });
+};
+
+export { login, logout, offline, deleteAccount, forgotPassword };

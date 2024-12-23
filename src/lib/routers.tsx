@@ -52,6 +52,7 @@ import { Payment } from "../pages/home/PaymentPage";
 import { PaymentInstallment } from "../pages/history/PaymentInstallmentPage";
 import PaymentNonCash from "../pages/home/PaymentGateway";
 import PaymentGateway from "../pages/home/PaymentGateway";
+import { ForgotPassword } from "../pages/auth/ForgotPasswordPage";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -130,6 +131,7 @@ export const Router = () => {
       <Stack.Screen name="PackagePTAgreement" component={PackagePTAgreement} />
       <Stack.Screen name="PaymentInstallment" component={PaymentInstallment} />
       <Stack.Screen name="PaymentGateway" component={PaymentGateway} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
       {/*
       <Stack.Screen name="UserSpec" component={UserSpec} />
       <Stack.Screen name="BodyMass" component={BodyMass} />

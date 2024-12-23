@@ -318,19 +318,19 @@ export const LoginPage = ({
                   {form.formState.errors.password.message}
                 </Text>
               )}
-              {/* <Gap height={12} />
-                <TouchableOpacity
-                  style={{alignItems: 'flex-end'}}
-                  onPress={gotoForgotPassword}>
-                  <Text
-                    style={{
-                      color: colors._blue2,
-                      fontSize: 14,
-                      fontFamily: fonts.primary[400],
-                    }}>
-                    Forgot Password
-                  </Text>
-                </TouchableOpacity> */}
+              <Gap height={12} />
+              <TouchableOpacity
+                style={{ alignItems: "flex-end" }}
+                onPress={() => navigation.navigate("ForgotPassword")}>
+                <Text
+                  style={{
+                    color: colors._blue2,
+                    fontSize: 14,
+                    fontFamily: fonts.primary[400],
+                  }}>
+                  Forgot Password
+                </Text>
+              </TouchableOpacity>
               <Gap height={30} />
               <ButtonColor
                 teks="Login"
