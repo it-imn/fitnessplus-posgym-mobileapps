@@ -243,7 +243,7 @@ const ListHistoryDetail = ({
                   ? colors._green
                   : paymentPackage.status === "pending" || paymentPackage.status === "installment"
                   ? colors._gold3
-                  : paymentPackage.status === "rejected" || paymentPackage.status === "reject"
+                  : paymentPackage.status === "rejected" || paymentPackage.status === "reject" || paymentPackage.status.toLowerCase() === "cancel"
                   ? colors._red
                   : colors._blue2,
               borderRadius: 8,
