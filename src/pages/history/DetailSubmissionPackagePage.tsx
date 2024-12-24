@@ -71,6 +71,25 @@ export const DetailSubmissionPackage = ({
             color: isDarkMode ? colors._grey4 : colors._grey3,
             fontFamily: fonts.primary[400],
           }}>
+          Code
+        </Text>
+        <Gap height={4} />
+        <Text
+          style={{
+            fontSize: 12,
+            fontFamily: fonts.primary[300],
+            color: isDarkMode ? colors._white : colors._black,
+            lineHeight: 20,
+          }}>
+          {submissionPackage?.payment_order_code}
+        </Text>
+        <Gap height={16} />
+        <Text
+          style={{
+            fontSize: 12,
+            color: isDarkMode ? colors._grey4 : colors._grey3,
+            fontFamily: fonts.primary[400],
+          }}>
           Name
         </Text>
         <Gap height={4} />

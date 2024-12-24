@@ -237,7 +237,10 @@ const ListHistoryDetail = ({
               backgroundColor:
                 submissionPackage.status.toLowerCase() === "installment"
                   ? colors._gold4
-                  : submissionPackage.status.toLowerCase() === "expired"
+                  : submissionPackage.status.toLowerCase() === "expired" ||
+                    submissionPackage.status.toLowerCase() === "canceled" ||
+                    submissionPackage.status.toLowerCase() === "expire" ||
+                    submissionPackage.status.toLowerCase() === "cancel"
                   ? colors._red
                   : submissionPackage.status.toLowerCase() === "active"
                   ? colors._green
