@@ -89,10 +89,11 @@ export const ForgotPassword = ({
           <Image source={LogoP} resizeMode="contain" style={{ width: 160 }} />
         </View>
         <View style={styles.main}>
-          <Text style={styles.teks1}>Join PosGym App</Text>
+          <Text style={styles.teks1}>Reset Your Password</Text>
           <Gap height={14} />
           <Text style={styles.teks2}>
-            Exclusive Gym Portal for Posgym member
+            Please enter your email address to reset your password. You will
+            receive a link to create a new password via email.
           </Text>
         </View>
         <Gap height={40} />
@@ -124,7 +125,7 @@ export const ForgotPassword = ({
           )}
           <Gap height={25} />
           <ButtonColor
-            teks="Forgot Password"
+            teks="Reset Password"
             backColor={colors._blue2}
             textColor={colors._white}
             onPress={form.handleSubmit(onRegister)}

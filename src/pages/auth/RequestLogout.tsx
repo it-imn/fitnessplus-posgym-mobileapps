@@ -88,10 +88,11 @@ export const RequestLogout = ({
           <Image source={LogoP} resizeMode="contain" style={{ width: 160 }} />
         </View>
         <View style={styles.main}>
-          <Text style={styles.teks1}>Join PosGym App</Text>
+          <Text style={styles.teks1}>Request Logout</Text>
           <Gap height={14} />
           <Text style={styles.teks2}>
-            Exclusive Gym Portal for Posgym member
+            Enter your email address to request logout. You will receive an
+            email to confirm your request.
           </Text>
         </View>
         <Gap height={40} />
