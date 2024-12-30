@@ -50,6 +50,8 @@ export const SplashScreen = ({
   const handleProfile = async () => {
     try {
       await fetchProfile();
+      await setNotificationsHandler();
+
       navigation.replace("MainApp");
       return true;
     } catch (err: any) {
@@ -91,8 +93,6 @@ export const SplashScreen = ({
         await handleOffline();
         navigation.replace("Onboarding");
       }
-
-      await setNotificationsHandler();
     }, 3000);
   };
 
