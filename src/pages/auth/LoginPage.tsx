@@ -52,11 +52,12 @@ export const LoginPage = ({
     setIsLoading(true);
     try {
       const { data } = await login(values.username, values.password);
-      setNotificationsHandler();
-
+      
       await storeToken(data.token);
       await storeUser(data.user);
-
+      
+      await setNotificationsHandler();
+      
       navigation.replace("MainApp");
     } catch (err: any) {
       showMessage({
