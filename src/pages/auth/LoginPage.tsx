@@ -51,8 +51,8 @@ export const LoginPage = ({
   const onLogin = async (values: z.infer<typeof loginSchema>) => {
     setIsLoading(true);
     try {
-      setNotificationsHandler();
       const { data } = await login(values.username, values.password);
+      setNotificationsHandler();
 
       await storeToken(data.token);
       await storeUser(data.user);
