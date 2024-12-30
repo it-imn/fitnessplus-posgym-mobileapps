@@ -72,14 +72,18 @@ function ListPTSection({
   isDarkMode,
   personalTrainers,
   navigation,
-  haveMembership,
+  membershipStatus,
 }: {
   isDarkMode: boolean;
   personalTrainers: IPersonalTrainer[];
   navigation: any;
-  haveMembership: boolean;
+  membershipStatus: string;
 }) {
-  return (
+  const hide =
+    membershipStatus === "expired" ||
+    membershipStatus === "not_buy_package" ||
+    membershipStatus === "freeze_membership";
+  return hide ? null : (
     <React.Fragment>
       <Text style={styles.teks(isDarkMode)}>Available Personal Trainer</Text>
       <Gap height={8} />
@@ -92,17 +96,6 @@ function ListPTSection({
               pt_image={personalTrainer.image}
               paket={personalTrainer.total_package}
               onPress={() => {
-                if (!haveMembership) {
-                  showMessage({
-                    message: "You need to buy membership first",
-                    type: "warning",
-                    icon: "warning",
-                    backgroundColor: colors._red,
-                    color: colors._white,
-                  });
-                  return;
-                }
-
                 navigation.navigate("DetailPT", {
                   id: personalTrainer.id,
                 });
@@ -118,22 +111,27 @@ function ListPTSection({
 function GymServiceSection({
   isDarkMode,
   navigation,
-  canBuyMembership,
+  membershipStatus,
 }: {
   isDarkMode: boolean;
   navigation: any;
-  canBuyMembership: boolean;
+  membershipStatus: string;
 }) {
   const gymServices = [
     {
       name: "Membership",
       image: "member",
       onPress: () => navigation.navigate("Membership"),
+      hide: membershipStatus === "freeze_membership",
     },
     {
       name: "Classes",
       image: "class",
       onPress: () => navigation.navigate("Class"),
+      hide:
+        membershipStatus === "expired" ||
+        membershipStatus === "not_buy_package" ||
+        membershipStatus === "freeze_membership",
     },
     {
       name: "Who's on Gym",
@@ -159,6 +157,10 @@ function GymServiceSection({
       name: "Personal Trainer",
       image: "personaltrainer",
       onPress: () => navigation.navigate("ListPT"),
+      hide:
+        membershipStatus === "expired" ||
+        membershipStatus === "not_buy_package" ||
+        membershipStatus === "freeze_membership",
     },
     // {
     //   name: 'Merchandise',
@@ -177,15 +179,16 @@ function GymServiceSection({
       <Text style={styles.teks(isDarkMode)}>Gym Service</Text>
       <Gap height={8} />
       <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-        {gymServices.map(service => (
-          <CardMenu
-            key={service.name}
-            images={service.image}
-            names={service.name}
-            onPress={service.onPress}
-            disabled={service.name === "Membership" ? !canBuyMembership : false}
-          />
-        ))}
+        {gymServices.map(service =>
+          service.hide ? null : (
+            <CardMenu
+              key={service.name}
+              images={service.image}
+              names={service.name}
+              onPress={service.onPress}
+            />
+          ),
+        )}
       </ScrollView>
     </React.Fragment>
   );
@@ -375,12 +378,12 @@ function CarouselSection() {
 
 function CheckCardSection({
   isDarkMode,
-  membership,
+  membershipStatus,
   visitGym,
   navigation,
 }: {
   isDarkMode: boolean;
-  membership: Membership;
+  membershipStatus: string;
   visitGym: VisitGym;
   navigation: any;
 }) {
@@ -478,6 +481,11 @@ function CheckCardSection({
     navigation.navigate("Checkin");
   };
 
+  const disabled =
+    membershipStatus === "expired" ||
+    membershipStatus === "freeze_membership" ||
+    membershipStatus === "not_buy_package";
+
   return (
     <View
       style={{
@@ -487,15 +495,11 @@ function CheckCardSection({
       <TouchableOpacity
         onPress={goToCheckin}
         style={styles.btnCheck(isDarkMode)}
-        disabled={
-          membership.status !== "active" && membership.status !== "warning"
-        }>
+        disabled={disabled}>
         <TouchableOpacity
           style={styles.UserPhoto}
           onPress={goToCheckin}
-          disabled={
-            membership.status !== "active" && membership.status !== "warning"
-          }>
+          disabled={disabled}>
           <IconQrWhite width={24} height={24} />
           <Gap width={10} />
           <Text
@@ -759,7 +763,7 @@ export const HomePage = ({ navigation }: any) => {
         <Gap height={20} />
         <CheckCardSection
           isDarkMode={isDarkMode}
-          membership={membership}
+          membershipStatus={membership.status}
           visitGym={visitGym}
           navigation={navigation}
         />
@@ -791,7 +795,7 @@ export const HomePage = ({ navigation }: any) => {
           <CardInfo
             onPress={() => {
               // if (membership.status === "expired" && membership.membership_id) {
-              //   navigation.navigate("MembershipDetail", {
+              //   navigatcion.navigate("MembershipDetail", {
               //     id: membership.membership_id,
               //   });
               //   return;
@@ -808,7 +812,7 @@ export const HomePage = ({ navigation }: any) => {
           <GymServiceSection
             isDarkMode={isDarkMode}
             navigation={navigation}
-            canBuyMembership={membership.status !== "freeze_membership"}
+            membershipStatus={membership.status}
           />
           <Gap height={20} />
           {personalTrainers.length !== 0 && (
@@ -816,10 +820,7 @@ export const HomePage = ({ navigation }: any) => {
               isDarkMode={isDarkMode}
               personalTrainers={personalTrainers}
               navigation={navigation}
-              haveMembership={
-                membership.status === "active" ||
-                membership.status === "warning"
-              }
+              membershipStatus={membership.status}
             />
           )}
         </ScrollView>

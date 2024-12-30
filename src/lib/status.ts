@@ -13,7 +13,7 @@ export const STATUS_COLOR = [
   },
   {
     color: colors._gold3,
-    statuses: ["pending", "installment"],
+    statuses: ["pending", "installment", "waiting payment", "waiting approval"],
     icon: LoaderCircleIcon,
   },
   {
