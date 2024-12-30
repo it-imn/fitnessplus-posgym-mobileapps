@@ -16,8 +16,6 @@ import { setNotificationsHandler } from "./lib/notification";
 import messaging from "@react-native-firebase/messaging";
 import notifee from "@notifee/react-native";
 
-setNotificationsHandler();
-
 export default function App() {
   const [headLess, setIsHeadless] = useState(
     Platform.OS === "ios" ? true : false,

@@ -19,6 +19,7 @@ import { getToken, removeAllData } from "../../lib/local-storage";
 import { RootStackParamList } from "../../lib/routes";
 import { showMessage } from "react-native-flash-message";
 import { colors } from "../../lib/utils";
+import { setNotificationsHandler } from "../../lib/notification";
 
 const width = Dimensions.get("window").width;
 
@@ -90,6 +91,8 @@ export const SplashScreen = ({
         await handleOffline();
         navigation.replace("Onboarding");
       }
+
+      await setNotificationsHandler();
     }, 3000);
   };
 
