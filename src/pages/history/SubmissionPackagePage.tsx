@@ -22,6 +22,7 @@ import { useDebounce } from "use-debounce";
 import { CancelToken } from "axios";
 import { fetchSubmissionPackages } from "../../services/membership";
 import Loading from "../../components/ui/Loading";
+import { getStatusColor } from "../../lib/status";
 
 export const SubmissionPackage = ({
   navigation,
@@ -234,17 +235,7 @@ const ListHistoryDetail = ({
           }}>
           <View
             style={{
-              backgroundColor:
-                submissionPackage.status.toLowerCase() === "installment"
-                  ? colors._gold4
-                  : submissionPackage.status.toLowerCase() === "expired" ||
-                    submissionPackage.status.toLowerCase() === "canceled" ||
-                    submissionPackage.status.toLowerCase() === "expire" ||
-                    submissionPackage.status.toLowerCase() === "cancel"
-                  ? colors._red
-                  : submissionPackage.status.toLowerCase() === "active"
-                  ? colors._green
-                  : colors._blue2,
+              backgroundColor: getStatusColor(submissionPackage.status),
               borderRadius: 8,
             }}>
             <Text

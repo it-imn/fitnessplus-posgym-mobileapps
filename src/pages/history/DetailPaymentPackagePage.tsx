@@ -27,6 +27,7 @@ import {
 import { IconSuccess } from "../../assets";
 import { fetchPaymentPackage } from "../../services/membership";
 import { IPaymentPackage } from "../../lib/definition";
+import { StatusIcon } from "../../components/ui/StatusIcon";
 
 export const DetailPaymentPackage = ({
   navigation,
@@ -91,15 +92,7 @@ export const DetailPaymentPackage = ({
             marginTop: 16,
             marginBottom: 30,
           }}>
-          {paymentPackage?.status === "success" ? (
-            <CircleCheckIcon size={80} color={colors._green} />
-          ) : paymentPackage?.status === "failed" ||
-            paymentPackage?.status === "cancel" ||
-            paymentPackage?.status === "reject" ? (
-            <CircleXIcon size={80} color={colors._red} />
-          ) : (
-            <LoaderCircleIcon size={80} color={colors._gold} />
-          )}
+          <StatusIcon status={paymentPackage?.status} />
           <Gap height={4} />
           <Text
             style={{

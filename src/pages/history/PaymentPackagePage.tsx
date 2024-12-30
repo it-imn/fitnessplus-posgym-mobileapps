@@ -30,6 +30,7 @@ import {
 } from "../../services/membership";
 import Loading from "../../components/ui/Loading";
 import { BanknoteIcon, CreditCardIcon } from "lucide-react-native";
+import { getStatusColor } from "../../lib/status";
 
 export const PaymentPackage = ({
   navigation,
@@ -238,14 +239,7 @@ const ListHistoryDetail = ({
           }}>
           <View
             style={{
-              backgroundColor:
-                paymentPackage.status === "success"
-                  ? colors._green
-                  : paymentPackage.status === "pending" || paymentPackage.status === "installment"
-                  ? colors._gold3
-                  : paymentPackage.status === "rejected" || paymentPackage.status === "reject" || paymentPackage.status.toLowerCase() === "cancel"
-                  ? colors._red
-                  : colors._blue2,
+              backgroundColor: getStatusColor(paymentPackage.status),
               borderRadius: 8,
             }}>
             <Text

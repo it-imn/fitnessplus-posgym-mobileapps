@@ -22,6 +22,7 @@ import { showMessage } from "react-native-flash-message";
 import { useInstallmentStore } from "../../stores/useInstallmentStore";
 import { AlarmClockIcon } from "lucide-react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { getStatusColor } from "../../lib/status";
 
 export const DetailInstallmentPackage = ({
   navigation,
@@ -358,8 +359,7 @@ const DetailPackageInstallmentCard = ({
             }}>
             <View
               style={{
-                backgroundColor:
-                  data.status === "success" ? colors._green : colors._gold3,
+                backgroundColor: getStatusColor(data.status),
                 borderRadius: 8,
               }}>
               <Text
