@@ -417,6 +417,7 @@ export interface IPaymentPackage {
   created_at: string;
   id: number;
   discount: number;
+  package_discount: number;
   member: string;
   member_profile: string;
   membership: string;
