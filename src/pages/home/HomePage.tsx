@@ -613,17 +613,13 @@ function HeaderSection({
             color: colors._white,
           }}>{`Welcome to ${branch_name}`}</Text>
         <Gap height={10} />
-        {membership.status === "active" || membership.status === "warning" ? (
-          <Text
-            numberOfLines={2}
-            style={styles.teksPaket(
-              membership.status === "active" || membership.status === "warning",
-            )}>
+        {membership.status === "active" ||
+        membership.status === "warning" ||
+        membership.status === "installment" ? (
+          <Text numberOfLines={2} style={styles.teksPaket}>
             {`${membership.membership} (${membership.periode})`}
           </Text>
-        ) : (
-          <Text>{null}</Text>
-        )}
+        ) : null}
       </View>
       <TouchableOpacity
         style={{
@@ -779,10 +775,8 @@ export const HomePage = ({ navigation }: any) => {
           }}>
           <CardInfo
             onPress={() => {
-              if (membership.status === "expired" && membership.membership_id) {
-                navigation.navigate("MembershipDetail", {
-                  id: membership.membership_id,
-                });
+              if (membership.status === "installment") {
+                navigation.navigate("InstallmentPackage");
                 return;
               }
 
@@ -794,12 +788,10 @@ export const HomePage = ({ navigation }: any) => {
           <Gap height={10} />
           <CardInfo
             onPress={() => {
-              // if (membership.status === "expired" && membership.membership_id) {
-              //   navigatcion.navigate("MembershipDetail", {
-              //     id: membership.membership_id,
-              //   });
-              //   return;
-              // }
+              if (membership.status === "installment") {
+                navigation.navigate("InstallmentPackage");
+                return;
+              }
 
               navigation.navigate("ListPT");
             }}
@@ -1014,6 +1006,16 @@ const CardInfo = ({
               Buy Now
             </Text>
           )}
+          {status === "installment" && (
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: fonts.primary[400],
+                color: colors._red,
+              }}>
+              Pay Now
+            </Text>
+          )}
         </View>
       </TouchableOpacity>
     </View>
@@ -1225,11 +1227,11 @@ const styles = {
     textAlign: "center",
     marginTop: 30,
   }),
-  teksPaket: (status: boolean) => ({
-    color: status ? colors._gold : colors._white,
-    fontSize: status ? 16 : 12,
+  teksPaket: {
+    color: colors._gold,
+    fontSize: 16,
     fontFamily: fonts.primary[700],
-  }),
+  },
   indicator: {
     height: 4,
     width: 4,
