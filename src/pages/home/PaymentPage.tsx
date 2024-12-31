@@ -657,19 +657,35 @@ export const Payment = ({
                 alignItems: "center",
                 justifyContent: "space-between",
               }}
+              disabled // TODO: Enable this when non-cash payment is available
               onPress={() => {
                 update({
                   paymentMethod: "non-cash",
                 });
               }}>
-              <Text
+              <View
                 style={{
-                  fontSize: 14,
-                  fontFamily: fonts.primary[300],
-                  color: colors._black,
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  justifyContent: "center",
                 }}>
-                Non Cash
-              </Text>
+                <Text // TODO: Remove this when non-cash payment is available
+                  style={{
+                    fontSize: 10,
+                    fontFamily: fonts.primary[300],
+                    color: colors._gold3,
+                  }}>
+                  Coming Soon
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontFamily: fonts.primary[300],
+                    color: colors._black,
+                  }}>
+                  Non Cash
+                </Text>
+              </View>
               <BouncyCheckbox
                 isChecked={payment.paymentMethod === "non-cash"}
                 size={16}
