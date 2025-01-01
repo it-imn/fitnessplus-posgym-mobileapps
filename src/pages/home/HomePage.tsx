@@ -79,10 +79,7 @@ function ListPTSection({
   navigation: any;
   membershipStatus: string;
 }) {
-  const hide =
-    membershipStatus === "expired" ||
-    membershipStatus === "not_buy_package" ||
-    membershipStatus === "freeze_membership";
+  const hide = membershipStatus !== "active";
   return hide ? null : (
     <React.Fragment>
       <Text style={styles.teks(isDarkMode)}>Available Personal Trainer</Text>
@@ -128,10 +125,7 @@ function GymServiceSection({
       name: "Classes",
       image: "class",
       onPress: () => navigation.navigate("Class"),
-      hide:
-        membershipStatus === "expired" ||
-        membershipStatus === "not_buy_package" ||
-        membershipStatus === "freeze_membership",
+      hide: membershipStatus !== "active",
     },
     {
       name: "Who's on Gym",
@@ -157,10 +151,7 @@ function GymServiceSection({
       name: "Personal Trainer",
       image: "personaltrainer",
       onPress: () => navigation.navigate("ListPT"),
-      hide:
-        membershipStatus === "expired" ||
-        membershipStatus === "not_buy_package" ||
-        membershipStatus === "freeze_membership",
+      hide: membershipStatus !== "active",
     },
     // {
     //   name: 'Merchandise',
@@ -481,10 +472,7 @@ function CheckCardSection({
     navigation.navigate("Checkin");
   };
 
-  const disabled =
-    membershipStatus === "expired" ||
-    membershipStatus === "freeze_membership" ||
-    membershipStatus === "not_buy_package";
+  const disabled = membershipStatus !== "active";
 
   return (
     <View
