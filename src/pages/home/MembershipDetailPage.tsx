@@ -55,6 +55,7 @@ import { CalendarCheckIcon, ChevronDownIcon } from "lucide-react-native";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
+  BottomSheetScrollView,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 
@@ -625,9 +626,10 @@ export const MembershipDetail = ({
             borderColor: isDarkMode ? colors._black : colors._grey3,
             borderWidth: 0.5,
           }}>
-          <BottomSheetView
+          <BottomSheetScrollView
             style={{
               height: Dimensions.get("window").height / 3,
+              paddingBottom: 24,
             }}>
             <TextInput
               onChangeText={setSearch}
@@ -649,7 +651,7 @@ export const MembershipDetail = ({
             <ScrollView>
               {filteredSales.map(data => {
                 return (
-                  <>
+                  <Fragment key={data.id}>
                     <TouchableOpacity
                       key={data.id}
                       style={styles.buttonDrop}
@@ -671,11 +673,11 @@ export const MembershipDetail = ({
                         backgroundColor: colors._grey3,
                       }}
                     />
-                  </>
+                  </Fragment>
                 );
               })}
             </ScrollView>
-          </BottomSheetView>
+          </BottomSheetScrollView>
         </BottomSheetModal>
       </BottomSheetModalProvider>
       {isLoading && <Loading />}
