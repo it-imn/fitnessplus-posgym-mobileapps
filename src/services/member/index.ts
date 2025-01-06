@@ -34,10 +34,13 @@ const scanQR = async (code: string) => {
 const register = async (req: SignUpReq) => {
   const formData = new FormData();
   if (req.image !== "") {
-    const photo = await Image.compress(`file://${req.image}`, {
-      quality: 0.1,
-      compressionMethod: "auto",
-    });
+    const photo = await Image.compress(
+      req.image.startsWith("file://") ? req.image : `file://${req.image}`,
+      {
+        quality: 0.1,
+        compressionMethod: "auto",
+      },
+    );
     formData.append("image", {
       uri: photo,
       name: req.image,
