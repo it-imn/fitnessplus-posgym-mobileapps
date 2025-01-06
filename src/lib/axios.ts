@@ -7,7 +7,7 @@ import {
   NavigationContainerRefWithCurrent,
 } from "@react-navigation/native";
 
-export const API_BASE_URL = "https://api.positive-gym.com/api";
+export const API_BASE_URL = "https://staging-api.positive-gym.com/api";
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
