@@ -18,6 +18,7 @@ import { showMessage } from "react-native-flash-message";
 import { fetchClassSeat, postBooking } from "../../services/class";
 import Gap from "../../components/ui/Gap";
 import { ButtonColor } from "../../components/ui/Button";
+import { IChooseSeat } from "../../lib/definition";
 
 export default function ChooseSeat({
   navigation,
@@ -26,22 +27,23 @@ export default function ChooseSeat({
   const { id, standard_class_id } = route.params;
   const { isDarkMode } = useContext(ThemeContext);
   const [isLoading, setIsLoading] = useState(false);
-  const [seats, setSeats] = useState<{ id: number; status: number }[]>([]);
+  const [seats, setSeats] = useState<IChooseSeat[]>([]);
 
   const [selectedSeat, setSelectedSeat] = useState<number>(0);
 
   const getSeats = async () => {
     setIsLoading(true);
     try {
-      // find first available seat
-      const firstAvailable = mockData.find(item => item.status === 2);
-      if (firstAvailable) {
-        setSelectedSeat(firstAvailable.id);
+      const { data } = await fetchClassSeat(standard_class_id);
+      if (data) {
+        setSeats(data);
+
+        // find first available seat
+        const firstAvailable = data.find((item) => !item.selected);
+        if (firstAvailable) {
+          setSelectedSeat(firstAvailable.seat_id);
+        }
       }
-
-      setSeats(mockData);
-
-      await fetchClassSeat(standard_class_id);
     } catch (err: any) {
       showMessage({
         message: err.message || "An error occurred",
@@ -175,12 +177,12 @@ export default function ChooseSeat({
               {seats.map((item, _) => {
                 return (
                   <Item
-                    isSelected={selectedSeat === item.id}
-                    key={item.id}
+                    isSelected={selectedSeat === item.seat_id}
+                    key={item.seat_id}
                     item={item}
                     onPress={() => {
-                      if (item.status === 2) {
-                        setSelectedSeat(item.id);
+                      if (!item.selected) {
+                        setSelectedSeat(item.seat_id);
                       }
                     }}
                   />
@@ -193,7 +195,7 @@ export default function ChooseSeat({
         <ButtonColor
           backColor={colors._blue2}
           textColor={colors._white}
-          teks="Next"
+          teks="Book Class"
           onPress={goPayStd}
           disabled={isLoading}
         />
@@ -211,19 +213,19 @@ const Item = ({
   onPress,
 }: {
   isSelected: boolean;
-  item: { id: number; status: number };
+  item: IChooseSeat;
   onPress: () => void;
 }) => {
   return (
     <TouchableOpacity
-      disabled={item.status === 1}
+      disabled={item.selected}
       style={{
         borderRadius: 8,
         width: 48,
         height: 48,
         backgroundColor: isSelected
           ? colors._grey3
-          : item.status === 1
+          : item.selected
           ? colors._red
           : colors._blue2,
         margin: 8,
@@ -231,62 +233,7 @@ const Item = ({
         alignItems: "center",
       }}
       onPress={onPress}>
-      <Text>{item.id}</Text>
+      <Text>{item.seat_number}</Text>
     </TouchableOpacity>
   );
 };
-
-const mockData = [
-  {
-    id: 1,
-    status: 1,
-  },
-  {
-    id: 2,
-    status: 1,
-  },
-  {
-    id: 3,
-    status: 1,
-  },
-  {
-    id: 4,
-    status: 1,
-  },
-  {
-    id: 5,
-    status: 1,
-  },
-  {
-    id: 6,
-    status: 1,
-  },
-  {
-    id: 7,
-    status: 2,
-  },
-  {
-    id: 8,
-    status: 2,
-  },
-  {
-    id: 9,
-    status: 1,
-  },
-  {
-    id: 10,
-    status: 1,
-  },
-  {
-    id: 11,
-    status: 2,
-  },
-  {
-    id: 12,
-    status: 1,
-  },
-  {
-    id: 13,
-    status: 1,
-  },
-];

@@ -456,3 +456,10 @@ export interface IPaymentResult {
   id: number;
   payment_url?: string;
 }
+
+export interface IChooseSeat {
+  seat_id: number;
+  seat_number: string;
+  seat_status?: string;
+  selected: boolean;
+}

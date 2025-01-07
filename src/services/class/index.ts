@@ -1,6 +1,6 @@
 import { AxiosRequestConfig, CancelToken } from "axios";
 import { api } from "../../lib/axios";
-import { ClassStd, ClassStdDetail, IClassHistory } from "../../lib/definition";
+import { ClassStd, ClassStdDetail, IChooseSeat, IClassHistory } from "../../lib/definition";
 
 const fetchAllClasses = async (
   query?: {
@@ -55,7 +55,7 @@ const postBooking = async (schedule_id: number, seat_id: number) => {
       };
     })
     .catch(err => {
-      console.error("error post booking");
+      console.error("error post booking", err.response?.data.message);
       throw new Error(err.response?.data.message);
     });
 };
@@ -97,7 +97,7 @@ const fetchClassSeat = async (id: number) => {
     .then(({ data }) => {
       console.log(data);
       return {
-        // data: data.result as ClassStdDetail,
+        data: data.result as IChooseSeat[],
       };
     })
     .catch(err => {
