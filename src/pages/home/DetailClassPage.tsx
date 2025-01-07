@@ -104,40 +104,6 @@ const DetailClass = ({
     }
   };
 
-  const goPayStd = async () => {
-    try {
-      setIsProcessing(true);
-
-      await postBooking(id);
-
-      setIsProcessing(false);
-
-      navigation.navigate("BookingSuccess");
-    } catch (err: any) {
-      errorModal(err.message || "An error occured", isDarkMode);
-      setIsProcessing(false);
-    }
-
-    // getData('userProfile').then(res => {
-    //   const params = {
-    //     name: res.name,
-    //     email: res.email,
-    //     phone: res.phone,
-    //     token: res.token,
-    //     id: id,
-    //     item_price: class_price,
-    //     item_name: class_name,
-    //     item_count: 1,
-    //     //kondisi
-    //     class_name: class_name,
-    //     class_type: 'std',
-    //     seat_number: selected,
-    //     isDarkMode: boolean,
-    //   };
-    //   navigation.navigate('WillTransaction', params);
-    // });
-  };
-
   //   const openYoutube = () => {
   //     if (video_link != null) {
   //       Linking.openURL(video_link);
@@ -297,8 +263,13 @@ const DetailClass = ({
         <ButtonColor
           backColor={colors._blue2}
           textColor={colors._white}
-          teks="Book Now"
-          onPress={goPayStd}
+          teks="Choose Seat"
+          onPress={() =>
+            navigation.navigate("ChooseSeat", {
+              id,
+              standard_class_id: classStdDetail.standard_class_id,
+            })
+          }
           disabled={isProcessing}
         />
         <Gap height={16} />

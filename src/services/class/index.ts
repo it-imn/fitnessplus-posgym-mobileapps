@@ -45,9 +45,9 @@ const fetchDetailClass = async (id: number) => {
     });
 };
 
-const postBooking = async (schedule_id: number) => {
+const postBooking = async (schedule_id: number, seat_id: number) => {
   return api
-    .post("/get_std_class/booking", { schedule_id })
+    .post("/get_std_class/booking", { schedule_id, seat_id })
     .then(({ data }) => {
       console.log(data);
       return {
@@ -90,6 +90,22 @@ const fetchBookingHistory = async (
     });
 };
 
+const fetchClassSeat = async (id: number) => {
+  console.log(id);
+  return api
+    .get(`/class/${id}/list_seat`)
+    .then(({ data }) => {
+      console.log(data);
+      return {
+        // data: data.result as ClassStdDetail,
+      };
+    })
+    .catch(err => {
+      console.error("error fetch detail class", err.response?.data.message);
+      throw new Error(err.response?.data.message);
+    });
+};
+
 const cancelBooking = async (id: number, reason: string) => {
   return api
     .post("/get_std_class/cancel_booking", { id: id, reason: reason })
@@ -110,4 +126,5 @@ export {
   postBooking,
   fetchBookingHistory,
   cancelBooking,
+  fetchClassSeat,
 };

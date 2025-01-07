@@ -119,4 +119,8 @@ export type RootStackParamList = {
     id: number;
     url: string;
   };
+  ChooseSeat: {
+    id: number;
+    standard_class_id: number;
+  }
 };
