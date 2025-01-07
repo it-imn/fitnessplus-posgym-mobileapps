@@ -411,6 +411,7 @@ export interface ISubmissionPackage {
   expired_at: string;
   discount: number;
   created_at: string;
+  contract_view?: string;
 }
 
 export interface IPaymentPackage {
