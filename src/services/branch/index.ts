@@ -16,11 +16,12 @@ const fetchFacilites = async () => {
     });
 };
 
-const loanFacility = async (facility_id: number, guarantee: string) => {
+const loanFacility = async (facility_id: number, guarantee: string, number: number) => {
   return api
     .post("/branch/facilities/save", {
       facility_id: facility_id,
       guarantee: guarantee,
+      number: number,
     })
     .then(({ data }) => {
       return {

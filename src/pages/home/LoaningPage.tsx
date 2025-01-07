@@ -1,6 +1,13 @@
 import { Picker } from "@react-native-picker/picker";
 import React, { useContext, useEffect, useState } from "react";
-import { SafeAreaView, StyleProp, Text, View, ViewStyle } from "react-native";
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleProp,
+  Text,
+  View,
+  ViewStyle,
+} from "react-native";
 import { fetchFacilites, loanFacility } from "../../services/branch";
 import { checkIn } from "../../services/member";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
@@ -36,8 +43,11 @@ const Loaning = ({
   const [largeTowel, setlargeTowel] = useState<IFacility>({} as IFacility);
   const [locker, setLocker] = useState<IFacility>({} as IFacility);
   const [isSelectSmallTowel, setIsSelectSmallTowel] = useState(false);
+  const [smallTowelLockerNumber, setSmallTowelLockerNumber] = useState(0);
   const [isSelectLargeTowel, setIsSelectLargeTowel] = useState(false);
+  const [largeTowelLockerNumber, setLargeTowelLockerNumber] = useState(0);
   const [isSelectLocker, setIsSelectLocker] = useState(false);
+  const [lockerNumber, setLockerNumber] = useState(0);
   const [guarantee, setGuarantee] = useState<TGuarantee>("None");
   const [other, setOther] = useState("");
   //   const [lockerAvailable, setLockerAvailable] = useState([]);
@@ -114,17 +124,18 @@ const Loaning = ({
       await checkIn(code);
 
       if (isSelectSmallTowel) {
-        await loanFacility(smallTowel.id, "None");
+        await loanFacility(smallTowel.id, "None", smallTowelLockerNumber);
       }
 
       if (isSelectLargeTowel) {
-        await loanFacility(largeTowel.id, "None");
+        await loanFacility(largeTowel.id, "None", largeTowelLockerNumber);
       }
 
       if (isSelectLocker) {
         await loanFacility(
           locker.id,
           guarantee === "Other" ? other : guarantee,
+          lockerNumber
         );
       }
 
@@ -187,7 +198,7 @@ const Loaning = ({
       <StatusBarComp />
       <Header teks="Member Facilities" onPress={() => navigation.goBack()} />
       <View style={styles.content}>
-        <View style={{ flex: 1 }}>
+        <ScrollView style={{ flex: 1 }}>
           <Text style={styles.teks1(isDarkMode)}>
             Please select the item you want to borrow
           </Text>
@@ -213,6 +224,17 @@ const Loaning = ({
               <Gap height={8} />
             </>
           )}
+          {isSelectSmallTowel && (
+            <>
+              <Input
+                placeholder="Small towel number"
+                keyboardType="number-pad"
+                value={smallTowelLockerNumber.toString()}
+                onChangeText={value => setSmallTowelLockerNumber(+value)}
+              />
+              <Gap height={20} />
+            </>
+          )}
           {largeTowel.stock > 0 && (
             <>
               <View
@@ -232,6 +254,17 @@ const Loaning = ({
                 <Text style={styles.teks1(isDarkMode)}>Large Towel</Text>
               </View>
               <Gap height={8} />
+            </>
+          )}
+          {isSelectLargeTowel && (
+            <>
+              <Input
+                placeholder="Large towel number"
+                keyboardType="number-pad"
+                value={smallTowelLockerNumber.toString()}
+                onChangeText={value => setLargeTowelLockerNumber(+value)}
+              />
+              <Gap height={20} />
             </>
           )}
           {locker.stock > 0 && (
@@ -255,11 +288,22 @@ const Loaning = ({
               <Gap height={8} />
             </>
           )}
+          {isSelectLocker && (
+            <>
+              <Input
+                placeholder="Locker number"
+                keyboardType="number-pad"
+                value={lockerNumber.toString()}
+                onChangeText={value => setLockerNumber(+value)}
+              />
+              <Gap height={20} />
+            </>
+          )}
           <Gap height={30} />
 
           {isSelectLocker && (
             <>
-              <Text style={styles.teks1(isDarkMode)}>Guanrantee</Text>
+              <Text style={styles.teks1(isDarkMode)}>Guarantee</Text>
               <Gap height={4} />
               <View
                 style={{
@@ -314,11 +358,7 @@ const Loaning = ({
               <Gap height={20} />
             </>
           )}
-
-          {/* <Text style={styles.teks1(isDarkMode)}>Expire Date</Text>
-          <Gap height={6} /> */}
-          {/* <Text style={styles.teks2}>{expireDate.data}</Text> */}
-        </View>
+        </ScrollView>
         <ButtonColor
           backColor={colors._blue2}
           textColor={colors._white}
