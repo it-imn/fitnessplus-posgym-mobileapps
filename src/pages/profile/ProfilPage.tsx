@@ -68,7 +68,7 @@ const Profil = ({
       if (data) {
         setDataProfile(data);
         setImageUrl(data.image || data.image_error);
-        setHaveMembership(data.membership.status !== "not_buy_package");
+        setHaveMembership(data.membership.status !== "not_buy_package" && data.membership.status !== "expired");
       }
 
       setIsLoading(false);
@@ -91,7 +91,7 @@ const Profil = ({
 
       const { data } = await fetchContractAgreementView();
       if (data) {
-        setHavePackagePT(data.status === "buy_package_personal_trainer");
+        setHavePackagePT(data.status !== "buy_package_personal_trainer" && data.status !== "expired");
       }
 
       setIsLoading(false);
