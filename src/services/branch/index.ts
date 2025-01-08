@@ -16,12 +16,17 @@ const fetchFacilites = async () => {
     });
 };
 
-const loanFacility = async (facility_id: number, guarantee: string, number: number) => {
+const loanFacility = async (
+  facility_id: number,
+  guarantee: string,
+  number: number,
+) => {
   return api
     .post("/branch/facilities/save", {
       facility_id: facility_id,
       guarantee: guarantee,
       number: number,
+      status: "checkin",
     })
     .then(({ data }) => {
       return {
@@ -29,7 +34,7 @@ const loanFacility = async (facility_id: number, guarantee: string, number: numb
       };
     })
     .catch(err => {
-      console.error("error loan facility");
+      console.error("error loan facility", err.response?.data);
       throw new Error(err.response?.data.message);
     });
 };

@@ -63,66 +63,8 @@ const Loaning = ({
   //   const [expireDate, setExpireDate] = useState([]);
 
   const onSubmit = async () => {
-    // if (selected == 'Other') {
-    //   const params = {
-    //     smallTowel: smallTowel == true ? 'Small Towel' : null, //Small Towel
-    //     largeTowel: largeTowel == true ? 'Large Towel' : null, //Large Towel
-    //     locker: locker == true ? 'Locker' : null, //Locker
-    //     guarantee: selected, //ID Card
-    //     other: other,
-    //     smallTowelQuantity: smallTowel ? jmlSmallTowel : 0,
-    //     largeTowelQuantity: largeTowel ? jmlLargeTowel : 0,
-    //     locker_id: selectedLockerAvailable,
-    //   };
-    //   try {
-    //     const response = await Api.checkin(url, token, params);
-    //     navigation.replace('MainApp');
-    //   } catch (error) {}
-    // } else {
-    //   const params = {
-    //     smallTowel: smallTowel == true ? 'Small Towel' : null,
-    //     largeTowel: largeTowel == true ? 'Large Towel' : null,
-    //     locker: locker == true ? 'Locker' : null,
-    //     guarantee: selected,
-    //     smallTowelQuantity: smallTowel ? jmlSmallTowel : 0,
-    //     largeTowelQuantity: largeTowel ? jmlLargeTowel : 0,
-    //     locker_id: selectedLockerAvailable,
-    //   };
-    //   try {
-    //     if (smallTowel == true || largeTowel == true || locker == true) {
-    //       if (selected == 'None') {
-    //         showMessage({
-    //           icon: 'warning',
-    //           message: 'Please select guarantee',
-    //           type: 'default',
-    //           backgroundColor: colors._red,
-    //           color: colors._white,
-    //         });
-    //       }
-    //       if (selectedLockerAvailable == '') {
-    //         showMessage({
-    //           icon: 'warning',
-    //           message: 'Please select locker number',
-    //           type: 'default',
-    //           backgroundColor: colors._red,
-    //           color: colors._white,
-    //         });
-    //       } else {
-    //         const response = await Api.checkin(url, token, params);
-    //         navigation.replace('MainApp');
-    //       }
-    //     } else {
-    //       const response = await Api.checkin(url, token, params);
-    //       navigation.replace('MainApp');
-    //     }
-    //   } catch (error) {}
-    // }
-
     setIsLoading(true);
     try {
-      // await loanFacility(facility_id, guarantee)
-      await checkIn(code);
-
       if (isSelectSmallTowel) {
         await loanFacility(smallTowel.id, "None", smallTowelLockerNumber);
       }
@@ -135,9 +77,11 @@ const Loaning = ({
         await loanFacility(
           locker.id,
           guarantee === "Other" ? other : guarantee,
-          lockerNumber
+          lockerNumber,
         );
       }
+
+      await checkIn(code);
 
       showMessage({
         message: "Checkin Succes",
@@ -149,7 +93,13 @@ const Loaning = ({
 
       navigation.replace("MainApp");
     } catch (err: any) {
-      errorModal(err.message || "An error occured", isDarkMode);
+      showMessage({
+        message: err.message || "An error occurred",
+        type: "warning",
+        icon: "warning",
+        backgroundColor: colors._red,
+        color: colors._white,
+      });
     } finally {
       setIsLoading(false);
     }

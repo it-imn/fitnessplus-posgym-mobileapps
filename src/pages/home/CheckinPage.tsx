@@ -154,7 +154,7 @@ const Checkin = ({
                         backgroundColor: colors._green,
                         color: colors._white,
                       });
-                      navigation.navigate("Home");
+                      navigation.replace("MainApp");
                     } catch (error: any) {
                       showMessage({
                         message: error.message || "An error occured",
