@@ -183,6 +183,7 @@ export interface IClassHistory {
   user_id: number;
   created_at: string;
   image: string;
+  seat_number?: number;
 }
 
 export type Token = string;

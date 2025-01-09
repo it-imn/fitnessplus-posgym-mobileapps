@@ -194,7 +194,9 @@ export const ClassHistory = ({
           backColor={colors._blue2}
           textColor={colors._white}
           teks={
-            cancelClass.id === null ? "Select class to cancel" : "Cancel Booking"
+            cancelClass.id === null
+              ? "Select class to cancel"
+              : "Cancel Booking"
           }
           disabled={cancelClass.id === null}
           onPress={() => {
@@ -371,6 +373,16 @@ function ClassHistoryCard({
           {classHistory.day}, {classHistory.start_time_class} AM -{" "}
           {classHistory.date_class}
         </Text>
+        {classHistory.seat_number && (
+          <Text
+            style={{
+              fontFamily: fonts.primary[300],
+              fontSize: 12,
+              color: isDarkMode ? colors._white : colors._black,
+            }}>
+            Seat {classHistory.seat_number}
+          </Text>
+        )}
         <Text
           style={{
             fontFamily: fonts.primary[200],
