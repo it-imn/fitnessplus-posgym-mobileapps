@@ -79,7 +79,8 @@ function ListPTSection({
   navigation: any;
   membershipStatus: string;
 }) {
-  const hide = membershipStatus !== "active" && membershipStatus !== "installment";
+  const hide =
+    membershipStatus !== "active" && membershipStatus !== "installment";
   return hide ? null : (
     <React.Fragment>
       <Text style={styles.teks(isDarkMode)}>Available Personal Trainer</Text>
@@ -981,7 +982,14 @@ const CardInfo = ({
             style={{
               fontSize: 12,
               fontFamily: fonts.primary[400],
-              color: status === "active" ? colors._green2 : colors._red,
+              color:
+                status === "active"
+                  ? colors._green2
+                  : status === "installment" ||
+                    status === "pending" ||
+                    status === "warning"
+                  ? colors._yellow
+                  : colors._red,
             }}>
             {message}
           </Text>
@@ -1000,7 +1008,7 @@ const CardInfo = ({
               style={{
                 fontSize: 12,
                 fontFamily: fonts.primary[400],
-                color: colors._red,
+                color: colors._yellow,
               }}>
               Pay Now
             </Text>
