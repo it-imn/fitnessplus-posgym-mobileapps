@@ -15,6 +15,7 @@ export type SignUpReq = {
   branch_name: string;
   term: boolean;
   image: string;
+  referal?: string;
 };
 
 type SignUpReqState = {

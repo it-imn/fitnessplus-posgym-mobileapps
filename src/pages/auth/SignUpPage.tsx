@@ -53,6 +53,7 @@ const signUpSchema = z
     username: z.string().min(1, "Username required"),
     password: z.string().min(8, "Password less than 8 characters"),
     confirmPassword: z.string().min(8, "Password less than 8 characters"),
+    referal: z.string().optional(),
   })
   .refine(data => data.password === data.confirmPassword, {
     message: "Password not match",
@@ -508,6 +509,23 @@ export const SignUp = ({
             render={({ field: { onChange, value } }) => (
               <Inputeye
                 placeholder="Confirm Password"
+                value={value}
+                onChangeText={onChange}
+              />
+            )}
+          />
+          {form.formState.errors.confirmPassword && (
+            <Text style={{ color: colors._red, marginTop: 4 }}>
+              {form.formState.errors.confirmPassword.message}
+            </Text>
+          )}
+          <Gap height={20} />
+          <Controller
+            name="referal"
+            control={form.control}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Referal (Optional)"
                 value={value}
                 onChangeText={onChange}
               />

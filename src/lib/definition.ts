@@ -41,6 +41,7 @@ export type UserDetail = {
   pt: PersonalTrainerPackage;
   visit_gym: VisitGym;
   notif_count: number;
+  my_referal_code: number;
 };
 
 export type Role = {

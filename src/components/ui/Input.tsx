@@ -28,7 +28,7 @@ export const Input = ({
   keyboardType?: KeyboardTypeOptions;
   maxLength?: number;
   underlineColorAndroid?: ColorValue;
-  value: string;
+  value?: string;
   onChangeText: (value: string) => void;
   autoCapitalize?: "none" | "sentences" | "words" | "characters";
   multiline?: boolean;

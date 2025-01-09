@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
+  Clipboard,
   Dimensions,
   Image,
   Modal,
@@ -40,6 +41,7 @@ import {
   ButtonIconTeks,
 } from "../../components/ui/Button";
 import messaging from "@react-native-firebase/messaging";
+import { ClipboardCopyIcon } from "lucide-react-native";
 
 const width = Dimensions.get("window").width;
 
@@ -235,6 +237,54 @@ const Profil = ({
             </Text>
             <Gap height={5} />
             <Text style={styles.cardBio(isDarkMode)}>{dataProfile.email}</Text>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                marginTop: 8,
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 4,
+              }}>
+              <Text
+                style={{
+                  color: isDarkMode ? colors._white : colors._black,
+                  fontSize: 14,
+                  fontFamily: fonts.primary[400],
+                }}>
+                Referal Code:
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  Clipboard.setString(dataProfile.my_referal_code.toString());
+                  showMessage({
+                    message: "Code has been copied",
+                    type: "default",
+                    backgroundColor: colors._green,
+                    color: colors._white,
+                    icon: "success",
+                  });
+                }}
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 2,
+                }}>
+                <Text
+                  style={{
+                    color: isDarkMode ? colors._white : colors._black,
+                    fontSize: 14,
+                    fontFamily: fonts.primary[400],
+                  }}>
+                  {dataProfile.my_referal_code}
+                </Text>
+                <ClipboardCopyIcon
+                  size={16}
+                  color={isDarkMode ? colors._white : colors._black}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
         <View style={{ padding: 20 }}>

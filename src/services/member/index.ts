@@ -60,6 +60,9 @@ const register = async (req: SignUpReq) => {
   formData.append("gym_id", req.gym_id);
   formData.append("branch_id", req.branch_id);
   formData.append("term", req.term);
+  if (req.referal) {
+    formData.append("referal", req.referal);
+  }
   console.log(formData);
   return api
     .post("/member/register", formData)
