@@ -79,7 +79,7 @@ function ListPTSection({
   navigation: any;
   membershipStatus: string;
 }) {
-  const hide = membershipStatus !== "active";
+  const hide = membershipStatus !== "active" && membershipStatus !== "installment";
   return hide ? null : (
     <React.Fragment>
       <Text style={styles.teks(isDarkMode)}>Available Personal Trainer</Text>
@@ -125,7 +125,7 @@ function GymServiceSection({
       name: "Classes",
       image: "class",
       onPress: () => navigation.navigate("Class"),
-      hide: membershipStatus !== "active",
+      hide: membershipStatus !== "active" && membershipStatus !== "installment",
     },
     {
       name: "Who's on Gym",
@@ -151,7 +151,7 @@ function GymServiceSection({
       name: "Personal Trainer",
       image: "personaltrainer",
       onPress: () => navigation.navigate("ListPT"),
-      hide: membershipStatus !== "active",
+      hide: membershipStatus !== "active" && membershipStatus !== "installment",
     },
     // {
     //   name: 'Merchandise',
@@ -472,7 +472,8 @@ function CheckCardSection({
     navigation.navigate("Checkin");
   };
 
-  const disabled = membershipStatus !== "active";
+  const disabled =
+    membershipStatus !== "active" && membershipStatus !== "installment";
 
   return (
     <View
