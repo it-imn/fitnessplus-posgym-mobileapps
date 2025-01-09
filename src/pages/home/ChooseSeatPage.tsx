@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 import StatusBarComp from "../../components/ui/StatusBarComp";
-import { colors } from "../../lib/utils";
+import { colors, fonts } from "../../lib/utils";
 import Header from "../../components/ui/Header";
 import Loading from "../../components/ui/Loading";
 import { showMessage } from "react-native-flash-message";
@@ -39,7 +39,7 @@ export default function ChooseSeat({
         setSeats(data);
 
         // find first available seat
-        const firstAvailable = data.find((item) => !item.selected);
+        const firstAvailable = data.find(item => !item.selected);
         if (firstAvailable) {
           setSelectedSeat(firstAvailable.seat_id);
         }
@@ -118,7 +118,14 @@ export default function ChooseSeat({
                 alignItems: "center",
               }}
             />
-            <Text>Selected</Text>
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: fonts.primary[300],
+                color: isDarkMode ? colors._white : colors._black,
+              }}>
+              Selected
+            </Text>
           </View>
           <View
             style={{
@@ -130,13 +137,20 @@ export default function ChooseSeat({
                 borderRadius: 8,
                 width: 36,
                 height: 36,
-                backgroundColor: colors._blue2,
+                backgroundColor: colors._green,
                 margin: 8,
                 justifyContent: "center",
                 alignItems: "center",
               }}
             />
-            <Text>Available</Text>
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: fonts.primary[300],
+                color: isDarkMode ? colors._white : colors._black,
+              }}>
+              Available
+            </Text>
           </View>
           <View
             style={{
@@ -154,7 +168,14 @@ export default function ChooseSeat({
                 alignItems: "center",
               }}
             />
-            <Text>Booked</Text>
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: fonts.primary[300],
+                color: isDarkMode ? colors._white : colors._black,
+              }}>
+              Booked
+            </Text>
           </View>
         </View>
         <Gap height={16} />
@@ -227,13 +248,20 @@ const Item = ({
           ? colors._grey3
           : item.selected
           ? colors._red
-          : colors._blue2,
+          : colors._green,
         margin: 8,
         justifyContent: "center",
         alignItems: "center",
       }}
       onPress={onPress}>
-      <Text>{item.seat_number}</Text>
+      <Text
+        style={{
+          fontSize: 14,
+          fontFamily: fonts.primary[300],
+          color: colors._white,
+        }}>
+        {item.seat_number}
+      </Text>
     </TouchableOpacity>
   );
 };
