@@ -26,7 +26,7 @@ import { RootStackParamList, TabParamList } from "../../lib/routes";
 import { colors, fonts } from "../../lib/utils";
 import { fetchBookingHistory, cancelBooking } from "../../services/class";
 import { showMessage } from "react-native-flash-message";
-import { Button } from "../../components/ui/Button";
+import { Button, ButtonColor } from "../../components/ui/Button";
 import { useDebounce } from "use-debounce";
 import { CancelToken } from "axios";
 
@@ -190,9 +190,11 @@ export const ClassHistory = ({
         style={{
           paddingHorizontal: 16,
         }}>
-        <Button
+        <ButtonColor
+          backColor={colors._blue2}
+          textColor={colors._white}
           teks={
-            cancelClass.id === null ? "Select a class first" : "Cancel Booking"
+            cancelClass.id === null ? "Select class to cancel" : "Cancel Booking"
           }
           disabled={cancelClass.id === null}
           onPress={() => {
