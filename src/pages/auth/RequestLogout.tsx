@@ -84,10 +84,12 @@ export const RequestLogout = ({
           barStyle={"light-content"}
           backgroundColor="transparent"
         />
-        <View style={{ marginLeft: 30 }}>
-          <Image source={LogoP} resizeMode="contain" style={{ width: 160 }} />
-        </View>
         <View style={styles.main}>
+          <Image
+            source={LogoP}
+            resizeMode="contain"
+            style={{ width: 160, height: 50, marginTop: 10 }}
+          />
           <Text style={styles.teks1}>Request Logout</Text>
           <Gap height={14} />
           <Text style={styles.teks2}>

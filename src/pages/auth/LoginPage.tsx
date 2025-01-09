@@ -52,12 +52,12 @@ export const LoginPage = ({
     setIsLoading(true);
     try {
       const { data } = await login(values.username, values.password);
-      
+
       await storeToken(data.token);
       await storeUser(data.user);
-      
+
       await setNotificationsHandler();
-      
+
       navigation.replace("MainApp");
     } catch (err: any) {
       showMessage({
@@ -120,14 +120,12 @@ export const LoginPage = ({
               }
               backgroundColor="transparent"
             />
-            <View style={{ marginLeft: 30 }}>
+            <View style={styles.main}>
               <Image
                 source={LogoP}
                 resizeMode="contain"
-                style={{ width: 160 }}
+                style={{ width: 160, height: 50, marginTop: 10 }}
               />
-            </View>
-            <View style={styles.main}>
               <Text style={styles.teks1}>Exercise Your Mind and Body</Text>
               <Gap height={14} />
               <Text style={styles.teks2}>
@@ -268,14 +266,12 @@ export const LoginPage = ({
               }
               backgroundColor="transparent"
             />
-            <View style={{ marginLeft: 30 }}>
+            <View style={styles.main}>
               <Image
                 source={LogoP}
                 resizeMode="contain"
-                style={{ width: 160 }}
+                style={{ width: 160, height: 50, marginTop: 10 }}
               />
-            </View>
-            <View style={styles.main}>
               <Text style={styles.teks1}>Exercise Your Mind and Body</Text>
               <Gap height={14} />
               <Text style={styles.teks2}>
