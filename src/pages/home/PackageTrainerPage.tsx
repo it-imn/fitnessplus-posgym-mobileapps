@@ -194,7 +194,7 @@ const CardPackageTrainer = ({
         Session / Take Action
       </Text>
       <Gap height={4} /> */}
-      <Text style={styles.teks3(isDarkMode)}>{packagePT.period} Days</Text>
+      <Text style={styles.teks3(isDarkMode)}>{packagePT.period} Days - {packagePT.session} Sessions</Text>
       {/* {
                 aditional_feature == "split_pt" &&
                 <>
