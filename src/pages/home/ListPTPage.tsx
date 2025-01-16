@@ -96,7 +96,10 @@ const ListPT = ({
 
       const { data } = await fetchProfile();
       if (data) {
-        setHaveMembership(data.membership.status === "active");
+        setHaveMembership(
+          data.membership.status === "active" ||
+            data.membership.status === "installment",
+        );
       }
 
       setIsLoading(false);
