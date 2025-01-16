@@ -46,6 +46,7 @@ const DetailPackageTrainer = ({
   const { isDarkMode } = useContext(ThemeContext);
   const [isLoading, setIsLoading] = useState(false);
   const [feature, setFeature] = useState("");
+  const [isDateValid, setIsDateValid] = useState(false);
   const [packagePT, setPackagePT] = useState<IPTPackage | null>(null);
   const [showDatePickerIOS, setShowDatePickerIOS] = useState(false);
   const { update, payment } = usePaymentStore();
@@ -331,6 +332,8 @@ const DetailPackageTrainer = ({
                         return;
                       }
 
+                      setIsDateValid(true);
+
                       update({
                         startDate: selectedDate,
                       });
@@ -360,7 +363,6 @@ const DetailPackageTrainer = ({
               mode="date"
               display="default"
               onChange={(_, selectedDate) => {
-                setShowDatePickerIOS(false);
                 if (selectedDate) {
                   if (
                     payment.expiredDate &&
@@ -386,6 +388,10 @@ const DetailPackageTrainer = ({
                     });
                     return;
                   }
+
+                  setShowDatePickerIOS(false);
+
+                  setIsDateValid(true);
 
                   update({
                     startDate: selectedDate,
@@ -435,7 +441,7 @@ const DetailPackageTrainer = ({
         </View>
         <Gap height={16} />
         <ButtonColor
-          disabled={!payment.signature}
+          disabled={!payment.signature && !isDateValid}
           backColor={colors._blue2}
           textColor={colors._white}
           teks="Continue"

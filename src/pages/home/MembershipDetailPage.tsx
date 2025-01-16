@@ -71,6 +71,7 @@ export const MembershipDetail = ({
     React.useState<IMembershipPackage | null>(null);
   const [sales, setSales] = useState<ISales[]>([]);
 
+  const [isDateValid, setIsDateValid] = useState<boolean>(false);
   const { openModal, closeModal } = useModalStore();
   const { update, payment } = usePaymentStore();
 
@@ -494,6 +495,8 @@ export const MembershipDetail = ({
                         return;
                       }
 
+                      setIsDateValid(true);
+
                       update({
                         startDate: selectedDate,
                       });
@@ -523,7 +526,6 @@ export const MembershipDetail = ({
               mode="date"
               display="default"
               onChange={(_, selectedDate) => {
-                setShowDatePickerIOS(false);
                 if (selectedDate) {
                   if (
                     payment.expiredDate &&
@@ -549,6 +551,10 @@ export const MembershipDetail = ({
                     });
                     return;
                   }
+
+                  setShowDatePickerIOS(false);
+
+                  setIsDateValid(true);
 
                   update({
                     startDate: selectedDate,
