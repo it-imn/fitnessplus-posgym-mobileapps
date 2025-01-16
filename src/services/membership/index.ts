@@ -98,7 +98,7 @@ const fetchMembershipPackageDetail = async (id: number) => {
 const checkVoucher = async (
   voucher_code: string,
   package_id: number,
-  sales_id: number,
+  sales_id?: number,
 ) => {
   console.log(voucher_code, "voucher_code");
   console.log(package_id, "package_id");
@@ -106,7 +106,7 @@ const checkVoucher = async (
     .post("/voucher", {
       voucher_code: voucher_code,
       package_id: package_id,
-      sales_id: sales_id,
+      sales_id: sales_id ?? null,
     })
     .then(({ data }) => {
       console.log(data);
