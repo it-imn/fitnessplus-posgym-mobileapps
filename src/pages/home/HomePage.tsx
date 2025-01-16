@@ -971,7 +971,11 @@ const CardInfo = ({
           flex: 1,
         }}
         onPress={onPress}
-        disabled={status !== "not_buy_package" && status !== "warning"}>
+        disabled={
+          status !== "not_buy_package" &&
+          status !== "warning" &&
+          status !== "installment"
+        }>
         <View
           style={{
             flexDirection: "row",
