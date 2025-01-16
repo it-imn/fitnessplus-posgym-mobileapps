@@ -206,6 +206,7 @@ export interface IPersonalTrainer {
   specification: string;
   total_package: number;
   user_id: number;
+  day: string[];
 }
 
 export interface IMembershipPackage {

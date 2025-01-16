@@ -151,12 +151,16 @@ const DetailPT = ({
             <Gap height={20} />
             <Text style={styles.teksThird(isDarkMode)}>Specification</Text>
             <Gap height={4} />
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <Text style={styles.teksSecondary(isDarkMode)}>
-                {personalTrainer.specification}
-              </Text>
-              <Gap height={16} />
-            </ScrollView>
+            <Text style={styles.teksSecondary(isDarkMode)}>
+              {personalTrainer.specification}
+            </Text>
+            <Gap height={16} />
+            <Text style={styles.teksThird(isDarkMode)}>Available Days</Text>
+            <Gap height={4} />
+            <Text style={styles.teksSecondary(isDarkMode)}>
+              {personalTrainer.day?.join(", ")}
+            </Text>
+            <Gap height={16} />
           </View>
           <ButtonColor
             teks="View Package"
