@@ -142,7 +142,7 @@ export const ClassHistory = ({
       <StatusBarComp />
 
       <Header
-        teks="My Class History"
+        teks="My Class"
         onPress={() => {
           navigation.navigate("Home");
         }}

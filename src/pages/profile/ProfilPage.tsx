@@ -291,7 +291,7 @@ const Profil = ({
           <ButtonIconTeks
             teksColor={isDarkMode ? colors._white : colors._black}
             backColor={isDarkMode ? colors._black : colors._grey2}
-            teks="Class History"
+            teks="My Class"
             type="class-history"
             onPress={goToClassHistory}
           />
