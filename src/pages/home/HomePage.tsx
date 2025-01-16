@@ -136,7 +136,7 @@ function GymServiceSection({
     // {
     //   name: 'Schedule',
     //   image: 'schedule',
-    //   onPress: gotoSchedule,
+    //   onPress: () => navigation.navigate("ListSchedule"),
     // },
     // {
     //   name: 'Consultation',
@@ -778,7 +778,7 @@ export const HomePage = ({ navigation }: any) => {
           <Gap height={10} />
           <CardInfo
             onPress={() => {
-              if (membership.status === "installment") {
+              if (personalTrainerPackage?.status === "installment") {
                 navigation.navigate("InstallmentPackage");
                 return;
               }
