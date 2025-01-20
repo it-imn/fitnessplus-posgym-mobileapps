@@ -484,9 +484,12 @@ export const MembershipDetail = ({
                         return;
                       }
 
-                      if (selectedDate < new Date()) {
+                      const yesterday = new Date();
+                      yesterday.setDate(yesterday.getDate() - 1);
+                      if (selectedDate < yesterday) {
                         showMessage({
-                          message: "Start date must be greater than today",
+                          message:
+                            "Start date must be greater than or equal today",
                           type: "warning",
                           icon: "warning",
                           backgroundColor: colors._red,
@@ -541,9 +544,11 @@ export const MembershipDetail = ({
                     return;
                   }
 
-                  if (selectedDate < new Date()) {
+                  const yesterday = new Date();
+                  yesterday.setDate(yesterday.getDate() - 1);
+                  if (selectedDate < yesterday) {
                     showMessage({
-                      message: "Start date must be greater than today",
+                      message: "Start date must be greater than or equal today",
                       type: "warning",
                       icon: "warning",
                       backgroundColor: colors._red,
