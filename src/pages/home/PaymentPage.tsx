@@ -257,7 +257,7 @@ export const Payment = ({
               {convertToRupiah(payment.packagePrice.toString())}
             </Text>
           </View>
-          {payment.salesId && (
+          {payment.salesName && (
             <Fragment>
               <Gap height={12} />
               <View
@@ -274,7 +274,7 @@ export const Payment = ({
                   fontFamily: fonts.primary[400],
                   color: isDarkMode ? colors._white : colors._black,
                 }}>
-                Consultant Member
+                {payment.packagePTId ? "Personal Trainer" : "Consultant Member"}
               </Text>
               <Gap height={2} />
               <View
@@ -289,7 +289,8 @@ export const Payment = ({
                     fontFamily: fonts.primary[400],
                     color: isDarkMode ? colors._grey4 : colors._grey3,
                   }}>
-                  {payment.salesName} ({payment.salesEmail})
+                  {payment.salesName}{" "}
+                  {payment.salesEmail ? `(${payment.salesEmail})` : ""}
                 </Text>
               </View>
             </Fragment>

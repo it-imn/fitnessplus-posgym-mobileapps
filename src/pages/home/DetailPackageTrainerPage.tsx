@@ -71,6 +71,8 @@ const DetailPackageTrainer = ({
       packagePTId: packagePT?.package_personal_trainer_id,
       ptId: pt_id,
       isDpAvailable: packagePT?.down_payment,
+
+      salesName: packagePT?.personal_trainer_name,
     });
     navigation.navigate("Payment");
   };

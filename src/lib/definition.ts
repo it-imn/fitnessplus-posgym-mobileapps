@@ -296,6 +296,7 @@ export interface IPTPackage {
   type?: string;
   installment_first_pay: InstallmentFirstPay;
   package_personal_trainer_id: number;
+  personal_trainer_name: string;
 }
 
 export interface IGym {
