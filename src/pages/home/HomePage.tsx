@@ -371,12 +371,14 @@ function CarouselSection() {
 function CheckCardSection({
   isDarkMode,
   membershipStatus,
-  visitGym,
+  checkIn,
+  checkOut,
   navigation,
 }: {
   isDarkMode: boolean;
   membershipStatus: string;
-  visitGym: VisitGym;
+  checkIn: string;
+  checkOut: string;
   navigation: any;
 }) {
   const { hasPermission, requestPermission } = useCameraPermission();
@@ -526,9 +528,9 @@ function CheckCardSection({
                   fontSize: 14,
                   fontFamily: fonts.primary[400],
                 }}>
-                {visitGym.check_in === "--:--"
+                {checkIn === "--:--"
                   ? "--:--"
-                  : moment(visitGym.check_in).format("hh:mm")}
+                  : moment(checkIn).format("hh:mm")}
               </Text>
             </View>
             <Gap width={12} />
@@ -551,9 +553,9 @@ function CheckCardSection({
                   fontSize: 14,
                   fontFamily: fonts.primary[400],
                 }}>
-                {visitGym.check_out === "--:--"
+                {checkOut === "--:--"
                   ? "--:--"
-                  : moment(visitGym.check_out).format("hh:mm")}
+                  : moment(checkOut).format("hh:mm")}
               </Text>
             </View>
           </View>
@@ -566,13 +568,17 @@ function CheckCardSection({
 function HeaderSection({
   name,
   branch_name,
-  membership,
+  membershipStatus,
+  membershipName,
+  membershipPeriode,
   navigation,
   notifCount,
 }: {
   name: string;
   branch_name: string;
-  membership: Membership;
+  membershipStatus: string;
+  membershipName: string;
+  membershipPeriode: string;
   navigation: any;
   notifCount: number;
 }) {
@@ -603,11 +609,11 @@ function HeaderSection({
             color: colors._white,
           }}>{`Welcome to ${branch_name}`}</Text>
         <Gap height={10} />
-        {membership.status === "active" ||
-        membership.status === "warning" ||
-        membership.status === "installment" ? (
+        {membershipStatus === "active" ||
+        membershipStatus === "warning" ||
+        membershipStatus === "installment" ? (
           <Text numberOfLines={2} style={styles.teksPaket}>
-            {`${membership.membership} (${membership.periode})`}
+            {`${membershipName} (${membershipPeriode})`}
           </Text>
         ) : null}
       </View>
@@ -653,18 +659,10 @@ export const HomePage = ({ navigation }: any) => {
   const isFocused = useIsFocused();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [dataProfile, setDataProfile] = useState<UserDetail>({
-    branch: {} as Branch,
-    membership: {} as Membership,
-    visit_gym: {} as VisitGym,
-  } as UserDetail);
-  const [membership, setMembership] = useState<Membership>({} as Membership);
-  const [visitGym, setVisitGym] = useState<VisitGym>({} as VisitGym);
+  const [dataProfile, setDataProfile] = useState<UserDetail | null>(null);
   const [personalTrainers, setPersonalTrainers] = useState<IPersonalTrainer[]>(
     [],
   );
-  const [personalTrainerPackage, setPersonalTrainerPackage] =
-    useState<PersonalTrainerPackage | null>(null);
 
   const getProfile = async () => {
     try {
@@ -673,9 +671,6 @@ export const HomePage = ({ navigation }: any) => {
       const { data } = await fetchProfile();
       if (data) {
         setDataProfile(data);
-        setMembership(data.membership);
-        setVisitGym(data.visit_gym);
-        setPersonalTrainerPackage(data.pt);
       }
 
       setIsLoading(false);
@@ -740,17 +735,20 @@ export const HomePage = ({ navigation }: any) => {
         />
 
         <HeaderSection
-          name={dataProfile.name}
-          branch_name={dataProfile.branch.name}
-          membership={membership}
+          name={dataProfile?.name || ""}
+          branch_name={dataProfile?.branch.name || ""}
+          membershipStatus={dataProfile?.membership.status || ""}
+          membershipName={dataProfile?.membership.membership || ""}
+          membershipPeriode={dataProfile?.membership.periode || ""}
           navigation={navigation}
-          notifCount={dataProfile.notif_count}
+          notifCount={dataProfile?.notif_count || 0}
         />
         <Gap height={20} />
         <CheckCardSection
           isDarkMode={isDarkMode}
-          membershipStatus={membership.status}
-          visitGym={visitGym}
+          membershipStatus={dataProfile?.membership.status || ""}
+          checkIn={dataProfile?.visit_gym.check_in || "--:--"}
+          checkOut={dataProfile?.visit_gym.check_out || "--:--"}
           navigation={navigation}
         />
         <Gap height={20} />
@@ -765,28 +763,44 @@ export const HomePage = ({ navigation }: any) => {
           }}>
           <CardInfo
             onPress={() => {
-              if (membership.status === "installment") {
+              if (dataProfile?.membership.status === "installment") {
                 navigation.navigate("InstallmentPackage");
                 return;
               }
 
               navigation.navigate("Membership");
             }}
-            message={membership.message}
-            status={membership.status}
+            message={dataProfile?.membership.message || ""}
+            status={dataProfile?.membership.status || ""}
           />
           <Gap height={10} />
+          {dataProfile?.membership.next && (
+            <Fragment>
+              <CardInfo
+                onPress={() => {
+                  // if (membership.status === "installment") {
+                  //   navigation.navigate("InstallmentPackage");
+                  //   return;
+                  // }
+                  // navigation.navigate("Membership");
+                }}
+                message={dataProfile.membership.next?.message || ""}
+                status={dataProfile.membership.next?.status || ""}
+              />
+              <Gap height={10} />
+            </Fragment>
+          )}
           <CardInfo
             onPress={() => {
-              if (personalTrainerPackage?.status === "installment") {
+              if (dataProfile?.pt.status === "installment") {
                 navigation.navigate("InstallmentPackage");
                 return;
               }
 
               navigation.navigate("ListPT");
             }}
-            message={personalTrainerPackage?.message || ""}
-            status={personalTrainerPackage?.status || ""}
+            message={dataProfile?.pt.message || ""}
+            status={dataProfile?.pt.status || ""}
           />
           <Gap height={20} />
           <CarouselSection />
@@ -794,7 +808,7 @@ export const HomePage = ({ navigation }: any) => {
           <GymServiceSection
             isDarkMode={isDarkMode}
             navigation={navigation}
-            membershipStatus={membership.status}
+            membershipStatus={dataProfile?.membership.status || ""}
           />
           <Gap height={20} />
           {personalTrainers.length !== 0 && (
@@ -802,7 +816,7 @@ export const HomePage = ({ navigation }: any) => {
               isDarkMode={isDarkMode}
               personalTrainers={personalTrainers}
               navigation={navigation}
-              membershipStatus={membership.status}
+              membershipStatus={dataProfile?.membership.status || ""}
             />
           )}
         </ScrollView>
@@ -992,7 +1006,7 @@ const CardInfo = ({
                   : status === "installment" ||
                     status === "pending" ||
                     status === "warning"
-                  ? colors._yellow
+                  ? colors._gold3
                   : colors._red,
             }}>
             {message}
@@ -1012,7 +1026,7 @@ const CardInfo = ({
               style={{
                 fontSize: 12,
                 fontFamily: fonts.primary[400],
-                color: colors._yellow,
+                color: colors._gold3,
               }}>
               Pay Now
             </Text>

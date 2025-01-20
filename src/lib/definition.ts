@@ -79,6 +79,10 @@ export type Membership = {
   status: string;
   message: string;
   periode: string;
+  next?: {
+    message: string;
+    status: string;
+  }
 };
 
 export type PersonalTrainerPackage = {
