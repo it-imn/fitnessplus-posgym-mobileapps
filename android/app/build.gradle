@@ -83,8 +83,8 @@ android {
         applicationId "com.dev.posapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 98
-        versionName "5.30.0-beta.3"
+        versionCode 99
+        versionName "5.30.0-beta.4"
     }
     signingConfigs {
         debug {
