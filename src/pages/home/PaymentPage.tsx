@@ -56,7 +56,7 @@ export const Payment = ({
       if (payment.membershipId) {
         await checkVoucher(voucher, payment.membershipId, payment.salesId || 0);
       } else if (payment.packagePTId) {
-        await checkVoucher(voucher, payment.packagePTId);
+        await checkVoucher(voucher, payment.packagePTId, payment.salesId || 0);
       }
 
       update({
