@@ -106,7 +106,7 @@ const checkVoucher = async (
     .post("/voucher", {
       voucher_code: voucher_code,
       package_id: package_id,
-      sales_id: sales_i,
+      sales_id: sales_id,
     })
     .then(({ data }) => {
       console.log(data);
