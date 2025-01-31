@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleProp,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
   ViewStyle,
@@ -110,6 +111,23 @@ const SelectBranch = ({
           Select branch you want to register
         </Text>
         <Gap height={20} />
+        <TextInput
+          onChangeText={handleSearchChange}
+          value={search}
+          placeholder={"Search branch"}
+          placeholderTextColor={colors._grey4}
+          style={{
+            padding: 12,
+            fontSize: 13,
+            fontFamily: fonts.primary[300],
+            backgroundColor: isDarkMode ? colors._black : colors._grey2,
+            borderRadius: 10,
+            color: isDarkMode ? colors._white : colors._black,
+            borderWidth: 0.5,
+            borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+          }}
+        />
+        <Gap height={16} />
         <FlatList
           refreshing={isLoading}
           style={{ flex: 1 }}
