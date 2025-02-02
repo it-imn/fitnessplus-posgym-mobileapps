@@ -5,6 +5,7 @@ import React, { Fragment, useContext, useEffect, useState } from "react";
 import {
   Linking,
   SafeAreaView,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -83,7 +84,7 @@ export const DetailPaymentPackage = ({
         }}
       />
 
-      <View style={{ flex: 1, paddingHorizontal: 24 }}>
+      <ScrollView style={{ flex: 1, paddingHorizontal: 24 }}>
         <View
           style={{
             flexDirection: "column",
@@ -314,7 +315,7 @@ export const DetailPaymentPackage = ({
             <Gap height={16} />
           </Fragment>
         )}
-      </View>
+      </ScrollView>
       {paymentPackage?.payment_url && (
         <View
           style={{

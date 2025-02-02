@@ -5,6 +5,7 @@ import React, { Fragment, useContext, useEffect, useState } from "react";
 import {
   Linking,
   SafeAreaView,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -72,7 +73,7 @@ export const DetailSubmissionPackage = ({
         onPress={() => navigation.goBack()}
       />
 
-      <View style={{ flex: 1, padding: 24 }}>
+      <ScrollView style={{ flex: 1, padding: 24 }}>
         <Text
           style={{
             fontSize: 12,
@@ -241,7 +242,7 @@ export const DetailSubmissionPackage = ({
             <Gap height={16} />
           </Fragment>
         )}
-      </View>
+      </ScrollView>
 
       {isLoading && <Loading />}
     </SafeAreaView>
