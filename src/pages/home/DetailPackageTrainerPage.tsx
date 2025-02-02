@@ -52,7 +52,7 @@ const DetailPackageTrainer = ({
   const { update, payment } = usePaymentStore();
   const { openModal, closeModal } = useModalStore();
   const gotoVoucher = () => {
-    if (!payment.signature) {
+    if (payment.signature === "") {
       showMessage({
         message: "Please sign first",
         type: "warning",
@@ -418,20 +418,22 @@ const DetailPackageTrainer = ({
           }}>
           <BouncyCheckbox
             isChecked={payment.signature !== ""}
-            onPress={() =>
-              openModal({
-                children: (
-                  <SignatureModal
-                    closeModal={() => closeModal()}
-                    setSignature={signature => {
-                      update({
-                        signature: signature,
-                      });
-                    }}
-                  />
-                ),
-              })
-            }
+            onPress={checked => {
+              if (checked)
+                openModal({
+                  children: (
+                    <SignatureModal
+                      closeModal={() => closeModal()}
+                      setSignature={signature => {
+                        update({
+                          signature: signature,
+                        });
+                      }}
+                    />
+                  ),
+                });
+              else update({ signature: "" });
+            }}
             fillColor={colors._blue}
             unFillColor={isDarkMode ? colors._black : colors._white}
             iconImageStyle={{ tintColor: colors._black }}

@@ -116,7 +116,7 @@ export const MembershipDetail = ({
       return;
     }
 
-    if (!payment.signature) {
+    if (payment.signature === "") {
       showMessage({
         message: "Signature required",
         type: "warning",
@@ -579,20 +579,22 @@ export const MembershipDetail = ({
           }}>
           <BouncyCheckbox
             isChecked={payment.signature !== ""}
-            onPress={() =>
-              openModal({
-                children: (
-                  <SignatureModal
-                    closeModal={() => closeModal()}
-                    setSignature={signature => {
-                      update({
-                        signature: signature,
-                      });
-                    }}
-                  />
-                ),
-              })
-            }
+            onPress={checked => {
+              if (checked)
+                openModal({
+                  children: (
+                    <SignatureModal
+                      closeModal={() => closeModal()}
+                      setSignature={signature => {
+                        update({
+                          signature: signature,
+                        });
+                      }}
+                    />
+                  ),
+                });
+              else update({ signature: "" });
+            }}
             fillColor={colors._blue}
             unFillColor={isDarkMode ? colors._black : colors._white}
             iconImageStyle={{ tintColor: colors._black }}
