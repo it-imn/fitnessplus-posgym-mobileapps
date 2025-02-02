@@ -373,7 +373,7 @@ function ClassHistoryCard({
           {classHistory.day}, {classHistory.start_time_class} AM -{" "}
           {classHistory.date_class}
         </Text>
-        {classHistory.seat_number && (
+        {classHistory.seat_number ? (
           <Text
             style={{
               fontFamily: fonts.primary[300],
@@ -382,7 +382,7 @@ function ClassHistoryCard({
             }}>
             Seat {classHistory.seat_number}
           </Text>
-        )}
+        ) : null}
         <Text
           style={{
             fontFamily: fonts.primary[200],
