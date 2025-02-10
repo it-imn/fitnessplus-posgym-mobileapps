@@ -7,6 +7,7 @@ import {
   ISubmissionPackage,
   IVoucher,
 } from "../../lib/definition";
+import { Image } from "react-native-compressor";
 
 const fetchContractAgreement = async () => {
   return api
@@ -128,17 +129,43 @@ const buyMembership = async (
   voucher_code: string | null,
   down_payment_membership: boolean,
   started_at: string,
+  payment_proof?: string[],
 ) => {
+  const formData = new FormData();
+  formData.append("sales_id", sales_id.toString());
+  formData.append("membership_id", membership_id.toString());
+  formData.append("payment_method", payment_method);
+  formData.append("signature", signature);
+  if (voucher_code) {
+    formData.append("voucher_code", voucher_code);
+  }
+  formData.append(
+    "down_payment_membership",
+    down_payment_membership.toString(),
+  );
+  formData.append("started_at", started_at);
+  if (payment_proof) {
+    payment_proof.forEach(async (image, index) => {
+      if (!image.startsWith("http://") && !image.startsWith("https://")) {
+        const compressed = await Image.compress(
+          image.startsWith("file://") ? image : `file://${image}`,
+          {
+            quality: 0.1,
+            compressionMethod: "auto",
+          },
+        );
+
+        formData.append(`payment_proof[]`, {
+          uri: compressed,
+          name: image,
+          type: "image/jpeg",
+        });
+      }
+    });
+  }
+
   return api
-    .post("/membership/buy", {
-      sales_id: sales_id,
-      membership_id: membership_id,
-      payment_method: payment_method,
-      signature: signature,
-      voucher_code: voucher_code === "" ? null : voucher_code,
-      down_payment_membership: down_payment_membership,
-      started_at: started_at,
-    })
+    .post("/membership/buy", formData)
     .then(({ data }) => {
       console.log(data);
       return {

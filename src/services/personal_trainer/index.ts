@@ -5,6 +5,7 @@ import {
   IPersonalTrainer,
   IPTPackage,
 } from "../../lib/definition";
+import { Image } from "react-native-compressor";
 
 const fetchPersonalTrainers = async () => {
   return api
@@ -121,17 +122,40 @@ const buyPersonalTrainerPackage = async (
   voucher_code: string | null,
   down_payment: boolean,
   started_at: string,
+  payment_proof?: string[],
 ) => {
+  const formData = new FormData();
+  formData.append("package_personal_trainer_id", package_pt_id.toString());
+  formData.append("personal_trainer_id", pt_id.toString());
+  formData.append("payment_method", payment_method);
+  if (voucher_code) {
+    formData.append("voucher_code", voucher_code);
+  }
+  formData.append("down_payment", down_payment.toString());
+  formData.append("signature", signature);
+  formData.append("started_at", started_at);
+  if (payment_proof) {
+    payment_proof.forEach(async (image, index) => {
+      if (!image.startsWith("http://") && !image.startsWith("https://")) {
+        const compressed = await Image.compress(
+          image.startsWith("file://") ? image : `file://${image}`,
+          {
+            quality: 0.1,
+            compressionMethod: "auto",
+          },
+        );
+
+        formData.append(`payment_proof[]`, {
+          uri: compressed,
+          name: image,
+          type: "image/jpeg",
+        });
+      }
+    });
+  }
+
   return api
-    .post("/personal_trainer/package/buy", {
-      package_personal_trainer_id: package_pt_id,
-      personal_trainer_id: pt_id,
-      payment_method: payment_method,
-      voucher_code: voucher_code === "" ? null : voucher_code,
-      down_payment: down_payment,
-      signature: signature,
-      started_at: started_at,
-    })
+    .post("/personal_trainer/package/buy", formData)
     .then(({ data }) => {
       return {
         message: data.message,

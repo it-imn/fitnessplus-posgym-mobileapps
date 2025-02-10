@@ -5,6 +5,7 @@ import {
   IDetailInstallmentMembership,
   IPaymentResult,
 } from "../../lib/definition";
+import { Image } from "react-native-compressor";
 
 const fetchInstallmentsMembership = async (
   query?: {
@@ -63,9 +64,35 @@ const payInstallment = async (req: {
   installment_id: number[];
   payment_method: string;
   total_pay: number;
+  payment_proof?: string[],
 }) => {
+  const formData = new FormData();
+  formData.append("payment_id", req.payment_id.toString());
+  formData.append("installment_id", req.installment_id.toString());
+  formData.append("payment_method", req.payment_method);
+  formData.append("total_pay", req.total_pay.toString());
+  if (req.payment_proof) {
+    req.payment_proof.forEach(async (image, index) => {
+      if (!image.startsWith("http://") && !image.startsWith("https://")) {
+        const compressed = await Image.compress(
+          image.startsWith("file://") ? image : `file://${image}`,
+          {
+            quality: 0.1,
+            compressionMethod: "auto",
+          },
+        );
+
+        formData.append(`payment_proof[]`, {
+          uri: compressed,
+          name: image,
+          type: "image/jpeg",
+        });
+      }
+    });
+  }
+
   return api
-    .post(`/member/installment/pay`, req)
+    .post(`/member/installment/pay`, formData)
     .then(({ data }) => {
       console.log(data, "pay");
       return {

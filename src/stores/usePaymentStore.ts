@@ -6,6 +6,7 @@ export interface PaymentReq {
   packagePrice: number;
   packagePeriod: number;
   signature: string;
+  proofUris?: string[];
 
   // payment page
   isDp: boolean;

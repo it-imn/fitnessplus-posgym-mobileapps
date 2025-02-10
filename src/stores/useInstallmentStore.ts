@@ -8,6 +8,7 @@ export interface InstallmentReq {
   total: number;
   paymentId: number;
   paymentMethod: "cash" | "non-cash";
+  proofUris?: string[];
 }
 
 export interface InstallmentState {

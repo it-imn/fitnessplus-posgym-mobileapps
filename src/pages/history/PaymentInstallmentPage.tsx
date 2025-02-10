@@ -1,4 +1,5 @@
 import {
+  Image,
   SafeAreaView,
   ScrollView,
   Text,
@@ -19,6 +20,8 @@ import Header from "../../components/ui/Header";
 import { showMessage } from "react-native-flash-message";
 import { payInstallment } from "../../services/installment";
 import Loading from "../../components/ui/Loading";
+import { launchImageLibrary } from "react-native-image-picker";
+import { PlusIcon, XIcon } from "lucide-react-native";
 
 export const PaymentInstallment = ({
   navigation,
@@ -28,6 +31,58 @@ export const PaymentInstallment = ({
   const { isDarkMode } = useContext(ThemeContext);
   const [isLoading, setIsLoading] = useState(false);
   const { installment, reset, update } = useInstallmentStore();
+  const [selectedImageIdx, setSelectedImageIdx] = useState<number | null>(null);
+
+  const getImageFromGalery = async () => {
+    try {
+      const result = await launchImageLibrary({
+        mediaType: "photo",
+      });
+
+      if (result.assets) {
+        console.log(result.assets);
+        if (result.assets.length === 1) {
+          if (result.assets[0].uri) {
+            console.log(result.assets[0].uri, "add");
+            update({
+              proofUris: installment.proofUris
+                ? [...installment.proofUris, result.assets[0].uri]
+                : [result.assets[0].uri],
+            });
+            return;
+          }
+        }
+      }
+    } catch (err: any) {
+      showMessage({
+        message: err.message || "An error occurred",
+        type: "warning",
+        icon: "warning",
+        backgroundColor: colors._red,
+        color: colors._white,
+      });
+    }
+  };
+
+  const removeImage = async (idx: number) => {
+    try {
+      console.log(idx, "remove");
+      const newProofUris = installment.proofUris?.filter(
+        (_, index) => index !== idx,
+      );
+      update({
+        proofUris: newProofUris,
+      });
+    } catch (err: any) {
+      showMessage({
+        message: err.message || "An error occurred",
+        type: "warning",
+        icon: "warning",
+        backgroundColor: colors._red,
+        color: colors._white,
+      });
+    }
+  };
 
   const onPay = async () => {
     setIsLoading(true);
@@ -428,6 +483,97 @@ export const PaymentInstallment = ({
           <Gap height={16} />
         </View>
         <Gap height={16} />
+        {installment.paymentMethod === "cash" && (
+          <>
+            <View
+              style={{
+                backgroundColor: isDarkMode ? colors._black : colors._grey2,
+                padding: 12,
+                borderRadius: 8,
+              }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontFamily: fonts.primary[400],
+                  color: isDarkMode ? colors._grey2 : colors._black,
+                }}>
+                Payment Proof
+              </Text>
+              <Gap height={8} />
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  gap: 8,
+                }}>
+                {installment.proofUris?.map((uri, index) => {
+                  console.log(uri, "map");
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      // onPress={() => removeImage(index)}
+                      onPress={() => setSelectedImageIdx(index)}
+                      style={{
+                        aspectRatio: 1,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        backgroundColor: isDarkMode
+                          ? colors._black
+                          : colors._grey2,
+                        borderRadius: 10,
+                        borderWidth: 0.5,
+                        borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+                      }}>
+                      {selectedImageIdx === index && (
+                        <TouchableOpacity
+                          onPress={() => removeImage(index)}
+                          style={{
+                            position: "absolute",
+                            zIndex: 1,
+                            borderRadius: 100,
+                            padding: 4,
+                            right: 4,
+                            top: 4,
+                            backgroundColor: colors._red,
+                            borderColor: colors._white,
+                            borderWidth: 0.5,
+                          }}>
+                          <XIcon width={12} height={12} color={colors._white} />
+                        </TouchableOpacity>
+                      )}
+                      <Image
+                        source={{ uri: uri }}
+                        style={{
+                          width: 48,
+                          height: 48,
+                          borderRadius: 10,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  );
+                })}
+                <TouchableOpacity
+                  onPress={getImageFromGalery}
+                  style={{
+                    aspectRatio: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: isDarkMode ? colors._black : colors._grey2,
+                    padding: 12,
+                    borderRadius: 10,
+                    borderWidth: 0.5,
+                    borderColor: isDarkMode ? colors._grey4 : colors._grey3,
+                  }}>
+                  <PlusIcon width={24} height={24} color={colors._blue2} />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <Gap height={16} />
+          </>
+        )}
       </ScrollView>
       <View
         style={{
