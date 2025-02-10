@@ -6765,6 +6765,7 @@ __metadata:
     react-native-compressor: ^1.9.0
     react-native-flash-message: ^0.4.2
     react-native-gesture-handler: ^2.21.2
+    react-native-image-picker: ^8.0.0
     react-native-linear-gradient: ^2.8.3
     react-native-reanimated: ^3.16.5
     react-native-safe-area-context: ^4.11.1
@@ -9740,6 +9741,16 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 0a42cedb8860a326b465085d0f7622ba03f038b0f0bdd1b1fe5703e58d62cb08bfb82a686c069a1a1410705c2ae0d82971b0449d83796fdd6d071131cf88e68b
+  languageName: node
+  linkType: hard
+
+"react-native-image-picker@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "react-native-image-picker@npm:8.0.0"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: d1b90219f4ff77d700307bd3dfc7475463dfe5c1d9dc4da365535075df4baf44d0c411cf9f19a3f83226830ada18ad3728abc2b14f67c77b1f5e146ebbb0bdec
   languageName: node
   linkType: hard
 
