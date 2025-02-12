@@ -257,7 +257,15 @@ export const Payment = ({
         backgroundColor: isDarkMode ? colors._black2 : colors._white,
       }}>
       <StatusBarComp />
-      <Header teks="Payment" onPress={() => navigation.goBack()} />
+      <Header
+        teks="Payment"
+        onPress={() => {
+          navigation.goBack();
+          update({
+            voucherCode: undefined,
+          });
+        }}
+      />
       <ScrollView
         style={{
           flexDirection: "column",
