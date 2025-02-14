@@ -180,7 +180,7 @@ const Loaning = ({
                 placeholder="Small towel number"
                 keyboardType="number-pad"
                 value={smallTowelLockerNumber.toString()}
-                onChangeText={value => setSmallTowelLockerNumber(+value)}
+                onChangeText={value => setSmallTowelLockerNumber(Number(value))}
               />
               <Gap height={20} />
             </>
@@ -211,8 +211,8 @@ const Loaning = ({
               <Input
                 placeholder="Large towel number"
                 keyboardType="number-pad"
-                value={smallTowelLockerNumber.toString()}
-                onChangeText={value => setLargeTowelLockerNumber(+value)}
+                value={largeTowelLockerNumber.toString()}
+                onChangeText={value => setLargeTowelLockerNumber(Number(value))}
               />
               <Gap height={20} />
             </>
@@ -244,7 +244,7 @@ const Loaning = ({
                 placeholder="Locker number"
                 keyboardType="number-pad"
                 value={lockerNumber.toString()}
-                onChangeText={value => setLockerNumber(+value)}
+                onChangeText={value => setLockerNumber(Number(value))}
               />
               <Gap height={20} />
             </>
