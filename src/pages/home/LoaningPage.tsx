@@ -65,6 +65,8 @@ const Loaning = ({
   const onSubmit = async () => {
     setIsLoading(true);
     try {
+      await checkIn(code);
+
       if (isSelectSmallTowel) {
         await loanFacility(smallTowel.id, "None", smallTowelLockerNumber);
       }
@@ -80,8 +82,6 @@ const Loaning = ({
           lockerNumber,
         );
       }
-
-      await checkIn(code);
 
       showMessage({
         message: "Checkin Succes",
