@@ -49,7 +49,9 @@ const register = async (req: SignUpReq) => {
   }
   formData.append("name", req.name);
   formData.append("gender", req.gender);
-  formData.append("address", req.address);
+  if (req.address || req.address !== "") {
+    formData.append("address", req.address);
+  }
   formData.append("birthdate", req.birthDate.toISOString().slice(0, 10));
   formData.append("email", req.email);
   if (req.phone !== "") {

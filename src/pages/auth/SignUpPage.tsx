@@ -49,7 +49,7 @@ const signUpSchema = z
     birthDate: z.date().refine(value => value < new Date(), {
       message: "Birth date must be less than today",
     }),
-    address: z.string().min(1, "Address required"),
+    address: z.string(),
     username: z.string().min(1, "Username required"),
     password: z.string().min(8, "Password less than 8 characters"),
     confirmPassword: z.string().min(8, "Password less than 8 characters"),

@@ -5,7 +5,7 @@ export type SignUpReq = {
   gender: 'male' | 'female' | 'rather_not_say';
   email: string;
   phone: string;
-  address: string;
+  address?: string;
   birthDate: Date;
   username: string;
   password: string;
