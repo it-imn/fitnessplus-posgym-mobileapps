@@ -440,7 +440,7 @@ export const PaymentInstallment = ({
                 alignItems: "center",
                 justifyContent: "space-between",
               }}
-              disabled // TODO: Enable this when non-cash payment is available
+              // disabled // TODO: Enable this when non-cash payment is available
               onPress={() => {
                 update({
                   paymentMethod: "non-cash",
@@ -452,14 +452,14 @@ export const PaymentInstallment = ({
                   alignItems: "flex-start",
                   justifyContent: "center",
                 }}>
-                <Text // TODO: Remove this when non-cash payment is available
+                {/* <Text // TODO: Remove this when non-cash payment is available
                   style={{
                     fontSize: 10,
                     fontFamily: fonts.primary[300],
                     color: colors._gold3,
                   }}>
                   Coming Soon
-                </Text>
+                </Text> */}
                 <Text
                   style={{
                     fontSize: 14,
