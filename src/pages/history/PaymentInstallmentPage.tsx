@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import StatusBarComp from "../../components/ui/StatusBarComp";
 import { colors, convertToRupiah, fonts } from "../../lib/utils";
-import { Fragment, useContext, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../lib/routes";
@@ -22,6 +22,8 @@ import { payInstallment } from "../../services/installment";
 import Loading from "../../components/ui/Loading";
 import { launchImageLibrary } from "react-native-image-picker";
 import { PlusIcon, XIcon } from "lucide-react-native";
+import { UserDetail } from "../../lib/definition";
+import { fetchProfile } from "../../services/profile";
 
 export const PaymentInstallment = ({
   navigation,
@@ -32,6 +34,7 @@ export const PaymentInstallment = ({
   const [isLoading, setIsLoading] = useState(false);
   const { installment, reset, update } = useInstallmentStore();
   const [selectedImageIdx, setSelectedImageIdx] = useState<number | null>(null);
+  const [profile, setProfile] = useState<UserDetail | null>(null);
 
   const getImageFromGalery = async () => {
     try {
@@ -126,6 +129,28 @@ export const PaymentInstallment = ({
       setIsLoading(false);
     }
   };
+
+  const getProfile = async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await fetchProfile();
+      setProfile(data);
+    } catch (err: any) {
+      showMessage({
+        message: err.message || "An error occurred",
+        type: "warning",
+        icon: "warning",
+        backgroundColor: colors._red,
+        color: colors._white,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getProfile();
+  }, []);
 
   return (
     <SafeAreaView
@@ -440,7 +465,7 @@ export const PaymentInstallment = ({
                 alignItems: "center",
                 justifyContent: "space-between",
               }}
-              // disabled // TODO: Enable this when non-cash payment is available
+              disabled={!profile?.features["Xendit"]}
               onPress={() => {
                 update({
                   paymentMethod: "non-cash",
@@ -452,14 +477,16 @@ export const PaymentInstallment = ({
                   alignItems: "flex-start",
                   justifyContent: "center",
                 }}>
-                {/* <Text // TODO: Remove this when non-cash payment is available
-                  style={{
-                    fontSize: 10,
-                    fontFamily: fonts.primary[300],
-                    color: colors._gold3,
-                  }}>
-                  Coming Soon
-                </Text> */}
+                {!profile?.features["Xendit"] && (
+                  <Text
+                    style={{
+                      fontSize: 10,
+                      fontFamily: fonts.primary[300],
+                      color: colors._gold3,
+                    }}>
+                    Coming Soon
+                  </Text>
+                )}
                 <Text
                   style={{
                     fontSize: 14,

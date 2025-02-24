@@ -42,6 +42,7 @@ export type UserDetail = {
   visit_gym: VisitGym;
   notif_count: number;
   my_referal_code: number;
+  features: Record<string, boolean>;
 };
 
 export type Role = {
@@ -82,7 +83,7 @@ export type Membership = {
   next?: {
     message: string;
     status: string;
-  }
+  };
 };
 
 export type PersonalTrainerPackage = {

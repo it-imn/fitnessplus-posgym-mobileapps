@@ -21,7 +21,7 @@ import { showMessage } from "react-native-flash-message";
 import { buyMembership, checkVoucher } from "../../services/membership";
 import Loading from "../../components/ui/Loading";
 import { buyPersonalTrainerPackage } from "../../services/personal_trainer";
-import { IPaymentSummary } from "../../lib/definition";
+import { IPaymentSummary, UserDetail } from "../../lib/definition";
 import {
   fetchPaymentSummary,
   fetchPaymentSummaryPt,
@@ -29,6 +29,7 @@ import {
 import moment from "moment";
 import { PlusIcon, XIcon } from "lucide-react-native";
 import { launchImageLibrary } from "react-native-image-picker";
+import { fetchProfile } from "../../services/profile";
 
 export const Payment = ({
   navigation,
@@ -42,6 +43,7 @@ export const Payment = ({
     null,
   );
   const [selectedImageIdx, setSelectedImageIdx] = useState<number | null>(null);
+  const [profile, setProfile] = useState<UserDetail | null>(null);
 
   const getImageFromGalery = async () => {
     try {
@@ -246,8 +248,27 @@ export const Payment = ({
     }
   };
 
+  const getProfile = async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await fetchProfile();
+      setProfile(data);
+    } catch (err: any) {
+      showMessage({
+        message: err.message || "An error occurred",
+        type: "warning",
+        icon: "warning",
+        backgroundColor: colors._red,
+        color: colors._white,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     getPaymentSummary();
+    getProfile();
   }, [payment.isDp, payment.voucherCode, payment.paymentMethod]);
 
   return (
@@ -723,7 +744,7 @@ export const Payment = ({
                 alignItems: "center",
                 justifyContent: "space-between",
               }}
-              // disabled // TODO: Enable this when non-cash payment is available
+              disabled={!profile?.features["Xendit"]}
               onPress={() => {
                 update({
                   paymentMethod: "non-cash",
@@ -735,14 +756,16 @@ export const Payment = ({
                   alignItems: "flex-start",
                   justifyContent: "center",
                 }}>
-                {/* <Text // TODO: Remove this when non-cash payment is available
-                  style={{
-                    fontSize: 10,
-                    fontFamily: fonts.primary[300],
-                    color: colors._gold3,
-                  }}>
-                  Coming Soon
-                </Text> */}
+                {!profile?.features["Xendit"] && (
+                  <Text
+                    style={{
+                      fontSize: 10,
+                      fontFamily: fonts.primary[300],
+                      color: colors._gold3,
+                    }}>
+                    Coming Soon
+                  </Text>
+                )}
                 <Text
                   style={{
                     fontSize: 14,
