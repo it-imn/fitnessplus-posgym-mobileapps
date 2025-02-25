@@ -42,7 +42,7 @@ export type UserDetail = {
   visit_gym: VisitGym;
   notif_count: number;
   my_referal_code: number;
-  features: Record<string, boolean>;
+  features?: Record<string, boolean>;
 };
 
 export type Role = {

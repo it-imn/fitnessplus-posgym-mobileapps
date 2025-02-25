@@ -34,7 +34,7 @@ export const PaymentInstallment = ({
   const [isLoading, setIsLoading] = useState(false);
   const { installment, reset, update } = useInstallmentStore();
   const [selectedImageIdx, setSelectedImageIdx] = useState<number | null>(null);
-  const [profile, setProfile] = useState<UserDetail | null>(null);
+  const [isNonCashEnabled, setIsNonCashEnabled] = useState(false);
 
   const getImageFromGalery = async () => {
     try {
@@ -134,7 +134,11 @@ export const PaymentInstallment = ({
     setIsLoading(true);
     try {
       const { data } = await fetchProfile();
-      setProfile(data);
+      if (data.features) {
+        if (data.features["Xendit"]) {
+          setIsNonCashEnabled(true);
+        }
+      }
     } catch (err: any) {
       showMessage({
         message: err.message || "An error occurred",
@@ -465,7 +469,7 @@ export const PaymentInstallment = ({
                 alignItems: "center",
                 justifyContent: "space-between",
               }}
-              disabled={!profile?.features["Xendit"]}
+              disabled={!isNonCashEnabled}
               onPress={() => {
                 update({
                   paymentMethod: "non-cash",
@@ -477,7 +481,7 @@ export const PaymentInstallment = ({
                   alignItems: "flex-start",
                   justifyContent: "center",
                 }}>
-                {!profile?.features["Xendit"] && (
+                {!isNonCashEnabled && (
                   <Text
                     style={{
                       fontSize: 10,
