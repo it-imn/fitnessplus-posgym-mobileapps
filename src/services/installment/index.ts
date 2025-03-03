@@ -64,7 +64,7 @@ const payInstallment = async (req: {
   installment_id: number[];
   payment_method: string;
   total_pay: number;
-  payment_proof?: string[],
+  payment_proof?: string[];
 }) => {
   const formData = new FormData();
   formData.append("payment_id", req.payment_id.toString());
@@ -72,7 +72,7 @@ const payInstallment = async (req: {
   formData.append("payment_method", req.payment_method);
   formData.append("total_pay", req.total_pay.toString());
   if (req.payment_proof) {
-    req.payment_proof.forEach(async (image, index) => {
+    for (const image of req.payment_proof) {
       if (!image.startsWith("http://") && !image.startsWith("https://")) {
         const compressed = await Image.compress(
           image.startsWith("file://") ? image : `file://${image}`,
@@ -88,7 +88,7 @@ const payInstallment = async (req: {
           type: "image/jpeg",
         });
       }
-    });
+    }
   }
 
   return api

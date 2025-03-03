@@ -145,7 +145,7 @@ const buyMembership = async (
   );
   formData.append("started_at", started_at);
   if (payment_proof) {
-    payment_proof.forEach(async (image, index) => {
+    for (const image of payment_proof) {
       if (!image.startsWith("http://") && !image.startsWith("https://")) {
         const compressed = await Image.compress(
           image.startsWith("file://") ? image : `file://${image}`,
@@ -161,7 +161,7 @@ const buyMembership = async (
           type: "image/jpeg",
         });
       }
-    });
+    }
   }
 
   return api
