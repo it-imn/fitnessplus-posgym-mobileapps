@@ -472,3 +472,9 @@ export interface IChooseSeat {
   seat_status?: string;
   selected: boolean;
 }
+
+export interface IPromotion {
+  name: string;
+  image: string;
+  image_thumbnail: string;
+}

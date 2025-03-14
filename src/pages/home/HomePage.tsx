@@ -59,12 +59,14 @@ import {
   Branch,
   Membership,
   PersonalTrainerPackage,
+  IPromotion,
 } from "../../lib/definition";
 import { colors, fonts } from "../../lib/utils";
 import { showMessage } from "react-native-flash-message";
 import moment from "moment";
 import { useCameraPermission } from "react-native-vision-camera";
 import { useModalStore } from "../../stores/useModalStore";
+import { fetchPromotions } from "../../services/promotion";
 
 const width = Dimensions.get("window").width;
 
@@ -186,33 +188,33 @@ function GymServiceSection({
   );
 }
 
-function CarouselSection() {
-  const data = [
-    {
-      id: 1,
-      image: ClassImage,
-    },
-    {
-      id: 2,
-      image: Personal,
-    },
-    {
-      id: 3,
-      image: WoG,
-    },
-    {
-      id: 4,
-      image: MerchandiseImage,
-    },
-    {
-      id: 5,
-      image: Summary,
-    },
-    {
-      id: 6,
-      image: Attendance,
-    },
-  ];
+const CarouselSection = ({ promotions }: { promotions: IPromotion[] }) => {
+  // const data = [
+  //   {
+  //     id: 1,
+  //     image: ClassImage,
+  //   },
+  //   {
+  //     id: 2,
+  //     image: Personal,
+  //   },
+  //   {
+  //     id: 3,
+  //     image: WoG,
+  //   },
+  //   {
+  //     id: 4,
+  //     image: MerchandiseImage,
+  //   },
+  //   {
+  //     id: 5,
+  //     image: Summary,
+  //   },
+  //   {
+  //     id: 6,
+  //     image: Attendance,
+  //   },
+  // ];
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
@@ -223,17 +225,20 @@ function CarouselSection() {
   };
 
   return (
-    <React.Fragment>
+    <View
+      style={{
+        paddingHorizontal: 24,
+      }}>
       <FlatList
         onMomentumScrollEnd={updateCurrentSlideIndex}
         showsHorizontalScrollIndicator={false}
         horizontal
-        data={data}
+        data={promotions}
         pagingEnabled
         renderItem={({ item }) => {
           return (
             <Image
-              source={item.image}
+              src={item.image_thumbnail}
               style={{
                 height: 80,
                 resizeMode: "contain",
@@ -251,11 +256,17 @@ function CarouselSection() {
           flexDirection: "row",
           justifyContent: "center",
         }}>
-        {data.map((_, index) => (
+        {promotions.map((_, index) => (
           <View
             key={index}
             style={[
-              styles.indicator,
+              {
+                height: 4,
+                width: 4,
+                backgroundColor: colors._grey5,
+                marginHorizontal: 2,
+                borderRadius: 4,
+              },
               currentSlideIndex === index && {
                 backgroundColor: colors._blue4,
                 width: 10,
@@ -264,9 +275,9 @@ function CarouselSection() {
           />
         ))}
       </View>
-    </React.Fragment>
+    </View>
   );
-}
+};
 
 // function CheckVersionModal(props) {
 //   return (
@@ -663,6 +674,22 @@ export const HomePage = ({ navigation }: any) => {
   const [personalTrainers, setPersonalTrainers] = useState<IPersonalTrainer[]>(
     [],
   );
+  const [promotions, setPromotions] = useState<IPromotion[]>([]);
+
+  const getPromotions = async () => {
+    try {
+      const { data } = await fetchPromotions();
+      setPromotions(data);
+    } catch (err: any) {
+      showMessage({
+        message: err.message || "An error occurred",
+        type: "warning",
+        icon: "warning",
+        backgroundColor: colors._red,
+        color: colors._white,
+      });
+    }
+  };
 
   const getProfile = async () => {
     try {
@@ -711,7 +738,8 @@ export const HomePage = ({ navigation }: any) => {
   }, []);
 
   useEffect(() => {
-    isFocused && Promise.all([getProfile(), getPersonalTrainers()]);
+    isFocused &&
+      Promise.all([getProfile(), getPersonalTrainers(), getPromotions()]);
   }, [isFocused]);
 
   return (
@@ -803,7 +831,8 @@ export const HomePage = ({ navigation }: any) => {
             status={dataProfile?.pt.status || ""}
           />
           <Gap height={20} />
-          <CarouselSection />
+          <CarouselSection promotions={promotions} />
+
           <Gap height={20} />
           <GymServiceSection
             isDarkMode={isDarkMode}
