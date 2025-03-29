@@ -55,6 +55,9 @@ import PaymentGateway from "../pages/home/PaymentGateway";
 import { ForgotPassword } from "../pages/auth/ForgotPasswordPage";
 import ChooseSeatPage from "../pages/home/ChooseSeatPage";
 import ChooseSeat from "../pages/home/ChooseSeatPage";
+import { ListSchedule } from "../pages/profile/ListSchedulePage";
+import { DetailClassSchedule } from "../pages/profile/DetailClassSchedulePage";
+import { DetailPTSchedule } from "../pages/profile/DetailPTSchedulePage";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -135,6 +138,9 @@ export const Router = () => {
       <Stack.Screen name="PaymentGateway" component={PaymentGateway} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
       <Stack.Screen name="ChooseSeat" component={ChooseSeat} />
+      <Stack.Screen name="ListSchedule" component={ListSchedule} />
+      <Stack.Screen name="DetailClassSchedule" component={DetailClassSchedule} />
+      <Stack.Screen name="DetailPTSchedule" component={DetailPTSchedule} />
       {/*
       <Stack.Screen name="UserSpec" component={UserSpec} />
       <Stack.Screen name="BodyMass" component={BodyMass} />

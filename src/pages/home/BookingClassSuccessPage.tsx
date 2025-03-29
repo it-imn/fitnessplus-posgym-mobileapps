@@ -49,7 +49,7 @@ export const BookingSuccess = ({
           backColor={colors._blue2}
           textColor={colors._white}
           teks="View Classes"
-          onPress={() => navigation.replace("ClassHistory")}
+          onPress={() => navigation.replace("ListSchedule")}
         />
       </View>
     </SafeAreaView>

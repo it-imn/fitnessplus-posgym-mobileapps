@@ -70,7 +70,10 @@ const Profil = ({
       if (data) {
         setDataProfile(data);
         setImageUrl(data.image || data.image_error);
-        setHaveMembership(data.membership.status !== "not_buy_package" && data.membership.status !== "expired");
+        setHaveMembership(
+          data.membership.status !== "not_buy_package" &&
+            data.membership.status !== "expired",
+        );
       }
 
       setIsLoading(false);
@@ -93,7 +96,10 @@ const Profil = ({
 
       const { data } = await fetchContractAgreementView();
       if (data) {
-        setHavePackagePT(data.status !== "buy_package_personal_trainer" && data.status !== "expired");
+        setHavePackagePT(
+          data.status !== "buy_package_personal_trainer" &&
+            data.status !== "expired",
+        );
       }
 
       setIsLoading(false);
@@ -291,9 +297,9 @@ const Profil = ({
           <ButtonIconTeks
             teksColor={isDarkMode ? colors._white : colors._black}
             backColor={isDarkMode ? colors._black : colors._grey2}
-            teks="My Class"
+            teks="My Schedule"
             type="class-history"
-            onPress={goToClassHistory}
+            onPress={() => navigation.navigate("ListSchedule")}
           />
           <Gap height={5} />
           {haveMembership ? (

@@ -478,3 +478,38 @@ export interface IPromotion {
   image: string;
   image_thumbnail: string;
 }
+
+export interface IScheduleActivity {
+  activity: string;
+  day: string;
+  day_date: string;
+  finish_time?: string;
+  id: number;
+  opened_at?: string;
+  quota: number;
+  start_time?: string;
+  status?: string;
+  trainer: string;
+  type: "pt" | "class";
+}
+
+export interface IDetailScheduleActivity {
+  book_number?: string;
+  id: number;
+  qr_code: string;
+  schedule_date: string;
+  schedule_day: string;
+  schedule_description?: string;
+  schedule_duration?: string;
+  schedule_end?: string;
+  schedule_image: string;
+  schedule_member_join?: string;
+  schedule_name: string;
+  schedule_quota?: number;
+  schedule_start?: string;
+  trainer_image: string;
+  trainer_name: string;
+  trainer_periode: number;
+  trainer_session: number;
+  trainer_spesification: string;
+}

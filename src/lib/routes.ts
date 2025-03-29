@@ -122,5 +122,12 @@ export type RootStackParamList = {
   ChooseSeat: {
     id: number;
     standard_class_id: number;
-  }
+  };
+  ListSchedule: undefined;
+  DetailClassSchedule: {
+    id: number;
+  };
+  DetailPTSchedule: {
+    id: number;
+  };
 };
