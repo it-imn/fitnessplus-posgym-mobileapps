@@ -263,8 +263,8 @@ const Card = ({
               fontFamily: fonts.primary[600],
               color: colors._black,
             }}>
-            {moment(scheduleActivity.day_date).format("dddd, DD MMMM YYYY")}{" "}
-            {scheduleActivity.start_time} {scheduleActivity.activity}
+            {moment(scheduleActivity.day_date).format("DD-MM-YYYY")}{" "}
+            {scheduleActivity.activity}
           </Text>
 
           <ChevronRightIcon size={16} color={colors._grey4} />
@@ -275,21 +275,20 @@ const Card = ({
             flexDirection: "row",
             alignItems: "center",
           }}>
-          {scheduleActivity.duration !== 0 ? (
-            <>
-              <Clock size={16} color={colors._grey4} />
-              <Gap width={8} />
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontFamily: fonts.primary[400],
-                  color: colors._grey4,
-                }}>
-                {scheduleActivity.duration}
-              </Text>
-              <Gap width={16} />
-            </>
-          ) : null}
+          <Clock size={16} color={colors._grey4} />
+          <Gap width={8} />
+          <Text
+            style={{
+              fontSize: 12,
+              fontFamily: fonts.primary[400],
+              color: colors._grey4,
+            }}>
+            {scheduleActivity.start_time}{" "}
+            {scheduleActivity.duration !== 0
+              ? `(${scheduleActivity.duration})`
+              : ""}
+          </Text>
+          <Gap width={16} />
           <View
             style={{
               flexDirection: "row",
