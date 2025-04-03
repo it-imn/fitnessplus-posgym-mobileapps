@@ -21,7 +21,6 @@ import { colors, convertToRupiah, fonts } from "../../lib/utils";
 import { fetchInstallmentsMembership } from "../../services/installment";
 import { showMessage } from "react-native-flash-message";
 import { useDebounce } from "use-debounce";
-import { CancelToken } from "axios";
 import { AlarmClockIcon } from "lucide-react-native";
 import { useInstallmentStore } from "../../stores/useInstallmentStore";
 import { useIsFocused } from "@react-navigation/native";
@@ -44,13 +43,13 @@ export const InstallmentPackage = ({
   const getInstallments = async (
     _page: number,
     _search: string,
-    token?: CancelToken,
+    signal: AbortSignal
   ) => {
     setIsLoading(true);
     try {
       const { data, hasNext } = await fetchInstallmentsMembership(
         { page: _page, search: _search },
-        { cancelToken: token },
+        { signal },
       );
       if (data) {
         setPackages(prev => [...prev, ...data]);
@@ -83,7 +82,8 @@ export const InstallmentPackage = ({
     const nextPage = page + 1;
     setPage(nextPage);
 
-    getInstallments(nextPage, debouncedText);
+    const ctrl = new AbortController();
+    getInstallments(nextPage, debouncedText, ctrl.signal);
   };
 
   // Fetch
@@ -92,7 +92,11 @@ export const InstallmentPackage = ({
     setPage(1);
     setPackages([]);
 
-    getInstallments(1, debouncedText);
+    const ctrl = new AbortController();
+    getInstallments(1, debouncedText, ctrl.signal);
+    return () => {
+      ctrl.abort();
+    };
   }, [debouncedText, isFocused]);
 
   return (
@@ -129,7 +133,8 @@ export const InstallmentPackage = ({
             setPage(1);
             setPackages([]);
 
-            getInstallments(1, debouncedText);
+            const ctrl = new AbortController();
+            getInstallments(1, debouncedText, ctrl.signal);
           }}
           onEndReached={handleEndReached}
           data={packages}

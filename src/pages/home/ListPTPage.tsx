@@ -1,5 +1,4 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import axios, { CancelToken } from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import {
   FlatList,
@@ -48,13 +47,13 @@ const ListPT = ({
   const getPersonalTrainers = async (
     _page: number,
     _search: string,
-    token?: CancelToken,
+    signal: AbortSignal,
   ) => {
     setIsLoading(true);
     try {
       const { data, hasNext } = await fetchPersonalTrainersWithQuery(
         { page: _page, search: _search },
-        { cancelToken: token },
+        { signal },
       );
       if (data) {
         setPersonalTrainers(prev => [...prev, ...data]);
@@ -87,7 +86,8 @@ const ListPT = ({
     const nextPage = page + 1;
     setPage(nextPage);
 
-    getPersonalTrainers(nextPage, debouncedText);
+    const ctrl = new AbortController();
+    getPersonalTrainers(nextPage, debouncedText, ctrl.signal);
   };
 
   const getProfile = async () => {
@@ -121,8 +121,13 @@ const ListPT = ({
     setPage(1);
     setPersonalTrainers([]);
 
-    getPersonalTrainers(1, debouncedText);
+    const ctrl = new AbortController();
+    getPersonalTrainers(1, debouncedText, ctrl.signal);
     getProfile();
+
+    return () => {
+      ctrl.abort();
+    };
   }, [debouncedText]);
 
   return (
@@ -154,7 +159,8 @@ const ListPT = ({
             setPage(1);
             setPersonalTrainers([]);
 
-            getPersonalTrainers(1, debouncedText);
+            const ctrl = new AbortController();
+            getPersonalTrainers(1, debouncedText, ctrl.signal);
           }}
           onEndReached={handleEndReached}
           data={personalTrainers}

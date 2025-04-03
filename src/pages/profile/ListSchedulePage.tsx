@@ -29,7 +29,6 @@ import Loading from "../../components/ui/Loading";
 import { fetchListSchedules } from "../../services/schedule";
 import { showMessage } from "react-native-flash-message";
 import { IScheduleActivity } from "../../lib/definition";
-import { CancelToken } from "axios";
 import moment, { duration } from "moment";
 
 interface ISchedule {
@@ -55,7 +54,7 @@ export const ListSchedule = ({
   const [page, setPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(true);
 
-  const getSchedule = async (_page: number, token?: CancelToken) => {
+  const getSchedule = async (_page: number, signal: AbortSignal) => {
     setIsLoading(true);
     try {
       const { data, hasNext } = await fetchListSchedules(
@@ -64,7 +63,7 @@ export const ListSchedule = ({
           page: _page,
         },
         {
-          cancelToken: token,
+          signal,
         },
       );
       if (data) {
@@ -92,7 +91,8 @@ export const ListSchedule = ({
     const nextPage = page + 1;
     setPage(nextPage);
 
-    getSchedule(nextPage);
+    const ctrl = new AbortController();
+    getSchedule(nextPage, ctrl.signal);
   };
 
   // Fetch
@@ -101,7 +101,13 @@ export const ListSchedule = ({
     setPage(1);
     setSchedules([]);
 
-    getSchedule(1);
+    const ctrl = new AbortController();
+
+    getSchedule(1, ctrl.signal);
+
+    return () => {
+      ctrl.abort();
+    };
   }, [filter]);
 
   return (
@@ -164,7 +170,9 @@ export const ListSchedule = ({
           setPage(1);
           setSchedules([]);
 
-          getSchedule(1);
+          const ctrl = new AbortController();
+
+          getSchedule(1, ctrl.signal);
         }}
         onEndReached={handleEndReached}
         keyExtractor={item => item.id.toString()}

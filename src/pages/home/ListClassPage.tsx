@@ -1,6 +1,5 @@
 import { useIsFocused } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import axios, { CancelToken } from "axios";
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import {
   FlatList,
@@ -57,13 +56,13 @@ const Class = ({
   const getAllClasses = async (
     _page: number,
     _search: string,
-    token?: CancelToken,
+    signal: AbortSignal,
   ) => {
     setIsLoading(true);
     try {
       const { data, hasNext } = await fetchAllClasses(
         { page: _page, search: _search },
-        { cancelToken: token },
+        { signal },
       );
       if (data) {
         setClassStd(prev => [...prev, ...data]);
@@ -96,7 +95,8 @@ const Class = ({
     const nextPage = page + 1;
     setPage(nextPage);
 
-    getAllClasses(nextPage, debouncedText);
+    const controller = new AbortController();
+    getAllClasses(nextPage, debouncedText, controller.signal);
   };
 
   // Fetch
@@ -105,7 +105,11 @@ const Class = ({
     setPage(1);
     setClassStd([]);
 
-    getAllClasses(1, debouncedText);
+    const controller = new AbortController();
+    getAllClasses(1, debouncedText, controller.signal);
+    return () => {
+      controller.abort();
+    };
   }, [debouncedText, isFocused]);
 
   return (
@@ -142,7 +146,8 @@ const Class = ({
               setPage(1);
               setClassStd([]);
 
-              getAllClasses(1, debouncedText);
+              const ctrl = new AbortController();
+              getAllClasses(1, debouncedText, ctrl.signal);
             }}
             onEndReached={handleEndReached}
             data={classStd}

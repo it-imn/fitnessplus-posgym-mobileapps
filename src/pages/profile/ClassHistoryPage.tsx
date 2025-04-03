@@ -28,7 +28,6 @@ import { fetchBookingHistory, cancelBooking } from "../../services/class";
 import { showMessage } from "react-native-flash-message";
 import { Button, ButtonColor } from "../../components/ui/Button";
 import { useDebounce } from "use-debounce";
-import { CancelToken } from "axios";
 
 export const ClassHistory = ({
   navigation,
@@ -56,13 +55,13 @@ export const ClassHistory = ({
   const getBookingHistory = async (
     _page: number,
     _search: string,
-    token?: CancelToken,
+    signal: AbortSignal,
   ) => {
     setIsLoading(true);
     try {
       const { data, hasNext } = await fetchBookingHistory(
         { page: _page, search: _search },
-        { cancelToken: token },
+        { signal },
       );
       if (data) {
         setBookingHistory(prev => [...prev, ...data]);
@@ -91,7 +90,8 @@ export const ClassHistory = ({
         setCancelClass({ id: null, name: null });
         setIsViewModal(false);
         setBookingHistory([]);
-        getBookingHistory(1, debouncedText);
+        const controller = new AbortController();
+        getBookingHistory(1, debouncedText, controller.signal);
 
         showMessage({
           message: "Class has been cancelled",
@@ -121,7 +121,8 @@ export const ClassHistory = ({
     const nextPage = page + 1;
     setPage(nextPage);
 
-    getBookingHistory(nextPage, debouncedText);
+    const ctrl = new AbortController();
+    getBookingHistory(nextPage, debouncedText, ctrl.signal);
   };
 
   // Fetch
@@ -130,7 +131,8 @@ export const ClassHistory = ({
     setPage(1);
     setBookingHistory([]);
 
-    getBookingHistory(1, debouncedText);
+    const ctrl = new AbortController();
+    getBookingHistory(1, debouncedText, ctrl.signal);
   }, [debouncedText]);
 
   return (
@@ -162,7 +164,8 @@ export const ClassHistory = ({
             console.log("refresh");
             setPage(1);
             setBookingHistory([]);
-            getBookingHistory(1, debouncedText);
+            const ctrl = new AbortController();
+            getBookingHistory(1, debouncedText, ctrl.signal);
           }}
           onEndReached={handleEndReached}
           data={bookingHistory}

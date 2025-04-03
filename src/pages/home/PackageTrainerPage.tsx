@@ -20,7 +20,6 @@ import { fetchPersonalTrainerPackage } from "../../services/personal_trainer";
 import { showMessage } from "react-native-flash-message";
 import Gap from "../../components/ui/Gap";
 import { useDebounce } from "use-debounce";
-import { CancelToken } from "axios";
 import NoData from "../../components/ui/NoData";
 import Loading from "../../components/ui/Loading";
 import { usePaymentStore } from "../../stores/usePaymentStore";
@@ -45,14 +44,14 @@ const PackageTrainer = ({
   const getPackage = async (
     _page: number,
     _search: string,
-    token?: CancelToken,
+    signal: AbortSignal,
   ) => {
     setIsLoading(true);
     try {
       const { data, hasNext } = await fetchPersonalTrainerPackage(
         id,
         { page: _page, search: _search },
-        { cancelToken: token },
+        { signal },
       );
       if (data) {
         setPackages(prev => [...prev, ...data]);
@@ -85,7 +84,8 @@ const PackageTrainer = ({
     const nextPage = page + 1;
     setPage(nextPage);
 
-    getPackage(nextPage, debouncedText);
+    const ctrl = new AbortController();
+    getPackage(nextPage, debouncedText, ctrl.signal);
   };
 
   // Fetch
@@ -94,7 +94,12 @@ const PackageTrainer = ({
     setPage(1);
     setPackages([]);
 
-    getPackage(1, debouncedText);
+    const ctrl = new AbortController();
+    getPackage(1, debouncedText, ctrl.signal);
+
+    return () => {
+      ctrl.abort();
+    };
   }, [debouncedText]);
 
   return (
@@ -109,7 +114,8 @@ const PackageTrainer = ({
             setPage(1);
             setPackages([]);
 
-            getPackage(1, debouncedText);
+            const ctrl = new AbortController();
+            getPackage(1, debouncedText, ctrl.signal);
           }}
           onEndReached={handleEndReached}
           data={packages}

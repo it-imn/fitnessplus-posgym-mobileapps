@@ -20,7 +20,6 @@ import {
   readNotification,
 } from "../../services/notification";
 import { useIsFocused } from "@react-navigation/native";
-import { CancelToken } from "axios";
 import { useDebounce } from "use-debounce";
 import { Icon } from "lucide-react-native";
 import Gap from "../../components/ui/Gap";
@@ -43,13 +42,13 @@ export const Notification = ({
   const getNotifications = async (
     _page: number,
     _search: string,
-    token?: CancelToken,
+    signal: AbortSignal,
   ) => {
     setIsLoading(true);
     try {
       const { data, hasNext } = await fetchNotifications(
         { page: _page, search: _search },
-        { cancelToken: token },
+        { signal },
       );
       setNotifications(prev => [...prev, ...data]); // Append for pagination
 
@@ -74,7 +73,8 @@ export const Notification = ({
     const nextPage = page + 1;
     setPage(nextPage);
 
-    getNotifications(nextPage, debouncedText);
+    const controller = new AbortController();
+    getNotifications(nextPage, debouncedText, controller.signal);
   };
 
   // Fetch
@@ -83,7 +83,12 @@ export const Notification = ({
     setPage(1);
     setNotifications([]);
 
-    getNotifications(1, debouncedText);
+    const controller = new AbortController();
+    getNotifications(1, debouncedText, controller.signal);
+
+    return () => {
+      controller.abort();
+    };
   }, [debouncedText]);
 
   return (
@@ -123,7 +128,8 @@ export const Notification = ({
             setPage(1);
             setNotifications([]);
 
-            getNotifications(1, debouncedText);
+            const ctrl = new AbortController();
+            getNotifications(1, debouncedText, ctrl.signal);
           }}
           onEndReached={handleEndReached}
           data={notifications}

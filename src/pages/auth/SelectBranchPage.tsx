@@ -25,7 +25,6 @@ import { useSignUpStore } from "../../stores/useSignUpStore";
 import { showMessage } from "react-native-flash-message";
 import StatusBarComp from "../../components/ui/StatusBarComp";
 import { useDebounce } from "use-debounce";
-import { CancelToken } from "axios";
 import NoData from "../../components/ui/NoData";
 
 const SelectBranch = ({
@@ -46,14 +45,14 @@ const SelectBranch = ({
   const getBranch = async (
     _page: number,
     _search: string,
-    token?: CancelToken,
+    signal: AbortSignal,
   ) => {
     setIsLoading(true);
     try {
       const { data, hasNext } = await fetchBranchesWithGym(
         gymId,
         { page: _page, search: _search },
-        { cancelToken: token },
+        { signal },
       );
       if (data) {
         setBranches(prev => [...prev, ...data]);
@@ -86,7 +85,9 @@ const SelectBranch = ({
     const nextPage = page + 1;
     setPage(nextPage);
 
-    getBranch(nextPage, debouncedText);
+    const ctrl = new AbortController();
+
+    getBranch(nextPage, debouncedText, ctrl.signal);
   };
 
   // Fetch
@@ -95,7 +96,13 @@ const SelectBranch = ({
     setPage(1);
     setBranches([]);
 
-    getBranch(1, debouncedText);
+    const ctrl = new AbortController();
+
+    getBranch(1, debouncedText, ctrl.signal);
+
+    return () => {
+      ctrl.abort();
+    };
   }, [debouncedText]);
 
   return (
@@ -136,7 +143,8 @@ const SelectBranch = ({
             setPage(1);
             setBranches([]);
 
-            getBranch(1, debouncedText);
+            const ctrl = new AbortController();
+            getBranch(1, debouncedText, ctrl.signal);
           }}
           onEndReached={handleEndReached}
           data={branches}

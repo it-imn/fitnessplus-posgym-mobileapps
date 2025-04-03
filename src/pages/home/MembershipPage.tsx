@@ -15,7 +15,6 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { useDebounce } from "use-debounce";
-import axios, { CancelToken } from "axios";
 import Header from "../../components/ui/Header";
 import Gap from "../../components/ui/Gap";
 import { Input } from "../../components/ui/Input";
@@ -43,13 +42,13 @@ const Membership = ({ navigation }: any) => {
   const getPackage = async (
     _page: number,
     _search: string,
-    token?: CancelToken,
+    signal: AbortSignal,
   ) => {
     setIsLoading(true);
     try {
       const { data, hasNext } = await fetchMembershipPackages(
         { page: _page, search: _search },
-        { cancelToken: token },
+        { signal },
       );
 
       if (data) {
@@ -82,7 +81,8 @@ const Membership = ({ navigation }: any) => {
     const nextPage = page + 1;
     setPage(nextPage);
 
-    getPackage(nextPage, debouncedText);
+    const controller = new AbortController();
+    getPackage(nextPage, debouncedText, controller.signal);
   };
 
   // Fetch
@@ -91,7 +91,12 @@ const Membership = ({ navigation }: any) => {
     setPage(1);
     setPackages([]);
 
-    getPackage(1, debouncedText);
+    const controller = new AbortController();
+    getPackage(1, debouncedText, controller.signal);
+
+    return () => {
+      controller.abort();
+    };
   }, [debouncedText]);
 
   return (
@@ -127,7 +132,8 @@ const Membership = ({ navigation }: any) => {
             setPage(1);
             setPackages([]);
 
-            getPackage(1, debouncedText);
+            const ctrl = new AbortController();
+            getPackage(1, debouncedText, ctrl.signal);
           }}
           onEndReached={handleEndReached}
           data={packages}

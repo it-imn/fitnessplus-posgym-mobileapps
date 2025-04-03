@@ -23,7 +23,6 @@ import { colors, convertToRupiah, fonts } from "../../lib/utils";
 import Gap from "../../components/ui/Gap";
 import { useIsFocused } from "@react-navigation/native";
 import { useDebounce } from "use-debounce";
-import { CancelToken } from "axios";
 import {
   fetchPaymentPackages,
   fetchSubmissionPackages,
@@ -48,13 +47,13 @@ export const PaymentPackage = ({
   const getPaymentPackages = async (
     _page: number,
     _search: string,
-    token?: CancelToken,
+    signal: AbortSignal,
   ) => {
     setIsLoading(true);
     try {
       const { data, hasNext } = await fetchPaymentPackages(
         { page: _page, search: _search },
-        { cancelToken: token },
+        { signal },
       );
       setPaymentPackages(prev => [...prev, ...data]); // Append for pagination
 
@@ -79,7 +78,8 @@ export const PaymentPackage = ({
     const nextPage = page + 1;
     setPage(nextPage);
 
-    getPaymentPackages(nextPage, debouncedText);
+    const ctrl = new AbortController();
+    getPaymentPackages(nextPage, debouncedText, ctrl.signal);
   };
 
   // Fetch
@@ -88,7 +88,11 @@ export const PaymentPackage = ({
     setPage(1);
     setPaymentPackages([]);
 
-    getPaymentPackages(1, debouncedText);
+    const ctrl = new AbortController();
+    getPaymentPackages(1, debouncedText, ctrl.signal);
+    return () => {
+      ctrl.abort();
+    };
   }, [debouncedText, isFocused]);
 
   return (
@@ -129,7 +133,8 @@ export const PaymentPackage = ({
             setPage(1);
             setPaymentPackages([]);
 
-            getPaymentPackages(1, debouncedText);
+            const ctrl = new AbortController();
+            getPaymentPackages(1, debouncedText, ctrl.signal);
           }}
           onEndReached={handleEndReached}
           data={paymentPackages}

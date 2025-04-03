@@ -19,7 +19,6 @@ import { colors, convertToRupiah, fonts } from "../../lib/utils";
 import Gap from "../../components/ui/Gap";
 import { useIsFocused } from "@react-navigation/native";
 import { useDebounce } from "use-debounce";
-import { CancelToken } from "axios";
 import { fetchSubmissionPackages } from "../../services/membership";
 import Loading from "../../components/ui/Loading";
 import { getStatusColor } from "../../lib/status";
@@ -42,13 +41,13 @@ export const SubmissionPackage = ({
   const getSubmissionPackages = async (
     _page: number,
     _search: string,
-    token?: CancelToken,
+    signal: AbortSignal,
   ) => {
     setIsLoading(true);
     try {
       const { data, hasNext } = await fetchSubmissionPackages(
         { page: _page, search: _search },
-        { cancelToken: token },
+        { signal },
       );
       setSubmissionPackages(prev => [...prev, ...data]); // Append for pagination
 
@@ -73,7 +72,8 @@ export const SubmissionPackage = ({
     const nextPage = page + 1;
     setPage(nextPage);
 
-    getSubmissionPackages(nextPage, debouncedText);
+    const controller = new AbortController();
+    getSubmissionPackages(nextPage, debouncedText, controller.signal);
   };
 
   // Fetch
@@ -82,7 +82,11 @@ export const SubmissionPackage = ({
     setPage(1);
     setSubmissionPackages([]);
 
-    getSubmissionPackages(1, debouncedText);
+    const controller = new AbortController();
+    getSubmissionPackages(1, debouncedText, controller.signal);
+    return () => {
+      controller.abort();
+    };
   }, [debouncedText, isFocused]);
 
   return (
@@ -123,7 +127,8 @@ export const SubmissionPackage = ({
             setPage(1);
             setSubmissionPackages([]);
 
-            getSubmissionPackages(1, debouncedText);
+            const controller = new AbortController();
+            getSubmissionPackages(1, debouncedText, controller.signal);
           }}
           onEndReached={handleEndReached}
           data={submissionPackages}

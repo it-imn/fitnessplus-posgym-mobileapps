@@ -23,9 +23,14 @@ import { showMessage } from "react-native-flash-message";
 import Loading from "../../components/ui/Loading";
 import Gap from "../../components/ui/Gap";
 import { useDebounce } from "use-debounce";
-import { CancelToken } from "axios";
 import moment from "moment";
-import { Clock4Icon, ContactIcon, ContactRoundIcon, DumbbellIcon, UsersIcon } from "lucide-react-native";
+import {
+  Clock4Icon,
+  ContactIcon,
+  ContactRoundIcon,
+  DumbbellIcon,
+  UsersIcon,
+} from "lucide-react-native";
 
 const width = Dimensions.get("window").width;
 
@@ -46,14 +51,14 @@ export const WOG = ({
   const getMember = async (
     _page: number,
     _role: "member" | "instructure" | "trainer" | "operational" | "",
-    token?: CancelToken,
+    signal: AbortSignal,
   ) => {
     setIsLoading(true);
     try {
       const { data, hasNext } = await fetchWOGSegment(
         { page: _page, role: _role },
         {
-          cancelToken: token,
+          signal,
         },
       );
       setUsersWOG(prev => [...prev, ...data]); // Append for pagination
@@ -79,7 +84,8 @@ export const WOG = ({
     const nextPage = page + 1;
     setPage(nextPage);
 
-    getMember(nextPage, role);
+    const ctrl = new AbortController();
+    getMember(nextPage, role, ctrl.signal);
   };
 
   // Fetch
@@ -88,7 +94,12 @@ export const WOG = ({
     setPage(1);
     setUsersWOG([]);
 
-    getMember(1, role);
+    const ctrl = new AbortController();
+    getMember(1, role, ctrl.signal);
+
+    return () => {
+      ctrl.abort();
+    };
   }, [role]);
 
   const getCountWOG = async () => {
@@ -154,7 +165,7 @@ export const WOG = ({
             padding: 10,
             borderRadius: 10,
             borderColor: isDarkMode ? colors._white : colors._black,
-            borderWidth: role === 'member' ? 1 : 0,
+            borderWidth: role === "member" ? 1 : 0,
             shadowColor: "#000",
             shadowOffset: {
               width: 0,
@@ -198,7 +209,7 @@ export const WOG = ({
             padding: 10,
             borderRadius: 10,
             borderColor: isDarkMode ? colors._white : colors._black,
-            borderWidth: role === 'trainer' ? 1 : 0,
+            borderWidth: role === "trainer" ? 1 : 0,
             shadowColor: "#000",
             shadowOffset: {
               width: 0,
@@ -242,7 +253,7 @@ export const WOG = ({
             padding: 10,
             borderRadius: 10,
             borderColor: isDarkMode ? colors._white : colors._black,
-            borderWidth: role === 'instructure' ? 1 : 0,
+            borderWidth: role === "instructure" ? 1 : 0,
             shadowColor: "#000",
             shadowOffset: {
               width: 0,
@@ -286,7 +297,7 @@ export const WOG = ({
             padding: 10,
             borderRadius: 10,
             borderColor: isDarkMode ? colors._white : colors._black,
-            borderWidth: role === 'operational' ? 1 : 0,
+            borderWidth: role === "operational" ? 1 : 0,
             shadowColor: "#000",
             shadowOffset: {
               width: 0,
@@ -346,7 +357,8 @@ export const WOG = ({
           setPage(1);
           setUsersWOG([]);
 
-          getMember(1, role);
+          const ctrl = new AbortController();
+          getMember(1, role, ctrl.signal);
         }}
         onEndReached={handleEndReached}
         data={usersWOG}

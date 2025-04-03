@@ -23,7 +23,6 @@ import { fetchGyms } from "../../services/gym";
 import { useSignUpStore } from "../../stores/useSignUpStore";
 import { showMessage } from "react-native-flash-message";
 import { useDebounce } from "use-debounce";
-import { CancelToken } from "axios";
 import Loading from "../../components/ui/Loading";
 import NoData from "../../components/ui/NoData";
 
@@ -44,13 +43,13 @@ const SelectGym = ({
   const getGym = async (
     _page: number,
     _search: string,
-    token?: CancelToken,
+    signal: AbortSignal,
   ) => {
     setIsLoading(true);
     try {
       const { data, hasNext } = await fetchGyms(
         { page: _page, search: _search },
-        { cancelToken: token },
+        { signal },
       );
       if (data) {
         setGyms(prev => [...prev, ...data]);
@@ -83,7 +82,8 @@ const SelectGym = ({
     const nextPage = page + 1;
     setPage(nextPage);
 
-    getGym(nextPage, debouncedText);
+    const ctrl = new AbortController();
+    getGym(nextPage, debouncedText, ctrl.signal);
   };
 
   // Fetch
@@ -92,7 +92,12 @@ const SelectGym = ({
     setPage(1);
     setGyms([]);
 
-    getGym(1, debouncedText);
+    const ctrl = new AbortController();
+    getGym(1, debouncedText, ctrl.signal);
+
+    return () => {
+      ctrl.abort();
+    };
   }, [debouncedText]);
 
   return (
@@ -110,13 +115,14 @@ const SelectGym = ({
         <Gap height={20} />
         <FlatList
           refreshing={isLoading}
-          style={{flex: 1}}
+          style={{ flex: 1 }}
           onRefresh={() => {
             console.log("refresh");
             setPage(1);
             setGyms([]);
 
-            getGym(1, debouncedText);
+            const ctrl = new AbortController();
+            getGym(1, debouncedText, ctrl.signal);
           }}
           onEndReached={handleEndReached}
           data={gyms}

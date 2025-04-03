@@ -1,4 +1,4 @@
-import { AxiosRequestConfig, CancelToken } from "axios";
+import { AxiosRequestConfig } from "axios";
 import { api } from "../../lib/axios";
 import { ClassStd, ClassStdDetail, IChooseSeat, IClassHistory } from "../../lib/definition";
 
