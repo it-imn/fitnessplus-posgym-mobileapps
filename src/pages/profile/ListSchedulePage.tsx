@@ -30,7 +30,7 @@ import { fetchListSchedules } from "../../services/schedule";
 import { showMessage } from "react-native-flash-message";
 import { IScheduleActivity } from "../../lib/definition";
 import { CancelToken } from "axios";
-import moment from "moment";
+import moment, { duration } from "moment";
 
 interface ISchedule {
   date: string;
@@ -111,7 +111,10 @@ export const ListSchedule = ({
         backgroundColor: isDarkMode ? colors._black2 : colors._white,
       }}>
       <StatusBarComp />
-      <Header teks="Schedule Activity" onPress={() => navigation.goBack()} />
+      <Header
+        teks="Schedule Activity"
+        onPress={() => navigation.replace("MainApp")}
+      />
       <View
         style={{
           flexDirection: "row",
@@ -230,7 +233,7 @@ const Card = ({
           color: isDarkMode ? colors._white : colors._black,
           paddingBottom: 8,
         }}>
-        {moment(scheduleActivity.day_date).format("dddd, DD MMMM YYYY")}
+        {scheduleActivity.order_code}
       </Text>
       <View
         style={{
@@ -260,6 +263,7 @@ const Card = ({
               fontFamily: fonts.primary[600],
               color: colors._black,
             }}>
+            {moment(scheduleActivity.day_date).format("dddd, DD MMMM YYYY")}{" "}
             {scheduleActivity.start_time} {scheduleActivity.activity}
           </Text>
 
@@ -271,7 +275,7 @@ const Card = ({
             flexDirection: "row",
             alignItems: "center",
           }}>
-          {scheduleActivity.start_time && scheduleActivity.finish_time ? (
+          {scheduleActivity.duration !== 0 ? (
             <>
               <Clock size={16} color={colors._grey4} />
               <Gap width={8} />
@@ -281,12 +285,7 @@ const Card = ({
                   fontFamily: fonts.primary[400],
                   color: colors._grey4,
                 }}>
-                {scheduleActivity.start_time && scheduleActivity.finish_time
-                  ? `${getDuration(
-                      scheduleActivity.start_time,
-                      scheduleActivity.finish_time,
-                    )}`
-                  : ""}
+                {scheduleActivity.duration}
               </Text>
               <Gap width={16} />
             </>

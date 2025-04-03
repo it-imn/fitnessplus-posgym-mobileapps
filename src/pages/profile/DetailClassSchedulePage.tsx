@@ -151,7 +151,7 @@ export const DetailClassSchedule = ({
               color: isDarkMode ? colors._grey4 : colors._grey3,
               fontFamily: fonts.primary[400],
             }}>
-            Book Number
+            Order Code
           </Text>
           <Gap height={4} />
           <Text
@@ -160,7 +160,7 @@ export const DetailClassSchedule = ({
               fontFamily: fonts.primary[400],
               color: isDarkMode ? colors._white : colors._black,
             }}>
-            {scheduleActivity?.book_number}
+            {scheduleActivity?.order_code}
           </Text>
           <Gap height={16} />
           <View

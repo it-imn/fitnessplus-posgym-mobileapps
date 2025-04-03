@@ -483,10 +483,12 @@ export interface IScheduleActivity {
   activity: string;
   day: string;
   day_date: string;
+  order_code: string;
   finish_time?: string;
   id: number;
   opened_at?: string;
   quota: number;
+  duration: number;
   start_time?: string;
   status?: string;
   trainer: string;
@@ -497,6 +499,7 @@ export interface IDetailScheduleActivity {
   book_number?: string;
   id: number;
   qr_code: string;
+  order_code: string;
   schedule_date: string;
   schedule_day: string;
   schedule_description?: string;
