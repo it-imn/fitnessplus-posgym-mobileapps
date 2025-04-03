@@ -515,4 +515,5 @@ export interface IDetailScheduleActivity {
   trainer_periode: number;
   trainer_session: number;
   trainer_spesification: string;
+  seat_id: number;
 }

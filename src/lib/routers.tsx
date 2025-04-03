@@ -58,6 +58,7 @@ import ChooseSeat from "../pages/home/ChooseSeatPage";
 import { ListSchedule } from "../pages/profile/ListSchedulePage";
 import { DetailClassSchedule } from "../pages/profile/DetailClassSchedulePage";
 import { DetailPTSchedule } from "../pages/profile/DetailPTSchedulePage";
+import CheckinClass from "../pages/profile/CheckinClassPage";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -141,6 +142,7 @@ export const Router = () => {
       <Stack.Screen name="ListSchedule" component={ListSchedule} />
       <Stack.Screen name="DetailClassSchedule" component={DetailClassSchedule} />
       <Stack.Screen name="DetailPTSchedule" component={DetailPTSchedule} />
+      <Stack.Screen name="CheckinClass" component={CheckinClass} />
       {/*
       <Stack.Screen name="UserSpec" component={UserSpec} />
       <Stack.Screen name="BodyMass" component={BodyMass} />

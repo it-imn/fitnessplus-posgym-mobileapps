@@ -130,4 +130,7 @@ export type RootStackParamList = {
   DetailPTSchedule: {
     id: number;
   };
+  CheckinClass: {
+    seat_id: number;
+  }
 };

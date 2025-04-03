@@ -41,3 +41,18 @@ export const fetchDetailSchedule = async (type: "class" | "pt", id: number) => {
       throw new Error(err.response?.data.message);
     });
 };
+
+export const checkInSchedule = async (qr_code: string, seat_id: number) => {
+  return api
+    .post("/member/seat/scan", { qr_code, seat_id })
+    .then(({ data }) => {
+      console.log(data);
+      return {
+        message: data.message,
+      };
+    })
+    .catch(err => {
+      console.error("error check in schedule", err.response?.data.message);
+      throw new Error(err.response?.data.message);
+    });
+};

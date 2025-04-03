@@ -359,12 +359,14 @@ export const DetailClassSchedule = ({
           paddingHorizontal: 16,
         }}>
         <ButtonColor
-          backColor={colors._red}
+          backColor={colors._blue2}
           textColor={colors._white}
-          teks={"Cancel Booking"}
+          teks={"Scan QR"}
           disabled={isLoading}
           onPress={() => {
-            setIsViewModal(true);
+            navigation.navigate("CheckinClass", {
+              seat_id: scheduleActivity?.seat_id || 0,
+            });
           }}
         />
       </View>
@@ -374,12 +376,12 @@ export const DetailClassSchedule = ({
           paddingHorizontal: 16,
         }}>
         <ButtonColor
-          backColor={colors._blue2}
+          backColor={colors._red}
           textColor={colors._white}
-          teks={"Close"}
+          teks={"Cancel Booking"}
           disabled={isLoading}
           onPress={() => {
-            navigation.goBack();
+            setIsViewModal(true);
           }}
         />
       </View>
