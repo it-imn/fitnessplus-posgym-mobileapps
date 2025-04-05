@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import {
   Platform,
   SafeAreaView,
@@ -41,6 +41,8 @@ const CheckinClass = ({
   const { isDarkMode } = useContext(ThemeContext);
   const device = useCameraDevice("back");
 
+  const [isScanned, setIsScanned] = React.useState<boolean>(false);
+
   // check if camera page is active
   const isFocused = useIsFocused();
   const isForeground = useIsForeground();
@@ -70,6 +72,10 @@ const CheckinClass = ({
   });
 
   const handlelink = async (c: Code) => {
+    if (isScanned) {
+      return;
+    }
+
     const code = c.value;
 
     if (!code) {
@@ -82,6 +88,8 @@ const CheckinClass = ({
       });
       return;
     }
+
+    setIsScanned(true);
 
     setIsLoading(true);
     try {
@@ -105,6 +113,14 @@ const CheckinClass = ({
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (isScanned) {
+      setTimeout(() => {
+        setIsScanned(false);
+      }, 5000);
+    }
+  }, [isScanned]);
 
   return (
     <SafeAreaView style={styles.container(isDarkMode)}>
