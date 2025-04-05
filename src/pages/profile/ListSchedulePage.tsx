@@ -234,15 +234,37 @@ const Card = ({
 
   return (
     <TouchableOpacity onPress={onPress}>
-      <Text
+      <View
         style={{
-          fontSize: 16,
-          fontFamily: fonts.primary[600],
-          color: isDarkMode ? colors._white : colors._black,
+          justifyContent: "space-between",
+          alignContent: "center",
+          flexDirection: "row",
           paddingBottom: 8,
         }}>
-        {scheduleActivity.order_code}
-      </Text>
+        <Text
+          style={{
+            fontSize: 16,
+            fontFamily: fonts.primary[600],
+            color: isDarkMode ? colors._white : colors._black,
+          }}>
+          {scheduleActivity.order_code}
+        </Text>
+        {scheduleActivity.status && (
+          <View
+            style={{
+              backgroundColor:
+                scheduleActivity.status === "open"
+                  ? colors._grey3
+                  : scheduleActivity.status === "finish"
+                  ? colors._red
+                  : colors._green,
+              borderRadius: 8,
+              width: 16,
+              height: 16,
+            }}
+          />
+        )}
+      </View>
       <View
         style={{
           backgroundColor:
