@@ -354,38 +354,42 @@ export const DetailClassSchedule = ({
         </View>
       </ScrollView>
 
-      <View
-        style={{
-          paddingHorizontal: 16,
-        }}>
-        <ButtonColor
-          backColor={colors._blue2}
-          textColor={colors._white}
-          teks={"Scan QR"}
-          disabled={isLoading}
-          onPress={() => {
-            navigation.navigate("CheckinClass", {
-              seat_id: scheduleActivity?.seat_id || 0,
-            });
-          }}
-        />
-      </View>
-      <Gap height={8} />
-      <View
-        style={{
-          paddingHorizontal: 16,
-        }}>
-        <ButtonColor
-          backColor={colors._red}
-          textColor={colors._white}
-          teks={"Cancel Booking"}
-          disabled={isLoading}
-          onPress={() => {
-            setIsViewModal(true);
-          }}
-        />
-      </View>
-      <Gap height={16} />
+      {scheduleActivity?.status === "booking" ? (
+        <>
+          <View
+            style={{
+              paddingHorizontal: 16,
+            }}>
+            <ButtonColor
+              backColor={colors._blue2}
+              textColor={colors._white}
+              teks={"Scan QR"}
+              disabled={isLoading}
+              onPress={() => {
+                navigation.navigate("CheckinClass", {
+                  seat_id: scheduleActivity?.seat_id || 0,
+                });
+              }}
+            />
+          </View>
+          <Gap height={8} />
+          <View
+            style={{
+              paddingHorizontal: 16,
+            }}>
+            <ButtonColor
+              backColor={colors._red}
+              textColor={colors._white}
+              teks={"Cancel Booking"}
+              disabled={isLoading}
+              onPress={() => {
+                setIsViewModal(true);
+              }}
+            />
+          </View>
+          <Gap height={16} />
+        </>
+      ) : null}
 
       <Modal
         animationType="fade"
