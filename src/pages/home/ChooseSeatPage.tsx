@@ -248,6 +248,8 @@ const Item = ({
           ? colors._grey3
           : item.selected
           ? colors._red
+          : item.seat_status === "joined"
+          ? colors._blue2
           : colors._green,
         margin: 8,
         justifyContent: "center",
