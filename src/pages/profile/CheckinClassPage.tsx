@@ -98,6 +98,7 @@ const CheckinClass = ({
         backgroundColor: colors._green,
         color: colors._white,
       });
+      navigation.replace("ListSchedule");
     } catch (error: any) {
       showMessage({
         message: error.message || "An error occured",
