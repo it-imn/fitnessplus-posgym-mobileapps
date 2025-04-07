@@ -266,8 +266,7 @@ const Card = ({
       <View
         style={{
           padding: 16,
-          backgroundColor:
-            colors._grey2,
+          backgroundColor: colors._grey2,
           borderBottomEndRadius: 8,
           borderBottomStartRadius: 8,
         }}>
@@ -282,8 +281,7 @@ const Card = ({
               fontFamily: fonts.primary[600],
               color: colors._black,
             }}>
-            {moment(scheduleActivity.day_date).format("DD-MM-YYYY")}{" "}
-            {scheduleActivity.activity}
+            {scheduleActivity.day_date} {scheduleActivity.activity}
           </Text>
 
           <ChevronRightIcon size={16} color={colors._grey4} />
