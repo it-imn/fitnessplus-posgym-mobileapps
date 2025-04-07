@@ -246,7 +246,7 @@ const Item = ({
         height: 48,
         backgroundColor: isSelected
           ? colors._grey3
-          : item.selected
+          : item.seat_status === "booking"
           ? colors._red
           : item.seat_status === "joined"
           ? colors._blue2
