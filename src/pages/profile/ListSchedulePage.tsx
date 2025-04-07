@@ -149,7 +149,7 @@ export const ListSchedule = ({
       <FlatList
         style={{
           flex: 1,
-          marginHorizontal: 24,
+          paddingHorizontal: 24,
         }}
         data={schedules}
         renderItem={({ item }) => (
@@ -249,26 +249,17 @@ const Card = ({
           }}>
           {scheduleActivity.order_code}
         </Text>
-        {scheduleActivity.status && (
-          <View
-            style={{
-              backgroundColor:
-                scheduleActivity.status === "open"
-                  ? colors._grey3
-                  : scheduleActivity.status === "finish"
-                  ? colors._red
-                  : colors._green,
-              borderRadius: 8,
-              width: 16,
-              height: 16,
-            }}
-          />
-        )}
       </View>
       <View
         style={{
           backgroundColor:
-            scheduleActivity.type === "class" ? colors._green : colors._blue2,
+            scheduleActivity.status === "open"
+              ? colors._grey3
+              : scheduleActivity.status === "finish"
+              ? colors._red
+              : scheduleActivity.status === "booking"
+              ? colors._green
+              : colors._blue2,
           height: 16,
         }}
       />
@@ -276,9 +267,7 @@ const Card = ({
         style={{
           padding: 16,
           backgroundColor:
-            scheduleActivity.type === "class"
-              ? colors._backGreen
-              : colors._backBlue,
+            colors._grey2,
           borderBottomEndRadius: 8,
           borderBottomStartRadius: 8,
         }}>
