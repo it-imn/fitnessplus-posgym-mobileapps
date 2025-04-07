@@ -36,6 +36,7 @@ import moment from "moment";
 import { cancelBooking } from "../../services/class";
 import { Input } from "../../components/ui/Input";
 import { ButtonColor } from "../../components/ui/Button";
+import { useIsFocused } from "@react-navigation/native";
 
 export const DetailClassSchedule = ({
   navigation,
@@ -49,6 +50,8 @@ export const DetailClassSchedule = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isViewModal, setIsViewModal] = useState<boolean>(false);
   const [reason, setReason] = useState<string>("");
+
+  const isFocused = useIsFocused();
 
   const onCancel = async () => {
     setIsLoading(true);
@@ -65,6 +68,8 @@ export const DetailClassSchedule = ({
           backgroundColor: colors._green,
           color: colors._white,
         });
+
+        navigation.goBack();
       }
     } catch (err: any) {
       showMessage({
@@ -100,8 +105,8 @@ export const DetailClassSchedule = ({
   };
 
   useEffect(() => {
-    getScheduleActivity();
-  }, []);
+    isFocused && getScheduleActivity();
+  }, [isFocused]);
 
   const [filter, setFilter] = useState<
     "schedule" | "description" | "instructor"
