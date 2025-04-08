@@ -30,6 +30,7 @@ import { fetchListSchedules } from "../../services/schedule";
 import { showMessage } from "react-native-flash-message";
 import { IScheduleActivity } from "../../lib/definition";
 import moment, { duration } from "moment";
+import { useIsFocused } from "@react-navigation/native";
 
 interface ISchedule {
   date: string;
@@ -50,6 +51,8 @@ export const ListSchedule = ({
   const [filter, setFilter] = useState<"all" | "class" | "pt">("all");
   const [schedules, setSchedules] = useState<IScheduleActivity[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const isFocused = useIsFocused()
 
   const [page, setPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(true);
@@ -108,7 +111,7 @@ export const ListSchedule = ({
     return () => {
       ctrl.abort();
     };
-  }, [filter]);
+  }, [filter, isFocused]);
 
   return (
     <SafeAreaView
