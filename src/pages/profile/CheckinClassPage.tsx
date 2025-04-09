@@ -27,7 +27,7 @@ import {
 import { useIsForeground } from "../../hooks/useIsForeground";
 import { ArrowBlack, ArrowWhite } from "../../assets";
 import Loading from "../../components/ui/Loading";
-import { checkInSchedule } from "../../services/schedule";
+import { checkInSchedule, checkInSeat } from "../../services/schedule";
 
 const CheckinClass = ({
   navigation,
@@ -36,7 +36,7 @@ const CheckinClass = ({
   NativeStackScreenProps<RootStackParamList, "CheckinClass">,
   BottomTabScreenProps<TabParamList, "Home">
 >) => {
-  const { seat_id } = route.params;
+  const { seat_id, type } = route.params;
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const { isDarkMode } = useContext(ThemeContext);
   const device = useCameraDevice("back");
@@ -90,14 +90,25 @@ const CheckinClass = ({
 
     setIsLoading(true);
     try {
-      const { message } = await checkInSchedule(code, seat_id);
-      showMessage({
-        message: message,
-        type: "success",
-        icon: "success",
-        backgroundColor: colors._green,
-        color: colors._white,
-      });
+     if (type === "class"){
+        const { message } = await checkInSeat(code, seat_id);
+        showMessage({
+          message: message,
+          type: "success",
+          icon: "success",
+          backgroundColor: colors._green,
+          color: colors._white,
+        });
+     } else {
+        const { message } = await checkInSchedule(code, seat_id);
+        showMessage({
+          message: message,
+          type: "success",
+          icon: "success",
+          backgroundColor: colors._green,
+          color: colors._white,
+        });
+     }
       navigation.goBack();
     } catch (error: any) {
       showMessage({

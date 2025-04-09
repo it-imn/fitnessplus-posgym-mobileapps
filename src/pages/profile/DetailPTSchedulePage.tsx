@@ -29,6 +29,7 @@ import { showMessage } from "react-native-flash-message";
 import Loading from "../../components/ui/Loading";
 import { IDetailScheduleActivity } from "../../lib/definition";
 import moment from "moment";
+import { ButtonColor } from "../../components/ui/Button";
 
 export const DetailPTSchedule = ({
   navigation,
@@ -172,6 +173,29 @@ export const DetailPTSchedule = ({
           {moment(scheduleActivity?.schedule_date).format("dddd, DD MMMM YYYY")}
         </Text>
       </ScrollView>
+
+      {scheduleActivity?.status === "open" ? (
+        <>
+          <View
+            style={{
+              paddingHorizontal: 16,
+            }}>
+            <ButtonColor
+              backColor={colors._blue2}
+              textColor={colors._white}
+              teks={"Scan QR"}
+              disabled={isLoading}
+              onPress={() => {
+                navigation.navigate("CheckinClass", {
+                  seat_id: scheduleActivity?.seat_id || 0,
+                  type: "pt",
+                });
+              }}
+            />
+          </View>
+          <Gap height={16} />
+        </>
+      ) : null}
       {isLoading && <Loading />}
     </SafeAreaView>
   );

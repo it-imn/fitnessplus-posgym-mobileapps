@@ -132,5 +132,6 @@ export type RootStackParamList = {
   };
   CheckinClass: {
     seat_id: number;
+    type: "pt" | "class";
   }
 };

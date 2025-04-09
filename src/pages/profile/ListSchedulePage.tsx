@@ -22,6 +22,7 @@ import {
   DoorOpen,
   MapIcon,
   Sofa,
+  SofaIcon,
   User2,
   UserIcon,
 } from "lucide-react-native";
@@ -294,6 +295,7 @@ const Card = ({
           style={{
             flexDirection: "row",
             alignItems: "center",
+            flexWrap: "wrap",
           }}>
           <Clock size={16} color={colors._grey4} />
           <Gap width={8} />
@@ -342,6 +344,24 @@ const Card = ({
                 color: colors._grey4,
               }}>
               {scheduleActivity.type === "class" ? "Class" : "PT"}
+            </Text>
+          </View>
+          <Gap width={16} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}>
+            <SofaIcon size={16} color={colors._grey4} />
+            <Gap width={8} />
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: fonts.primary[400],
+                color: colors._grey4,
+              }}>
+              {scheduleActivity.status}
             </Text>
           </View>
           {/* {scheduleActivity ? (

@@ -373,6 +373,7 @@ export const DetailClassSchedule = ({
               onPress={() => {
                 navigation.navigate("CheckinClass", {
                   seat_id: scheduleActivity?.seat_id || 0,
+                  type: "class",
                 });
               }}
             />
