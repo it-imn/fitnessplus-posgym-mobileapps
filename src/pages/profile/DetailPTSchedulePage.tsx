@@ -174,7 +174,7 @@ export const DetailPTSchedule = ({
         </Text>
       </ScrollView>
 
-      {scheduleActivity?.status === "open" ? (
+      {scheduleActivity?.status === "booking" ? (
         <>
           <View
             style={{
