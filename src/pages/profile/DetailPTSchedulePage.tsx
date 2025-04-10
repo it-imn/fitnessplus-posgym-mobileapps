@@ -18,9 +18,11 @@ import Header from "../../components/ui/Header";
 import { FlatList } from "react-native-gesture-handler";
 import Gap from "../../components/ui/Gap";
 import {
+  Camera,
   ChevronRightIcon,
   ChevronsRightIcon,
   MapIcon,
+  Scan,
   User2,
   UserIcon,
 } from "lucide-react-native";
@@ -152,6 +154,32 @@ export const DetailPTSchedule = ({
             fontFamily: fonts.primary[600],
             color: isDarkMode ? colors._white : colors._black,
           }}>
+          Package
+        </Text>
+        <Gap height={4} />
+        <View
+          style={{
+            height: 2,
+            width: "100%",
+            backgroundColor: colors._grey4,
+          }}
+        />
+        <Gap height={4} />
+        <Text
+          style={{
+            fontSize: 14,
+            fontFamily: fonts.primary[600],
+            color: isDarkMode ? colors._white : colors._black,
+          }}>
+          {scheduleActivity?.schedule_name}
+        </Text>
+        <Gap height={16} />
+        <Text
+          style={{
+            fontSize: 16,
+            fontFamily: fonts.primary[600],
+            color: isDarkMode ? colors._white : colors._black,
+          }}>
           Next Schedule
         </Text>
         <Gap height={4} />
@@ -168,34 +196,83 @@ export const DetailPTSchedule = ({
             fontSize: 14,
             fontFamily: fonts.primary[600],
             color: isDarkMode ? colors._white : colors._black,
-            paddingBottom: 8,
           }}>
-          {moment(scheduleActivity?.schedule_date).format("dddd, DD MMMM YYYY")}
+          {scheduleActivity?.schedule_next_day},{" "}
+          {scheduleActivity?.schedule_next_date}
         </Text>
-      </ScrollView>
-
-      {scheduleActivity?.status === "booking" ? (
-        <>
-          <View
-            style={{
-              paddingHorizontal: 16,
-            }}>
-            <ButtonColor
-              backColor={colors._blue2}
-              textColor={colors._white}
-              teks={"Scan QR"}
-              disabled={isLoading}
+        <Gap height={16} />
+        <Text
+          style={{
+            fontSize: 16,
+            fontFamily: fonts.primary[600],
+            color: isDarkMode ? colors._white : colors._black,
+          }}>
+          Session Check In
+        </Text>
+        <Gap height={4} />
+        <View
+          style={{
+            height: 2,
+            width: "100%",
+            backgroundColor: colors._grey4,
+          }}
+        />
+        <Gap height={4} />
+        <Text
+          style={{
+            fontSize: 14,
+            fontFamily: fonts.primary[600],
+            color: isDarkMode ? colors._white : colors._black,
+          }}>
+          {scheduleActivity?.schedule_day}, {scheduleActivity?.schedule_date}{" "}
+          {scheduleActivity?.schedule_start}
+        </Text>
+        {scheduleActivity?.status === "booking" ? (
+          <>
+            <Gap height={8} />
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                alignItems: "center",
+                padding: 16,
+                backgroundColor: isDarkMode ? colors._black : colors._backBlue,
+                borderRadius: 10,
+              }}
               onPress={() => {
                 navigation.navigate("CheckinClass", {
                   seat_id: scheduleActivity?.seat_id || 0,
                   type: "pt",
                 });
-              }}
-            />
-          </View>
-          <Gap height={16} />
-        </>
-      ) : null}
+              }}>
+              <Scan height={48} width={48} color={colors._blue2} />
+              <Gap width={8} />
+              <View>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontFamily: fonts.primary[600],
+                    color: isDarkMode ? colors._white : colors._black,
+                    flexShrink: 1,
+                  }}>
+                  QR Scanning
+                </Text>
+                <Gap height={4} />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontFamily: fonts.primary[600],
+                    color: isDarkMode ? colors._white : colors._black,
+                    flexShrink: 1,
+                  }}>
+                  Scan your personal trainer's QR code
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </>
+        ) : null}
+      </ScrollView>
+
       {isLoading && <Loading />}
     </SafeAreaView>
   );

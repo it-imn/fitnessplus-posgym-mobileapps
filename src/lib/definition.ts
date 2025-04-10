@@ -517,4 +517,6 @@ export interface IDetailScheduleActivity {
   trainer_spesification: string;
   seat_id: number;
   status: string;
+  schedule_next_day: string;
+  schedule_next_date: string;
 }
