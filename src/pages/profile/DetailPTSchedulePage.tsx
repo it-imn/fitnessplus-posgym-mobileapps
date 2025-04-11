@@ -32,6 +32,7 @@ import Loading from "../../components/ui/Loading";
 import { IDetailScheduleActivity } from "../../lib/definition";
 import moment from "moment";
 import { ButtonColor } from "../../components/ui/Button";
+import { useIsFocused } from "@react-navigation/native";
 
 export const DetailPTSchedule = ({
   navigation,
@@ -43,6 +44,7 @@ export const DetailPTSchedule = ({
   const [isLoading, setIsLoading] = useState(false);
   const [scheduleActivity, setScheduleActivity] =
     useState<IDetailScheduleActivity | null>(null);
+  const isFocused = useIsFocused();
 
   const getScheduleActivity = async () => {
     setIsLoading(true);
@@ -65,8 +67,8 @@ export const DetailPTSchedule = ({
   };
 
   useEffect(() => {
-    getScheduleActivity();
-  }, []);
+    isFocused && getScheduleActivity();
+  }, [isFocused]);
 
   return (
     <SafeAreaView
