@@ -53,7 +53,7 @@ export const ListSchedule = ({
   const [schedules, setSchedules] = useState<IScheduleActivity[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const isFocused = useIsFocused()
+  const isFocused = useIsFocused();
 
   const [page, setPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(true);
@@ -242,6 +242,7 @@ const Card = ({
         style={{
           justifyContent: "space-between",
           alignContent: "center",
+          alignItems: "center",
           flexDirection: "row",
           paddingBottom: 8,
         }}>
@@ -251,20 +252,37 @@ const Card = ({
             fontFamily: fonts.primary[600],
             color: isDarkMode ? colors._white : colors._black,
           }}>
-          {scheduleActivity.order_code}
+          {scheduleActivity.day_date}
         </Text>
+        <View
+          style={{
+            paddingVertical: 8,
+            paddingHorizontal: 16,
+            borderRadius: 50,
+            backgroundColor:
+              scheduleActivity.status === "open"
+                ? colors._grey3
+                : scheduleActivity.status === "finish"
+                ? colors._red
+                : scheduleActivity.status === "booking"
+                ? colors._green
+                : colors._blue2,
+          }}>
+          <Text
+            style={{
+              fontSize: 14,
+              fontFamily: fonts.primary[400],
+              color: colors._white,
+              textAlign: "center",
+            }}>
+            {scheduleActivity.status}
+          </Text>
+        </View>
       </View>
       <View
         style={{
-          backgroundColor:
-            scheduleActivity.status === "open"
-              ? colors._grey3
-              : scheduleActivity.status === "finish"
-              ? colors._red
-              : scheduleActivity.status === "booking"
-              ? colors._green
-              : colors._blue2,
-          height: 16,
+          backgroundColor: colors._grey3,
+          height: 4,
         }}
       />
       <View
@@ -285,7 +303,7 @@ const Card = ({
               fontFamily: fonts.primary[600],
               color: colors._black,
             }}>
-            {scheduleActivity.day_date} {scheduleActivity.activity}
+            {scheduleActivity.trainer} - {scheduleActivity.activity}
           </Text>
 
           <ChevronRightIcon size={16} color={colors._grey4} />
@@ -311,7 +329,7 @@ const Card = ({
               : ""}
           </Text>
           <Gap width={16} />
-          <View
+          {/* <View
             style={{
               flexDirection: "row",
               justifyContent: "center",
@@ -328,7 +346,7 @@ const Card = ({
               {scheduleActivity.trainer}
             </Text>
           </View>
-          <Gap width={16} />
+          <Gap width={16} /> */}
           <View
             style={{
               flexDirection: "row",
@@ -346,7 +364,7 @@ const Card = ({
               {scheduleActivity.type === "class" ? "Class" : "PT"}
             </Text>
           </View>
-          <Gap width={16} />
+          {/* <Gap width={16} />
           <View
             style={{
               flexDirection: "row",
@@ -363,7 +381,7 @@ const Card = ({
               }}>
               {scheduleActivity.status}
             </Text>
-          </View>
+          </View> */}
           {/* {scheduleActivity ? (
             <>
               <Gap width={16} />
