@@ -143,8 +143,8 @@ export const DetailPTSchedule = ({
                   color: isDarkMode ? colors._white : colors._black,
                   alignSelf: "flex-end",
                 }}>
-                {scheduleActivity?.trainer_session}/
-                {scheduleActivity?.trainer_periode} Session
+                {scheduleActivity?.book_number}/
+                {scheduleActivity?.trainer_session} Session
               </Text>
             </View>
           </View>
@@ -209,7 +209,38 @@ export const DetailPTSchedule = ({
             fontFamily: fonts.primary[600],
             color: isDarkMode ? colors._white : colors._black,
           }}>
-          Session Check In
+          Status
+        </Text>
+        <Gap height={4} />
+        <View
+          style={{
+            height: 2,
+            width: "100%",
+            backgroundColor: colors._grey4,
+          }}
+        />
+        <Gap height={4} />
+        <Text
+          style={{
+            fontSize: 14,
+            fontFamily: fonts.primary[600],
+            color: isDarkMode ? colors._white : colors._black,
+          }}>
+          {scheduleActivity?.status}
+        </Text>
+        <Gap height={16} />
+        <Text
+          style={{
+            fontSize: 16,
+            fontFamily: fonts.primary[600],
+            color: isDarkMode ? colors._white : colors._black,
+          }}>
+          Session{" "}
+          {scheduleActivity?.status === "booking"
+            ? "Checkin"
+            : scheduleActivity?.status === "joined"
+            ? "Checkout"
+            : ""}
         </Text>
         <Gap height={4} />
         <View
@@ -227,7 +258,10 @@ export const DetailPTSchedule = ({
             color: isDarkMode ? colors._white : colors._black,
           }}>
           {scheduleActivity?.schedule_day}, {scheduleActivity?.schedule_date}{" "}
-          {scheduleActivity?.schedule_start}
+          {scheduleActivity?.schedule_start}{" "}
+          {scheduleActivity?.status === "finish"
+            ? ` - ${scheduleActivity?.schedule_end}`
+            : ""}
         </Text>
         {scheduleActivity?.status !== "finish" ? (
           <>

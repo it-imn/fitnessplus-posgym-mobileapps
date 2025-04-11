@@ -497,7 +497,7 @@ export interface IScheduleActivity {
 }
 
 export interface IDetailScheduleActivity {
-  book_number?: string;
+  book_number: string;
   id: number;
   qr_code: string;
   order_code: string;
