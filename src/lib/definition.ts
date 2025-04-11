@@ -493,6 +493,7 @@ export interface IScheduleActivity {
   status?: string;
   trainer: string;
   type: "pt" | "class";
+  location: string;
 }
 
 export interface IDetailScheduleActivity {

@@ -396,6 +396,18 @@ const Card = ({
               </Text>
             </>
           ) : null} */}
+          <Gap width={16} />
+          <SofaIcon size={16} color={colors._grey4} />
+          <Gap width={8} />
+          <Text
+            style={{
+              fontSize: 12,
+              fontFamily: fonts.primary[400],
+              color: colors._grey4,
+            }}>
+            {scheduleActivity.location}
+          </Text>
+          <Gap width={16} />
         </View>
       </View>
     </TouchableOpacity>
