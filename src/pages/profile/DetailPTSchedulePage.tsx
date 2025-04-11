@@ -229,7 +229,7 @@ export const DetailPTSchedule = ({
           {scheduleActivity?.schedule_day}, {scheduleActivity?.schedule_date}{" "}
           {scheduleActivity?.schedule_start}
         </Text>
-        {scheduleActivity?.status === "booking" ? (
+        {scheduleActivity?.status !== "finish" ? (
           <>
             <Gap height={8} />
             <TouchableOpacity
