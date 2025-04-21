@@ -81,6 +81,9 @@ export type RootStackParamList = {
   Loaning: {
     code: string;
   };
+  Returning: {
+    code: string;
+  }
   ListPT: undefined;
   Voucher: undefined;
   WillTransaction: undefined;

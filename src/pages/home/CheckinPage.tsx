@@ -99,86 +99,89 @@ const Checkin = ({
       }
 
       if (status === "checkout") {
-        openModal({
-          children: (
-            <>
-              <Text
-                style={{
-                  fontFamily: fonts.primary[400],
-                  fontSize: 16,
-                  color: isDarkMode ? colors._white : colors._black,
-                  textAlign: "center",
-                }}>
-                Are you sure you want to checkout?
-              </Text>
-              <Gap height={16} />
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  gap: 16,
-                }}>
-                <TouchableOpacity
-                  style={{
-                    alignSelf: "center",
-                    backgroundColor: colors._grey2,
-                    padding: 12,
-                    borderRadius: 8,
-                  }}
-                  onPress={() => closeModal()}>
-                  <Text
-                    style={{
-                      color: colors._black,
-                      fontFamily: fonts.primary[400],
-                      fontSize: 16,
-                    }}>
-                    No
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    alignSelf: "center",
-                    backgroundColor: colors._red,
-                    padding: 12,
-                    borderRadius: 8,
-                  }}
-                  onPress={async () => {
-                    closeModal();
-                    setIsLoading(true);
-                    try {
-                      await checkIn(code);
-                      showMessage({
-                        message: "Checkout Success",
-                        type: "success",
-                        icon: "success",
-                        backgroundColor: colors._green,
-                        color: colors._white,
-                      });
-                      navigation.replace("MainApp");
-                    } catch (error: any) {
-                      showMessage({
-                        message: error.message || "An error occured",
-                        type: "warning",
-                        icon: "warning",
-                        backgroundColor: colors._red,
-                        color: colors._white,
-                      });
-                    } finally {
-                      setIsLoading(false);
-                    }
-                  }}>
-                  <Text
-                    style={{
-                      color: colors._white,
-                      fontFamily: fonts.primary[400],
-                      fontSize: 16,
-                    }}>
-                    Yes
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          ),
+        // openModal({
+        //   children: (
+        //     <>
+        //       <Text
+        //         style={{
+        //           fontFamily: fonts.primary[400],
+        //           fontSize: 16,
+        //           color: isDarkMode ? colors._white : colors._black,
+        //           textAlign: "center",
+        //         }}>
+        //         Are you sure you want to checkout?
+        //       </Text>
+        //       <Gap height={16} />
+        //       <View
+        //         style={{
+        //           flexDirection: "row",
+        //           justifyContent: "center",
+        //           gap: 16,
+        //         }}>
+        //         <TouchableOpacity
+        //           style={{
+        //             alignSelf: "center",
+        //             backgroundColor: colors._grey2,
+        //             padding: 12,
+        //             borderRadius: 8,
+        //           }}
+        //           onPress={() => closeModal()}>
+        //           <Text
+        //             style={{
+        //               color: colors._black,
+        //               fontFamily: fonts.primary[400],
+        //               fontSize: 16,
+        //             }}>
+        //             No
+        //           </Text>
+        //         </TouchableOpacity>
+        //         <TouchableOpacity
+        //           style={{
+        //             alignSelf: "center",
+        //             backgroundColor: colors._red,
+        //             padding: 12,
+        //             borderRadius: 8,
+        //           }}
+        //           onPress={async () => {
+        //             closeModal();
+        //             setIsLoading(true);
+        //             try {
+        //               await checkIn(code);
+        //               showMessage({
+        //                 message: "Checkout Success",
+        //                 type: "success",
+        //                 icon: "success",
+        //                 backgroundColor: colors._green,
+        //                 color: colors._white,
+        //               });
+        //               navigation.replace("MainApp");
+        //             } catch (error: any) {
+        //               showMessage({
+        //                 message: error.message || "An error occured",
+        //                 type: "warning",
+        //                 icon: "warning",
+        //                 backgroundColor: colors._red,
+        //                 color: colors._white,
+        //               });
+        //             } finally {
+        //               setIsLoading(false);
+        //             }
+        //           }}>
+        //           <Text
+        //             style={{
+        //               color: colors._white,
+        //               fontFamily: fonts.primary[400],
+        //               fontSize: 16,
+        //             }}>
+        //             Yes
+        //           </Text>
+        //         </TouchableOpacity>
+        //       </View>
+        //     </>
+        //   ),
+        // });
+        navigation.replace("Returning", {
+          code: code,
         });
         return;
       }

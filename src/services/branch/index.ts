@@ -20,14 +20,18 @@ const loanFacility = async (
   facility_id: number,
   guarantee: string,
   number: number,
+  check_id: number,
 ) => {
+  const req = {
+    facility_id: facility_id,
+    guarantee: guarantee,
+    number: number,
+    status: "checkin",
+    checkin_id: check_id,
+  };
+  console.log(req, "loan facility");
   return api
-    .post("/branch/facilities/save", {
-      facility_id: facility_id,
-      guarantee: guarantee,
-      number: number,
-      status: "checkin",
-    })
+    .post("/branch/facilities/save", req)
     .then(({ data }) => {
       return {
         data: data.result,
@@ -39,4 +43,19 @@ const loanFacility = async (
     });
 };
 
-export { fetchFacilites, loanFacility };
+const fetchLoanedFacilities = async (checkId: number) => {
+  return api
+    .get(`/member/facility_checkin/${checkId}`)
+    .then(({ data }) => {
+      console.log(data, "loaned facilities");
+      return {
+        data: data.result as IFacility[],
+      };
+    })
+    .catch(err => {
+      console.error("error fetch loaned facilities");
+      throw new Error(err.response?.data.message);
+    });
+};
+
+export { fetchFacilites, loanFacility, fetchLoanedFacilities };

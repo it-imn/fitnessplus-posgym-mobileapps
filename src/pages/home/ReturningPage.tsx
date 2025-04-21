@@ -8,7 +8,11 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { fetchFacilites, loanFacility } from "../../services/branch";
+import {
+  fetchFacilites,
+  fetchLoanedFacilities,
+  loanFacility,
+} from "../../services/branch";
 import { checkIn } from "../../services/member";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
@@ -26,30 +30,30 @@ import { colors, fonts } from "../../lib/utils";
 import { showMessage } from "react-native-flash-message";
 import { Button, ButtonColor } from "../../components/ui/Button";
 import Loading from "../../components/ui/Loading";
+import { fetchProfile } from "../../services/profile";
+import { useModalStore } from "../../stores/useModalStore";
 
 type TGuarantee = "None" | "ID Card" | "Driver License" | "Passport" | "Other";
 
-const Loaning = ({
+const Returning = ({
   navigation,
   route,
 }: CompositeScreenProps<
-  NativeStackScreenProps<RootStackParamList, "Loaning">,
+  NativeStackScreenProps<RootStackParamList, "Returning">,
   BottomTabScreenProps<TabParamList, "Home">
 >) => {
   const { isDarkMode } = useContext(ThemeContext);
   const [isLoading, setIsLoading] = useState(false);
   const { code } = route.params;
-  const [smallTowel, setSmallTowel] = useState<IFacility>({} as IFacility);
-  const [largeTowel, setlargeTowel] = useState<IFacility>({} as IFacility);
-  const [locker, setLocker] = useState<IFacility>({} as IFacility);
+  const [smallTowel, setSmallTowel] = useState<IFacility | null>(null);
+  const [largeTowel, setlargeTowel] = useState<IFacility | null>(null);
+  const [locker, setLocker] = useState<IFacility | null>(null);
   const [isSelectSmallTowel, setIsSelectSmallTowel] = useState(false);
-  const [smallTowelLockerNumber, setSmallTowelLockerNumber] = useState(0);
   const [isSelectLargeTowel, setIsSelectLargeTowel] = useState(false);
-  const [largeTowelLockerNumber, setLargeTowelLockerNumber] = useState(0);
   const [isSelectLocker, setIsSelectLocker] = useState(false);
-  const [lockerNumber, setLockerNumber] = useState(0);
-  const [guarantee, setGuarantee] = useState<TGuarantee>("ID Card");
-  const [other, setOther] = useState("");
+  const [data, setData] = useState<IFacility[]>([]);
+  const [checkId, setCheckId] = useState<number | null>(null);
+  const { openModal, closeModal } = useModalStore();
   //   const [lockerAvailable, setLockerAvailable] = useState([]);
   //   const [smallTowel, setSmallTowel] = useState(false);
   //   const [largeTowel, setlargeTowel] = useState(false);
@@ -65,27 +69,25 @@ const Loaning = ({
   const onSubmit = async () => {
     setIsLoading(true);
     try {
-      const {check_id} = await checkIn(code);
-
-      if (isSelectSmallTowel) {
-        await loanFacility(smallTowel.id, "None", smallTowelLockerNumber, check_id);
+      if (smallTowel && !isSelectSmallTowel) {
+        errorModal("Check the small towel", isDarkMode);
+        return;
       }
 
-      if (isSelectLargeTowel) {
-        await loanFacility(largeTowel.id, "None", largeTowelLockerNumber, check_id);
+      if (largeTowel && !isSelectLargeTowel) {
+        errorModal("Check the large towel", isDarkMode);
+        return;
       }
 
-      if (isSelectLocker) {
-        await loanFacility(
-          locker.id,
-          guarantee === "Other" ? other : guarantee,
-          lockerNumber,
-          check_id,
-        );
+      if (locker && !isSelectLocker) {
+        errorModal("Check the locker", isDarkMode);
+        return;
       }
+
+      await checkIn(code);
 
       showMessage({
-        message: "Checkin Succes",
+        message: "Checkout Succes",
         type: "success",
         icon: "success",
         backgroundColor: colors._green,
@@ -106,11 +108,12 @@ const Loaning = ({
     }
   };
 
-  const getFacilities = async () => {
+  const getFacilities = async (checkId: number) => {
     setIsLoading(true);
     try {
-      const { data } = await fetchFacilites();
+      const { data } = await fetchLoanedFacilities(checkId);
       if (data) {
+        setData(data);
         data.map((item: IFacility) => {
           if (item.facilities_name === "Small Towel") {
             setSmallTowel(item);
@@ -134,15 +137,33 @@ const Loaning = ({
     }
   };
 
-  // const getExpire = async () => {
-  // const response = await Api.getExpireDate(token);
-  // setExpireDate(response.data);
-  // };
+  const getProfile = async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await fetchProfile();
+      if (data) {
+        setCheckId(data.visit_gym.check_id);
+      }
+    } catch (err: any) {
+      showMessage({
+        message: err.message || "An error occurred",
+        type: "warning",
+        icon: "warning",
+        backgroundColor: colors._red,
+        color: colors._white,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    getFacilities();
-    // getExpire();
+    getProfile();
   }, []);
+
+  useEffect(() => {
+    checkId && getFacilities(checkId);
+  }, [checkId]);
 
   return (
     <SafeAreaView style={styles.container(isDarkMode)}>
@@ -151,10 +172,10 @@ const Loaning = ({
       <View style={styles.content}>
         <ScrollView style={{ flex: 1 }}>
           <Text style={styles.teks1(isDarkMode)}>
-            Please select the item you want to borrow
+            Please select the item you want to return
           </Text>
           <Gap height={8} />
-          {smallTowel.stock > 0 && (
+          {smallTowel && (
             <>
               <View
                 style={{
@@ -173,20 +194,17 @@ const Loaning = ({
                 <Text style={styles.teks1(isDarkMode)}>Small Towel</Text>
               </View>
               <Gap height={8} />
-            </>
-          )}
-          {isSelectSmallTowel && (
-            <>
               <Input
                 placeholder="Small towel number"
                 keyboardType="number-pad"
-                value={smallTowelLockerNumber.toString()}
-                onChangeText={value => setSmallTowelLockerNumber(Number(value))}
+                value={smallTowel.number ? smallTowel.number.toString() : ""}
+                onChangeText={value => {}}
+                editable={false}
               />
               <Gap height={20} />
             </>
           )}
-          {largeTowel.stock > 0 && (
+          {largeTowel && (
             <>
               <View
                 style={{
@@ -205,20 +223,17 @@ const Loaning = ({
                 <Text style={styles.teks1(isDarkMode)}>Large Towel</Text>
               </View>
               <Gap height={8} />
-            </>
-          )}
-          {isSelectLargeTowel && (
-            <>
               <Input
                 placeholder="Large towel number"
                 keyboardType="number-pad"
-                value={largeTowelLockerNumber.toString()}
-                onChangeText={value => setLargeTowelLockerNumber(Number(value))}
+                value={largeTowel.number ? largeTowel.number.toString() : ""}
+                onChangeText={value => {}}
+                editable={false}
               />
               <Gap height={20} />
             </>
           )}
-          {locker.stock > 0 && (
+          {locker && (
             <>
               <View
                 style={{
@@ -237,83 +252,26 @@ const Loaning = ({
                 <Text style={styles.teks1(isDarkMode)}>Locker</Text>
               </View>
               <Gap height={8} />
-            </>
-          )}
-          {isSelectLocker && (
-            <>
               <Input
                 placeholder="Locker number"
                 keyboardType="number-pad"
-                value={lockerNumber.toString()}
-                onChangeText={value => setLockerNumber(Number(value))}
+                value={locker.number ? locker.number.toString() : ""}
+                onChangeText={value => {}}
+                editable={false}
               />
+              <Gap height={8} />
+              <Text style={styles.teks1(isDarkMode)}>
+                Guarantee: {locker.guarantee}
+              </Text>
               <Gap height={20} />
             </>
           )}
           <Gap height={30} />
-
-          {isSelectLocker && (
-            <>
-              <Text style={styles.teks1(isDarkMode)}>Guarantee</Text>
-              <Gap height={4} />
-              <View
-                style={{
-                  borderRadius: 10,
-                  overflow: "hidden",
-                  backgroundColor: isDarkMode ? colors._black : colors._grey2,
-                }}>
-                <Picker
-                  selectedValue={guarantee}
-                  style={{
-                    color: isDarkMode ? colors._white : colors._black,
-                    fontSize: 14,
-                    fontFamily: fonts.primary[400],
-                  }}
-                  itemStyle={{
-                    color: isDarkMode ? colors._white : colors._black,
-                    fontSize: 14,
-                    fontFamily: fonts.primary[400],
-                  }}
-                  dropdownIconColor={isDarkMode ? colors._white : colors._black}
-                  onValueChange={itemValue => setGuarantee(itemValue)}>
-                  <Picker.Item
-                    label="ID Card"
-                    value="ID Card"
-                    style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
-                  />
-                  <Picker.Item
-                    label="Driver License"
-                    value="Driver License"
-                    style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
-                  />
-                  <Picker.Item
-                    label="Passport"
-                    value="Passport"
-                    style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
-                  />
-                  <Picker.Item
-                    label="Other"
-                    value="Other"
-                    style={{ fontSize: 14, fontFamily: fonts.primary[400] }}
-                  />
-                </Picker>
-              </View>
-              <Gap height={20} />
-              {guarantee === "Other" && (
-                <Input
-                  placeholder="Other"
-                  value={other}
-                  onChangeText={value => setOther(value)}
-                />
-              )}
-              <Gap height={20} />
-            </>
-          )}
         </ScrollView>
         <ButtonColor
           backColor={colors._blue2}
           textColor={colors._white}
-          teks="Save"
+          teks="Checkout"
           onPress={onSubmit}
         />
       </View>
@@ -353,4 +311,4 @@ const styles = {
   },
 };
 
-export default Loaning;
+export default Returning;

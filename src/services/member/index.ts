@@ -6,13 +6,15 @@ const checkIn = async (code: string) => {
   return api
     .post(`/member/ci_co/${code}`)
     .then(({ data }) => {
+      console.log(data, "check in");
       return {
         status: data.status,
         message: data.message,
+        check_id:  data.id,
       };
     })
     .catch(err => {
-      console.error("error check in");
+      console.error("error check in", err);
       throw new Error(err.response?.data.message);
     });
 };

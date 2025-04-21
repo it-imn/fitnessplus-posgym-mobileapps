@@ -107,6 +107,7 @@ export type PersonalTrainerPackage = {
 };
 
 export type VisitGym = {
+  check_id: number;
   check_in: string;
   check_out: string;
 };
@@ -264,6 +265,8 @@ export interface IFacility {
   inventory_id: number;
   stock: number;
   updated_at: string;
+  number?: number;
+  guarantee?: string;
 }
 
 export interface IVoucher {
