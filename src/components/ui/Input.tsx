@@ -23,6 +23,7 @@ export const Input = ({
   onChangeText,
   autoCapitalize,
   multiline,
+  editable,
 }: {
   placeholder: string;
   keyboardType?: KeyboardTypeOptions;
@@ -32,6 +33,7 @@ export const Input = ({
   onChangeText: (value: string) => void;
   autoCapitalize?: "none" | "sentences" | "words" | "characters";
   multiline?: boolean;
+  editable?: boolean;
 }) => {
   const { isDarkMode } = useContext(ThemeContext);
 
@@ -49,6 +51,7 @@ export const Input = ({
         value={value}
         onChangeText={onChangeText}
         multiline={multiline}
+        editable={editable}
       />
     </View>
   );
