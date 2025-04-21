@@ -37,7 +37,7 @@ const Selfie = ({
 
   const cameraRef = useRef<Camera>(null);
 
-  if (device == null) {
+  if (!device) {
     navigation.navigate("SelectGym");
     return;
   }
@@ -50,10 +50,20 @@ const Selfie = ({
         return;
       }
 
-      const p = await cameraRef.current?.takePhoto();
-      if (p) {
-        setPhoto(p);
+      const cameraCurr = cameraRef.current;
+      if (!cameraCurr) {
+        showMessage({
+          message: "Camera not found",
+          type: "warning",
+          icon: "warning",
+          backgroundColor: colors._red,
+          color: colors._white,
+        });
+        return;
       }
+
+      const p = await cameraRef.current.takePhoto();
+      setPhoto(p);
     } catch (err: any) {
       showMessage({
         message: err.message || "An error occurred",
