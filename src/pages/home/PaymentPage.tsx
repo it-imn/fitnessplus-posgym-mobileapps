@@ -632,7 +632,9 @@ export const Payment = ({
                   fontFamily: fonts.primary[400],
                   color: isDarkMode ? colors._grey4 : colors._grey3,
                 }}>
-                {convertToRupiah(paymentSummary?.discount.toString() || "0")}
+                {paymentSummary?.discount_type === "fixed"
+                  ? convertToRupiah(paymentSummary?.discount.toString() || "0")
+                  : paymentSummary?.discount}
               </Text>
             </View>
           )}
@@ -657,7 +659,13 @@ export const Payment = ({
                   fontFamily: fonts.primary[400],
                   color: isDarkMode ? colors._grey4 : colors._grey3,
                 }}>
-                {convertToRupiah(paymentSummary?.voucher.toString() || "0")}
+                {paymentSummary?.voucher_session > 0 ? (
+                  <>+ {paymentSummary?.voucher_session} Session</>
+                ) : (
+                  <>
+                    {convertToRupiah(paymentSummary?.voucher.toString() || "0")}
+                  </>
+                )}
               </Text>
             </View>
           )}

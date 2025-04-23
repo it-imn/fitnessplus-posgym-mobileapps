@@ -459,9 +459,11 @@ export interface INotification {
 export interface IPaymentSummary {
   sub_total: number;
   discount: number;
+  discount_type: string;
   voucher_id?: number;
   voucher: number;
   total_pay: number;
+  voucher_session: number;
 }
 
 export interface IPaymentResult {
