@@ -179,7 +179,7 @@ export const ListSchedule = ({
           getSchedule(1, ctrl.signal);
         }}
         onEndReached={handleEndReached}
-        keyExtractor={item => item.order_code.toString()}
+        keyExtractor={item => `${item.order_code.toString()}-${item.day_date}`}
         ListEmptyComponent={<NoData text="No Data Available" />}
       />
 
