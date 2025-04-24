@@ -131,6 +131,29 @@ export const DetailSubmissionPackage = ({
           {submissionPackage?.membership}
         </Text>
         <Gap height={16} />
+        {submissionPackage?.session !== 0 && (
+          <>
+            <Text
+              style={{
+                fontSize: 12,
+                color: isDarkMode ? colors._grey4 : colors._grey3,
+                fontFamily: fonts.primary[400],
+              }}>
+              Session
+            </Text>
+            <Gap height={4} />
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: fonts.primary[300],
+                color: isDarkMode ? colors._white : colors._black,
+                lineHeight: 20,
+              }}>
+              {submissionPackage?.session} Session
+            </Text>
+            <Gap height={16} />
+          </>
+        )}
         <Text
           style={{
             fontSize: 12,

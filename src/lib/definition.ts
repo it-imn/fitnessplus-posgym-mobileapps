@@ -421,6 +421,7 @@ export interface ISubmissionPackage {
   user_id: number;
   // voucher_id:
   expired_at: string;
+  session: number;
   discount: number;
   created_at: string;
   contract_view?: string;
