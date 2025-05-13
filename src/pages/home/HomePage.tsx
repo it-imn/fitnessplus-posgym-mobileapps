@@ -67,6 +67,12 @@ import moment from "moment";
 import { useCameraPermission } from "react-native-vision-camera";
 import { useModalStore } from "../../stores/useModalStore";
 import { fetchPromotions } from "../../services/promotion";
+import {
+  DoorOpenIcon,
+  PlusIcon,
+  SofaIcon,
+  Users2Icon,
+} from "lucide-react-native";
 
 const width = Dimensions.get("window").width;
 
@@ -832,7 +838,161 @@ export const HomePage = ({ navigation }: any) => {
           />
           <Gap height={20} />
           <CarouselSection promotions={promotions} />
-
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{
+              flexDirection: "row",
+            }}>
+            <View
+              style={{
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: isDarkMode ? colors._black : colors._grey2,
+                padding: 16,
+                borderRadius: 8,
+                width: 108,
+                height: 108,
+              }}>
+              <DoorOpenIcon
+                color={isDarkMode ? colors._white : colors._black}
+                width={24}
+                height={24}
+              />
+              <Gap height={6} />
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontFamily: fonts.primary[400],
+                  color: isDarkMode ? colors._white : colors._black,
+                }}>
+                {dataProfile?.summary.visitGym}
+              </Text>
+              <Gap height={4} />
+              <Text
+                style={{
+                  fontSize: 12,
+                  textAlign: "center",
+                  fontFamily: fonts.primary[300],
+                  color: isDarkMode ? colors._white : colors._black,
+                }}>
+                Visit Gym
+              </Text>
+            </View>
+            <Gap width={20} />
+            <View
+              style={{
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: isDarkMode ? colors._black : colors._grey2,
+                padding: 16,
+                borderRadius: 8,
+                width: 108,
+                height: 108,
+              }}>
+              <SofaIcon
+                color={isDarkMode ? colors._white : colors._black}
+                width={24}
+                height={24}
+              />
+              <Gap height={6} />
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontFamily: fonts.primary[400],
+                  color: isDarkMode ? colors._white : colors._black,
+                }}>
+                {dataProfile?.summary.joinClass}
+              </Text>
+              <Gap height={4} />
+              <Text
+                style={{
+                  fontSize: 12,
+                  textAlign: "center",
+                  fontFamily: fonts.primary[300],
+                  color: isDarkMode ? colors._white : colors._black,
+                }}>
+                Join Class
+              </Text>
+            </View>
+            <Gap width={20} />
+            <View
+              style={{
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: isDarkMode ? colors._black : colors._grey2,
+                padding: 16,
+                borderRadius: 8,
+                width: 108,
+                height: 108,
+              }}>
+              <Users2Icon
+                color={isDarkMode ? colors._white : colors._black}
+                width={24}
+                height={24}
+              />
+              <Gap height={6} />
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontFamily: fonts.primary[400],
+                  color: isDarkMode ? colors._white : colors._black,
+                }}>
+                {dataProfile?.summary.joinPtClass}
+              </Text>
+              <Gap height={4} />
+              <Text
+                style={{
+                  fontSize: 12,
+                  textAlign: "center",
+                  fontFamily: fonts.primary[300],
+                  color: isDarkMode ? colors._white : colors._black,
+                }}>
+                Join PT Class
+              </Text>
+            </View>
+            <Gap width={20} />
+            <View
+              style={{
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: isDarkMode ? colors._black : colors._grey2,
+                padding: 16,
+                borderRadius: 8,
+                width: 108,
+                height: 108,
+              }}>
+              <PlusIcon
+                color={isDarkMode ? colors._white : colors._black}
+                width={24}
+                height={24}
+              />
+              <Gap height={6} />
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontFamily: fonts.primary[400],
+                  color: isDarkMode ? colors._white : colors._black,
+                }}>
+                {dataProfile?.summary.point}
+              </Text>
+              <Gap height={4} />
+              <Text
+                style={{
+                  fontSize: 12,
+                  textAlign: "center",
+                  fontFamily: fonts.primary[300],
+                  color: isDarkMode ? colors._white : colors._black,
+                }}>
+                Point
+              </Text>
+            </View>
+          </ScrollView>
+          <Gap height={20} />
           <Gap height={20} />
           <GymServiceSection
             isDarkMode={isDarkMode}
@@ -1103,16 +1263,19 @@ const styles = {
     fontFamily: fonts.primary[400],
     color: colors._white,
   },
-  titleAvailablePT: (isDarkMode: boolean) => ({
-    fontSize: 14,
-    fontFamily: fonts.primary[400],
-    color: isDarkMode ? colors._white : colors._black,
-  }),
+  titleAvailablePT: (isDarkMode: boolean) =>
+    ({
+      fontSize: 14,
+      fontFamily: fonts.primary[400],
+      color: isDarkMode ? colors._white : colors._black,
+      textAlign: "center",
+    } as StyleProp<ViewStyle>),
   subtitleAvailablePT: (isDarkMode: boolean) =>
     ({
       fontSize: 12,
       fontFamily: fonts.primary[300],
       color: isDarkMode ? colors._white : colors._black,
+      textAlign: "center",
     } as StyleProp<ViewStyle>),
   content: {
     backgroundColor: colors._white,

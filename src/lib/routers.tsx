@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import { AnyTransfer } from "../pages/any-transfer/AnyTransferPage";
+import { MyQRCode } from "../pages/my-qr-code/MyQRCodePage";
 import { LoginPage } from "../pages/auth/LoginPage";
 import { OnBoarding } from "../pages/auth/OnboardingPage";
 import SelectBranch from "../pages/auth/SelectBranchPage";
@@ -74,7 +74,7 @@ function MainApp() {
       tabBar={props => <BottomNavbar {...props} />}>
       <Tab.Screen name="Home" component={HomePage} />
       <Tab.Screen name="Report" component={Report} />
-      <Tab.Screen name="AnyTransfer" component={AnyTransfer} />
+      <Tab.Screen name="MyQRCode" component={MyQRCode} />
       <Tab.Screen name="History" component={History} />
       <Tab.Screen name="Profil" component={Profil} />
     </Tab.Navigator>
@@ -141,7 +141,10 @@ export const Router = () => {
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
       <Stack.Screen name="ChooseSeat" component={ChooseSeat} />
       <Stack.Screen name="ListSchedule" component={ListSchedule} />
-      <Stack.Screen name="DetailClassSchedule" component={DetailClassSchedule} />
+      <Stack.Screen
+        name="DetailClassSchedule"
+        component={DetailClassSchedule}
+      />
       <Stack.Screen name="DetailPTSchedule" component={DetailPTSchedule} />
       <Stack.Screen name="CheckinClass" component={CheckinClass} />
       <Stack.Screen name="Returning" component={Returning} />

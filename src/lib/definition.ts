@@ -43,6 +43,18 @@ export type UserDetail = {
   notif_count: number;
   my_referal_code: number;
   features?: Record<string, boolean>;
+  qrcode?: {
+    url: string;
+    code: string;
+    name: string;
+    expiredAt: string;
+  };
+  summary: {
+    joinClass: number;
+    joinPtClass: number;
+    visitGym: number;
+    point: number;
+  }
 };
 
 export type Role = {

@@ -18,11 +18,13 @@ import {
   HomeBlue,
   HomeGrey,
   IconAnyTransfer,
+  IconQrWhite,
   ProfileBlue,
   ProfileGrey,
   ReportBlue,
   ReportGrey,
 } from "../assets";
+import LinearGradient from "react-native-linear-gradient";
 
 export const BottomNavbar = ({
   state,
@@ -115,17 +117,28 @@ const TabItems = ({
         <ReportGrey width={width} height={height} />
       );
     }
-    if (title === "AnyTransfer") {
-      return active ? (
-        <Image
-          source={IconAnyTransfer}
-          style={{ width: 64, height: 64, resizeMode: "contain" }}
-        />
-      ) : (
-        <Image
-          source={IconAnyTransfer}
-          style={{ width: 64, height: 64, resizeMode: "contain" }}
-        />
+    if (title === "MyQRCode") {
+      return (
+        <LinearGradient
+          colors={[colors._green2, colors._blue2]}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 0 }}
+          style={{
+            backgroundColor: colors._red,
+            borderRadius: 100,
+            transform: [
+              {
+                translateY: -4,
+              },
+            ],
+            width: 56,
+            height: 56,
+            // padding: 4,
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
+          <IconQrWhite width={40} height={40} />
+        </LinearGradient>
       );
     }
     if (title === "History") {

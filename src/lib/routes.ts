@@ -3,7 +3,7 @@ export type TabParamList = {
   Profil: undefined;
   History: undefined;
   Report: undefined;
-  AnyTransfer: undefined;
+  MyQRCode: undefined;
 };
 
 export type RootStackParamList = {
