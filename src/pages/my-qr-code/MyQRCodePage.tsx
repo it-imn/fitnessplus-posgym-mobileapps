@@ -1,5 +1,5 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { CompositeScreenProps } from "@react-navigation/native";
+import { CompositeScreenProps, useIsFocused } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useContext, useEffect, useState } from "react";
 import {
@@ -30,6 +30,7 @@ export const MyQRCode = ({
 >) => {
   const { isDarkMode } = useContext(ThemeContext);
 
+  const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(false);
   const [profile, setProfile] = useState<UserDetail | null>(null);
 
@@ -52,8 +53,8 @@ export const MyQRCode = ({
   };
 
   useEffect(() => {
-    getProfile();
-  }, []);
+    isFocused && getProfile();
+  }, [isFocused]);
 
   return (
     <SafeAreaView
