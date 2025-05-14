@@ -128,7 +128,7 @@ export const MyQRCode = ({
         <Gap height={16} />
         <Text
           style={{
-            fontSize: 20,
+            fontSize: 14,
             fontFamily: fonts.primary[300],
             color: isDarkMode ? colors._grey2 : colors._black,
             textAlign: "center",
@@ -136,7 +136,7 @@ export const MyQRCode = ({
           Berlaku hingga{" "}
           <Text
             style={{
-              fontSize: 20,
+              fontSize: 14,
               fontFamily: fonts.primary[300],
               color: colors._blue2,
             }}>
