@@ -539,3 +539,13 @@ export interface IDetailScheduleActivity {
   schedule_next_day: string;
   schedule_next_date: string;
 }
+
+export interface INews {
+  id: number;
+  title: string;
+  type: string;
+  image: string;
+  image_thumbnail: string;
+  created_at: string;
+  description: string;
+}

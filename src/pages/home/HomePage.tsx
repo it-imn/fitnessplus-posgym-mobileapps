@@ -48,7 +48,7 @@ import {
 } from "../../assets";
 import { fetchProfile } from "../../services/profile";
 import { fetchPersonalTrainers } from "../../services/personal_trainer";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import Gap from "../../components/ui/Gap";
 import Loading from "../../components/ui/Loading";
 import { ThemeContext } from "../../contexts/ThemeContext";
@@ -60,6 +60,7 @@ import {
   Membership,
   PersonalTrainerPackage,
   IPromotion,
+  INews,
 } from "../../lib/definition";
 import { colors, fonts } from "../../lib/utils";
 import { showMessage } from "react-native-flash-message";
@@ -73,6 +74,10 @@ import {
   SofaIcon,
   Users2Icon,
 } from "lucide-react-native";
+import { fetchListNews } from "../../services/news";
+import { CancelToken } from "axios";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { RootStackParamList } from "../../lib/routes";
 
 const width = Dimensions.get("window").width;
 
@@ -993,7 +998,6 @@ export const HomePage = ({ navigation }: any) => {
             </View>
           </ScrollView>
           <Gap height={20} />
-          <Gap height={20} />
           <GymServiceSection
             isDarkMode={isDarkMode}
             navigation={navigation}
@@ -1001,13 +1005,17 @@ export const HomePage = ({ navigation }: any) => {
           />
           <Gap height={20} />
           {personalTrainers.length !== 0 && (
-            <ListPTSection
-              isDarkMode={isDarkMode}
-              personalTrainers={personalTrainers}
-              navigation={navigation}
-              membershipStatus={dataProfile?.membership.status || ""}
-            />
+            <>
+              <ListPTSection
+                isDarkMode={isDarkMode}
+                personalTrainers={personalTrainers}
+                navigation={navigation}
+                membershipStatus={dataProfile?.membership.status || ""}
+              />
+              <Gap height={20} />
+            </>
           )}
+          <NewsSection />
         </ScrollView>
 
         {/* {showModal && (
@@ -1017,6 +1025,158 @@ export const HomePage = ({ navigation }: any) => {
 
       {isLoading && <Loading />}
     </>
+  );
+};
+
+const NewsSection = () => {
+  const [news, setNews] = useState<INews[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const navigation =
+    useNavigation<BottomTabNavigationProp<RootStackParamList, "MainApp">>();
+  const isFocused = useIsFocused();
+
+  const getNews = async (
+    _page: number,
+    _search: string,
+    token?: CancelToken,
+  ) => {
+    setIsLoading(true);
+    try {
+      const { data } = await fetchListNews(
+        { page: _page, search: _search },
+        {
+          cancelToken: token,
+        },
+      );
+
+      const maxNews = data.slice(0, 5);
+      setNews(maxNews);
+    } catch (error: any) {
+      showMessage({
+        message: error.message || "An error occurred",
+        type: "warning",
+        icon: "warning",
+        backgroundColor: colors._red,
+        color: colors._white,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    isFocused && getNews(1, "");
+  }, [isFocused]);
+
+  return (
+    <View
+      style={{
+        flex: 1,
+      }}>
+      {news.length !== 0 && (
+        <>
+          <Text
+            style={{
+              fontSize: 16,
+              fontFamily: fonts.primary[600],
+              color: colors._black,
+            }}>
+            News
+          </Text>
+          <Gap height={8} />
+          {news.map(item => {
+            return (
+              <NewsCard
+                key={item.id}
+                news={item}
+                onClick={() => {
+                  navigation.navigate("DetailNews", {
+                    id: item.id,
+                  });
+                }}
+              />
+            );
+          })}
+        </>
+      )}
+    </View>
+  );
+};
+
+const NewsCard = ({
+  news: { image, title, description, created_at },
+  onClick,
+}: {
+  news: INews;
+  onClick: () => void;
+}) => {
+  const { isDarkMode } = useContext(ThemeContext);
+
+  return (
+    <TouchableOpacity
+      onPress={() => {
+        onClick();
+      }}
+      style={{
+        borderRadius: 10,
+        paddingRight: 16,
+        paddingVertical: 16,
+        marginBottom: 16,
+        flexDirection: "row",
+        backgroundColor: isDarkMode ? colors._black : colors._white,
+      }}>
+      <Image
+        source={{ uri: image }}
+        style={{
+          width: 64,
+          height: 64,
+          borderRadius: 10,
+          objectFit: "cover",
+        }}
+      />
+      <Gap width={16} />
+      <View
+        style={{
+          flexDirection: "column",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          flexShrink: 1,
+        }}>
+        <View style={{}}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontFamily: fonts.primary[600],
+              color: isDarkMode ? colors._white : colors._black,
+            }}>
+            {title}
+          </Text>
+          <Gap height={4} />
+          <Text
+            numberOfLines={2}
+            ellipsizeMode="tail"
+            style={{
+              fontSize: 12,
+              fontFamily: fonts.primary[300],
+              color: isDarkMode ? colors._white : colors._black,
+              flexWrap: "wrap",
+              textDecorationStyle: "solid",
+            }}>
+            {description}
+          </Text>
+        </View>
+        <Text
+          style={{
+            fontSize: 12,
+            fontFamily: fonts.primary[300],
+            color: isDarkMode ? colors._white : colors._black,
+            marginTop: 8,
+          }}>
+          {created_at}
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 
@@ -1034,7 +1194,7 @@ const AvailablePT = ({
   const { isDarkMode } = useContext(ThemeContext);
 
   return (
-    <TouchableOpacity style={{ marginLeft: 10 }} onPress={onPress}>
+    <TouchableOpacity style={{ marginRight: 8 }} onPress={onPress}>
       <View style={styles.containerAvailablePT(isDarkMode)}>
         <Image
           source={{ uri: pt_image }}

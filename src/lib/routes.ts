@@ -83,7 +83,7 @@ export type RootStackParamList = {
   };
   Returning: {
     code: string;
-  }
+  };
   ListPT: undefined;
   Voucher: undefined;
   WillTransaction: undefined;
@@ -136,5 +136,8 @@ export type RootStackParamList = {
   CheckinClass: {
     seat_id: number;
     type: "pt" | "class";
-  }
+  };
+  DetailNews: {
+    id: number;
+  };
 };

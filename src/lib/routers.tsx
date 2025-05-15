@@ -60,6 +60,7 @@ import { DetailClassSchedule } from "../pages/profile/DetailClassSchedulePage";
 import { DetailPTSchedule } from "../pages/profile/DetailPTSchedulePage";
 import CheckinClass from "../pages/profile/CheckinClassPage";
 import Returning from "../pages/home/ReturningPage";
+import { DetailNews } from "../pages/home/DetailNewsPage";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -105,6 +106,7 @@ export const Router = () => {
         component={DetailSubmissionPackage}
       />
       <Stack.Screen name="Payment" component={Payment} />
+      <Stack.Screen name="DetailNews" component={DetailNews} />
       {/*
       <Stack.Screen name="Splash" component={Splash} />
       <Stack.Screen name="Sign" component={Sign} />
