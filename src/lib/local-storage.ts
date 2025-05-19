@@ -1,35 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { User } from "./definition";
 
-export const storeData = async (key: string, value: any) => {
-  try {
-    const jsonValue = JSON.stringify(value);
-    await AsyncStorage.setItem(key, jsonValue);
-  } catch (e) {
-    // saving error
-  }
-};
-
-export const getData = async (key: string) => {
-  try {
-    const jsonValue = await AsyncStorage.getItem(key);
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
-  } catch (e) {
-    // error reading value
-  }
-};
-
-export const removeData = async (key: string) => {
-  try {
-    await AsyncStorage.removeItem(key);
-  } catch (e) {
-    // remove error
-  }
-};
-
 export const removeAllData = async () => {
   try {
-    await AsyncStorage.clear();
+    await removeUser();
+    await removeToken();
+    await removeFCMToken();
   } catch (e) {
     // clear error
   }
@@ -97,35 +73,6 @@ export const removeToken = async () => {
   }
 };
 
-// Theme
-export const storeTheme = async (value: "light" | "dark") => {
-  try {
-    const jsonValue = JSON.stringify(value);
-    await AsyncStorage.setItem("theme", jsonValue);
-  } catch (err) {
-    console.error(err, "error store theme");
-  }
-};
-
-export const getTheme = async (): Promise<"light" | "dark" | null> => {
-  try {
-    const jsonValue = await AsyncStorage.getItem("theme");
-    const theme = jsonValue != null ? JSON.parse(jsonValue) : null;
-
-    return theme;
-  } catch (err) {
-    console.error(err, "error get theme");
-    return null;
-  }
-};
-
-export const removeTheme = async () => {
-  try {
-    await AsyncStorage.removeItem("theme");
-  } catch (err) {
-    console.error(err, "error remove theme");
-  }
-};
 
 export const storeFCMToken = async (value: string) => {
   try {
@@ -153,5 +100,27 @@ export const removeFCMToken = async () => {
     await AsyncStorage.removeItem("fcmToken");
   } catch (err) {
     console.error(err, "error remove fcm token");
+  }
+};
+
+// Presave username
+export const storeUsername = async (username: string) => {
+  try {
+    await AsyncStorage.setItem("username", username);
+    console.log("store username", username);
+  } catch (err) {
+    console.error(err, "error store username");
+  }
+};
+
+export const getUsername = async (): Promise<string | null> => {
+  try {
+    const username = await AsyncStorage.getItem("username");
+    console.log("get username", username);
+
+    return username;
+  } catch (err) {
+    console.error(err, "error get username");
+    return null;
   }
 };
