@@ -408,15 +408,102 @@ export const LoginPage = ({
               <Controller
                 name="username"
                 control={form.control}
-                render={({ field: { onChange, value } }) => (
-                  <Input
-                    placeholder="Username"
-                    autoCapitalize="none"
-                    maxLength={200}
-                    value={value}
-                    onChangeText={onChange}
-                  />
-                )}
+                render={({ field: { onChange, value } }) => {
+                  return isFromPresaved ? (
+                    <View>
+                      <Text
+                        style={{
+                          color: isDarkMode ? colors._white : colors._black,
+                          marginBottom: 5,
+                          fontSize: 14,
+                          fontFamily: fonts.primary[400],
+                        }}>
+                        Username
+                      </Text>
+                      <TextInput
+                        style={{
+                          padding: 12,
+                          width: "100%",
+                          fontSize: 13,
+                          fontFamily: fonts.primary[300],
+                          backgroundColor: isDarkMode
+                            ? colors._black
+                            : colors._grey2,
+                          borderRadius: 10,
+                          color: isDarkMode ? colors._white : colors._black,
+                          position: "relative",
+                          borderWidth: 0.5,
+                          borderColor: isDarkMode
+                            ? colors._grey4
+                            : colors._grey3,
+                        }}
+                        placeholder="Username"
+                        placeholderTextColor={colors._grey4}
+                        value={
+                          value.length < 3
+                            ? value
+                            : `${
+                                !see
+                                  ? value.slice(0, value.length - 3)
+                                  : "*".repeat(value.length - 3)
+                              }${value.slice(-3)}`
+                        }
+                        onChangeText={e => {
+                          if (!see) {
+                            onChange(e);
+                          } else {
+                            setsee(false);
+                          }
+                        }}
+                      />
+                      <TouchableOpacity
+                        style={{
+                          position: "absolute",
+                          right: 12,
+                          top: Platform.OS === "ios" ? 26 : 32,
+                        }}
+                        onPress={onSee}>
+                        {isDarkMode ? (
+                          <View
+                            style={{
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: 32,
+                              height: 32,
+                            }}>
+                            {see ? (
+                              <EyeWhite width={24} height={24} />
+                            ) : (
+                              <EyeSeeWhite width={24} height={24} />
+                            )}
+                          </View>
+                        ) : (
+                          <View
+                            style={{
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: 32,
+                              height: 32,
+                            }}>
+                            {see ? (
+                              <Eye width={24} height={24} />
+                            ) : (
+                              <EyeSee width={24} height={24} />
+                            )}
+                          </View>
+                        )}
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                    <Input
+                      placeholder="Username"
+                      autoCapitalize="none"
+                      maxLength={200}
+                      value={value}
+                      onChangeText={onChange}
+                    />
+                  );
+                }}
               />
               {form.formState.errors.username && (
                 <Text style={{ color: colors._red, marginTop: 4 }}>
