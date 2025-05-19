@@ -70,6 +70,8 @@ import { useModalStore } from "../../stores/useModalStore";
 import { fetchPromotions } from "../../services/promotion";
 import {
   DoorOpenIcon,
+  IdCard,
+  MapPin,
   PlusIcon,
   SofaIcon,
   Users2Icon,
@@ -624,19 +626,46 @@ function HeaderSection({
             color: colors._white,
           }}>{`Hello, ${name}`}</Text>
         <Gap height={10} />
-        <Text
+        <View
           style={{
-            fontSize: 20,
-            fontFamily: fonts.primary[700],
-            color: colors._white,
-          }}>{`Welcome to ${branch_name}`}</Text>
+            flexDirection: "row",
+            alignItems: "center",
+          }}>
+          <MapPin color={colors._white} width={16} height={16} />
+          <Gap width={4} />
+          <Text
+            style={{
+              fontSize: 20,
+              fontFamily: fonts.primary[700],
+              color: colors._white,
+            }}>
+            {branch_name}
+          </Text>
+        </View>
         <Gap height={10} />
         {membershipStatus === "active" ||
         membershipStatus === "warning" ||
         membershipStatus === "installment" ? (
-          <Text numberOfLines={2} style={styles.teksPaket}>
-            {`${membershipName} (${membershipPeriode})`}
-          </Text>
+          // <Text numberOfLines={2} style={styles.teksPaket}>
+          //   {`${membershipName} (${membershipPeriode})`}
+          // </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}>
+            <IdCard color={colors._gold} width={16} height={16} />
+            <Gap width={4} />
+            <Text
+              numberOfLines={2}
+              style={{
+                color: colors._gold,
+                fontSize: 16,
+                fontFamily: fonts.primary[700],
+              }}>
+              {`${membershipName} (${membershipPeriode})`}
+            </Text>
+          </View>
         ) : null}
       </View>
       <TouchableOpacity
