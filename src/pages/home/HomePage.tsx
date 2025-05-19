@@ -80,6 +80,11 @@ import { fetchListNews } from "../../services/news";
 import { CancelToken } from "axios";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { RootStackParamList } from "../../lib/routes";
+import Carousel, {
+  ICarouselInstance,
+  Pagination,
+} from "react-native-reanimated-carousel";
+import { useSharedValue } from "react-native-reanimated";
 
 const width = Dimensions.get("window").width;
 
@@ -97,7 +102,10 @@ function ListPTSection({
   const hide =
     membershipStatus !== "active" && membershipStatus !== "installment";
   return hide ? null : (
-    <React.Fragment>
+    <View
+      style={{
+        marginHorizontal: 24,
+      }}>
       <Text style={styles.teks(isDarkMode)}>Available Personal Trainer</Text>
       <Gap height={8} />
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
@@ -117,7 +125,7 @@ function ListPTSection({
           );
         })}
       </ScrollView>
-    </React.Fragment>
+    </View>
   );
 }
 
@@ -182,7 +190,10 @@ function GymServiceSection({
   ];
 
   return (
-    <React.Fragment>
+    <View
+      style={{
+        marginHorizontal: 24,
+      }}>
       <Text style={styles.teks(isDarkMode)}>Gym Service</Text>
       <Gap height={8} />
       <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
@@ -197,7 +208,7 @@ function GymServiceSection({
           ),
         )}
       </ScrollView>
-    </React.Fragment>
+    </View>
   );
 }
 
@@ -229,65 +240,108 @@ const CarouselSection = ({ promotions }: { promotions: IPromotion[] }) => {
   //   },
   // ];
 
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  // const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
-  const updateCurrentSlideIndex = (e: any) => {
-    const contentOffsetX = e.nativeEvent.contentOffset.x;
-    const currentIndex = Math.ceil(contentOffsetX / width);
-    setCurrentSlideIndex(currentIndex);
+  // const updateCurrentSlideIndex = (e: any) => {
+  //   const contentOffsetX = e.nativeEvent.contentOffset.x;
+  //   const currentIndex = Math.ceil(contentOffsetX / width);
+  //   setCurrentSlideIndex(currentIndex);
+  // };
+
+  // return (
+  //   <View
+  //     style={{
+  //       paddingHorizontal: 24,
+  //     }}>
+  //     <FlatList
+  //       onMomentumScrollEnd={updateCurrentSlideIndex}
+  //       showsHorizontalScrollIndicator={false}
+  //       horizontal
+  //       data={promotions}
+  //       pagingEnabled
+  //       renderItem={({ item }) => {
+  //         return (
+  //           <Image
+  //             src={item.image_thumbnail}
+  //             style={{
+  //               height: 80,
+  //               resizeMode: "contain",
+  //               width: Platform.OS === "ios" ? width : width - 50,
+  //               marginHorizontal: Platform.OS === "ios" ? -22 : 2,
+  //             }}
+  //           />
+  //         );
+  //       }}
+  //     />
+  //     <Gap height={10} />
+  //     <View
+  //       style={{
+  //         flex: 0.2,
+  //         flexDirection: "row",
+  //         justifyContent: "center",
+  //       }}>
+  //       {promotions.map((_, index) => (
+  //         <View
+  //           key={index}
+  //           style={[
+  //             {
+  //               height: 4,
+  //               width: 4,
+  //               backgroundColor: colors._grey5,
+  //               marginHorizontal: 2,
+  //               borderRadius: 4,
+  //             },
+  //             currentSlideIndex === index && {
+  //               backgroundColor: colors._blue4,
+  //               width: 10,
+  //             },
+  //           ]}
+  //         />
+  //       ))}
+  //     </View>
+  //   </View>
+  // );
+
+  const ref = React.useRef<ICarouselInstance>(null);
+  const progress = useSharedValue<number>(0);
+
+  const onPressPagination = (index: number) => {
+    ref.current?.scrollTo({
+      /**
+       * Calculate the difference between the current index and the target index
+       * to ensure that the carousel scrolls to the nearest index
+       */
+      count: index - progress.value,
+      animated: true,
+    });
   };
 
   return (
-    <View
-      style={{
-        paddingHorizontal: 24,
-      }}>
-      <FlatList
-        onMomentumScrollEnd={updateCurrentSlideIndex}
-        showsHorizontalScrollIndicator={false}
-        horizontal
+    <View style={{ flex: 1, marginHorizontal: 24 }}>
+      <Carousel
+        ref={ref}
+        width={width - 48}
+        height={80}
         data={promotions}
-        pagingEnabled
-        renderItem={({ item }) => {
-          return (
-            <Image
-              src={item.image_thumbnail}
-              style={{
-                height: 80,
-                resizeMode: "contain",
-                width: Platform.OS === "ios" ? width : width - 50,
-                marginHorizontal: Platform.OS === "ios" ? -22 : 2,
-              }}
-            />
-          );
-        }}
-      />
-      <Gap height={10} />
-      <View
-        style={{
-          flex: 0.2,
-          flexDirection: "row",
-          justifyContent: "center",
-        }}>
-        {promotions.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              {
-                height: 4,
-                width: 4,
-                backgroundColor: colors._grey5,
-                marginHorizontal: 2,
-                borderRadius: 4,
-              },
-              currentSlideIndex === index && {
-                backgroundColor: colors._blue4,
-                width: 10,
-              },
-            ]}
+        onProgressChange={progress}
+        renderItem={({ item }) => (
+          <Image
+            src={item.image_thumbnail}
+            style={{
+              height: 80,
+              resizeMode: "contain",
+            }}
           />
-        ))}
-      </View>
+        )}
+      />
+
+      <Pagination.Basic
+        progress={progress}
+        data={promotions}
+        dotStyle={{ backgroundColor: "rgba(0,0,0,0.2)", borderRadius: 50 }}
+        containerStyle={{ gap: 5, marginTop: 10 }}
+        onPress={onPressPagination}
+      />
     </View>
   );
 };
@@ -826,7 +880,6 @@ export const HomePage = ({ navigation }: any) => {
             <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
           }
           style={{
-            paddingHorizontal: 24,
             flex: 1,
           }}>
           <CardInfo
@@ -878,6 +931,7 @@ export const HomePage = ({ navigation }: any) => {
             showsHorizontalScrollIndicator={false}
             style={{
               flexDirection: "row",
+              marginHorizontal: 24,
             }}>
             <View
               style={{
@@ -1103,6 +1157,7 @@ const NewsSection = () => {
     <View
       style={{
         flex: 1,
+        marginHorizontal: 24,
       }}>
       {news.length !== 0 && (
         <>
@@ -1352,6 +1407,7 @@ const CardInfo = ({
   return (
     <View
       style={{
+        marginHorizontal: 24,
         flexDirection: "column",
         gap: 20,
         flex: 1,
