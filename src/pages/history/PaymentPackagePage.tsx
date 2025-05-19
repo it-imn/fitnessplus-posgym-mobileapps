@@ -106,7 +106,6 @@ export const PaymentPackage = ({
 
       <View
         style={{
-          paddingHorizontal: 20,
           flex: 1,
         }}>
         <TextInput
@@ -115,6 +114,7 @@ export const PaymentPackage = ({
           placeholder="Search"
           placeholderTextColor={colors._grey4}
           style={{
+            marginHorizontal: 20,
             padding: 12,
             fontSize: 13,
             fontFamily: fonts.primary[300],
@@ -174,6 +174,17 @@ const ListHistoryDetail = ({
           justifyContent: "space-between",
           alignItems: "center",
           flex: 1,
+          marginHorizontal: 20,
+          marginBottom: 16,
+          backgroundColor: isDarkMode ? colors._black : colors._white,
+          shadowColor: colors._black,
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 3.84,
+          elevation: 2,
         }}
         onPress={onPress}>
         <View
@@ -228,7 +239,7 @@ const ListHistoryDetail = ({
               style={{
                 fontFamily: fonts.primary[300],
                 fontSize: 8,
-                color: isDarkMode ? colors._white : colors._black,
+                color: colors._gold3,
               }}
               numberOfLines={2}>
               {paymentPackage.order_code}
@@ -314,9 +325,9 @@ const ListHistoryDetail = ({
           </Text> */}
         </View>
       </TouchableOpacity>
-      <View
+      {/* <View
         style={{ width: "100%", height: 1, backgroundColor: colors._grey3 }}
-      />
+      /> */}
     </Fragment>
   );
 };

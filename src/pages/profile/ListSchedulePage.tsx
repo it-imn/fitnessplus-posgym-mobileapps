@@ -19,6 +19,7 @@ import {
   ChevronRightIcon,
   ChevronsRightIcon,
   Clock,
+  ClockIcon,
   DoorOpen,
   MapIcon,
   Sofa,
@@ -237,155 +238,67 @@ const Card = ({
   const { isDarkMode } = useContext(ThemeContext);
 
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={{
+        marginBottom: 16,
+      }}>
       <View
         style={{
-          justifyContent: "space-between",
-          alignContent: "center",
-          alignItems: "center",
+          backgroundColor: isDarkMode ? colors._black : colors._grey2,
+          borderRadius: 10,
           flexDirection: "row",
-          paddingBottom: 8,
+          shadowColor: colors._black,
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5,
         }}>
-        <Text
-          style={{
-            fontSize: 16,
-            fontFamily: fonts.primary[600],
-            color: isDarkMode ? colors._white : colors._black,
-          }}>
-          {scheduleActivity.day_date}
-        </Text>
         <View
           style={{
-            paddingVertical: 8,
-            paddingHorizontal: 16,
-            borderRadius: 50,
-            backgroundColor:
-              scheduleActivity.status === "open"
-                ? colors._grey3
-                : scheduleActivity.status === "finish"
-                ? colors._red
-                : scheduleActivity.status === "booking"
-                ? colors._green
-                : colors._blue2,
-          }}>
+            backgroundColor: colors._blue2,
+            width: 4,
+            borderStartStartRadius: 10,
+            borderBottomLeftRadius: 10,
+          }}
+        />
+        <Gap width={8} />
+        <View>
+          <Gap height={8} />
           <Text
             style={{
               fontSize: 14,
               fontFamily: fonts.primary[400],
-              color: colors._white,
-              textAlign: "center",
+              color: colors._blue2,
             }}>
-            {scheduleActivity.status}
+            {scheduleActivity.trainer}
           </Text>
-        </View>
-      </View>
-      <View
-        style={{
-          backgroundColor: colors._grey3,
-          height: 4,
-        }}
-      />
-      <View
-        style={{
-          padding: 16,
-          backgroundColor: colors._grey2,
-          borderBottomEndRadius: 8,
-          borderBottomStartRadius: 8,
-        }}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}>
+          <Gap height={4} />
           <Text
             style={{
-              fontSize: 14,
-              fontFamily: fonts.primary[600],
+              fontSize: 16,
+              fontFamily: fonts.primary[400],
               color: colors._black,
             }}>
-            {scheduleActivity.trainer} - {scheduleActivity.activity}
+            {scheduleActivity.day_date}
           </Text>
-
-          <ChevronRightIcon size={16} color={colors._grey4} />
-        </View>
-        <Gap height={12} />
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            flexWrap: "wrap",
-          }}>
-          <Clock size={16} color={colors._grey4} />
-          <Gap width={8} />
-          <Text
-            style={{
-              fontSize: 12,
-              fontFamily: fonts.primary[400],
-              color: colors._grey4,
-            }}>
-            {scheduleActivity.start_time}{" "}
-            {scheduleActivity.duration !== 0
-              ? `(${scheduleActivity.duration})`
-              : ""}
-          </Text>
-          <Gap width={16} />
-          {/* <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-            <User2 size={16} color={colors._grey4} />
-            <Gap width={8} />
-            <Text
-              style={{
-                fontSize: 12,
-                fontFamily: fonts.primary[400],
-                color: colors._grey4,
-              }}>
-              {scheduleActivity.trainer}
-            </Text>
-          </View>
-          <Gap width={16} /> */}
+          <Gap height={8} />
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "center",
               alignItems: "center",
+              flexWrap: "wrap",
             }}>
-            <DoorOpen size={16} color={colors._grey4} />
-            <Gap width={8} />
-            <Text
+            <View
               style={{
-                fontSize: 12,
-                fontFamily: fonts.primary[400],
-                color: colors._grey4,
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
               }}>
-              {scheduleActivity.type === "class" ? "Class" : "PT"}
-            </Text>
-          </View>
-          {/* <Gap width={16} />
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-            <SofaIcon size={16} color={colors._grey4} />
-            <Gap width={8} />
-            <Text
-              style={{
-                fontSize: 12,
-                fontFamily: fonts.primary[400],
-                color: colors._grey4,
-              }}>
-              {scheduleActivity.status}
-            </Text>
-          </View> */}
-          {/* {scheduleActivity ? (
-            <>
-              <Gap width={16} />
-              <Sofa size={16} color={colors._grey4} />
+              <DoorOpen size={16} color={colors._grey4} />
               <Gap width={8} />
               <Text
                 style={{
@@ -393,21 +306,48 @@ const Card = ({
                   fontFamily: fonts.primary[400],
                   color: colors._grey4,
                 }}>
+                {scheduleActivity.type === "class" ? "Class" : "PT"}
               </Text>
-            </>
-          ) : null} */}
-          <Gap width={16} />
-          <SofaIcon size={16} color={colors._grey4} />
-          <Gap width={8} />
-          <Text
-            style={{
-              fontSize: 12,
-              fontFamily: fonts.primary[400],
-              color: colors._grey4,
-            }}>
-            {scheduleActivity.location}
-          </Text>
-          <Gap width={16} />
+            </View>
+            <Gap width={16} />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}>
+              <SofaIcon size={16} color={colors._grey4} />
+              <Gap width={8} />
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: fonts.primary[400],
+                  color: colors._grey4,
+                }}>
+                {scheduleActivity.status}
+              </Text>
+            </View>
+            <Gap width={16} />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}>
+              <ClockIcon size={16} color={colors._grey4} />
+              <Gap width={8} />
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: fonts.primary[400],
+                  color: colors._grey4,
+                }}>
+                {scheduleActivity.start_time} - {scheduleActivity.finish_time}
+              </Text>
+            </View>
+            <Gap width={16} />
+          </View>
+          <Gap height={8} />
         </View>
       </View>
     </TouchableOpacity>

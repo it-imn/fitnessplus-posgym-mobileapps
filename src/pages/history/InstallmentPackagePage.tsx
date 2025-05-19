@@ -108,13 +108,14 @@ export const InstallmentPackage = ({
       <StatusBarComp />
       <Header teks="Installment Package" onPress={() => navigation.goBack()} />
 
-      <View style={{ paddingHorizontal: 20, flex: 1 }}>
+      <View style={{ flex: 1 }}>
         <TextInput
           onChangeText={handleSearchChange}
           value={search}
           placeholder="Search"
           placeholderTextColor={colors._grey4}
           style={{
+            marginHorizontal: 20,
             padding: 12,
             fontSize: 13,
             fontFamily: fonts.primary[300],
@@ -178,6 +179,17 @@ const PackageCard = ({
           justifyContent: "space-between",
           alignItems: "center",
           flex: 1,
+          marginHorizontal: 20,
+          marginBottom: 16,
+          backgroundColor: isDarkMode ? colors._black : colors._white,
+          shadowColor: colors._black,
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 3.84,
+          elevation: 2,
         }}
         onPress={onPress}>
         <View
@@ -230,33 +242,54 @@ const PackageCard = ({
             alignSelf: "flex-end",
             width: 120,
           }}>
-          <View style={{ flexDirection: "row", justifyContent: "center" }}>
-            <AlarmClockIcon size={16} color={colors._gold3} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              borderRadius: 8,
+              backgroundColor: colors._blue2,
+              paddingHorizontal: 8,
+              paddingVertical: 4,
+            }}>
+            <Text
+              style={{
+                fontFamily: fonts.primary[300],
+                fontSize: 14,
+                color: colors._white,
+              }}
+              numberOfLines={2}>
+              {packageInstallment.installment_number === 1
+                ? "1st"
+                : packageInstallment.installment_number === 2
+                ? "2nd"
+                : packageInstallment.installment_number === 3
+                ? "3rd"
+                : packageInstallment.installment_number + "th"}
+            </Text>
+          </View>
+          <Gap height={4} />
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}>
+            <AlarmClockIcon size={16} color={colors._red} />
             <Gap width={4} />
             <Text
               style={{
                 fontFamily: fonts.primary[300],
                 fontSize: 14,
-                color: isDarkMode ? colors._white : colors._black,
-              }}
-              numberOfLines={2}>
-              Installment {packageInstallment.installment_number}
+                color: colors._red,
+              }}>
+              {packageInstallment.due_date}
             </Text>
           </View>
-          <Gap height={4} />
-          <Text
-            style={{
-              fontFamily: fonts.primary[300],
-              fontSize: 14,
-              color: colors._red,
-            }}>
-            {packageInstallment.due_date}
-          </Text>
         </View>
       </TouchableOpacity>
-      <View
+      {/* <View
         style={{ width: "100%", height: 1, backgroundColor: colors._grey3 }}
-      />
+      /> */}
     </Fragment>
   );
 };

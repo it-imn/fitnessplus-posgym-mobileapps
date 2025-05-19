@@ -872,6 +872,7 @@ export const HomePage = ({ navigation }: any) => {
           />
           <Gap height={20} />
           <CarouselSection promotions={promotions} />
+          <Gap height={20} />
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -1154,6 +1155,14 @@ const NewsCard = ({
         marginBottom: 16,
         flexDirection: "row",
         backgroundColor: isDarkMode ? colors._black : colors._white,
+        shadowColor: colors._black,
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 3.84,
+        elevation: 2,
       }}>
       <Image
         source={{ uri: image }}
